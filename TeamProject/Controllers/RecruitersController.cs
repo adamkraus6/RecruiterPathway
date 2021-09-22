@@ -24,7 +24,16 @@ namespace TeamProject.Controllers
         {
             return View(await _context.Recruiter.ToListAsync());
         }
-
+        // GET: Recruiters/List
+        public async Task<IActionResult> List()
+        {
+            return View(await _context.Recruiter.ToListAsync());
+        }
+        // GET: Recruiters/Login
+        public async Task<IActionResult> Login()
+        {
+            return View();
+        }
         // GET: Recruiters/Details/5
         public async Task<IActionResult> Details(string id)
         {
