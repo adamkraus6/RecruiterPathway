@@ -63,9 +63,15 @@ namespace TeamProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,CompanyName,Email,Password")] Recruiter recruiter)
+        public async Task<IActionResult> Create([Bind("Name,CompanyName,Email,Password")] Recruiter recruiter)
         {
-            if (ModelState.IsValid)
+            //Received Data will ignore the ID provided and override with a 
+            //GUID instead. IDs are supposed to be unique.
+            recruiter.Id = Guid.NewGuid().ToString();
+            //ModelState is "invalid" since we do NOT get the Id from the client
+            //Write our own validation and pass on.
+            if(recruiter.Email != "" && recruiter.Password != "")
+            //if (ModelState.IsValid)
             {
                 _context.Add(recruiter);
                 await _context.SaveChangesAsync();
