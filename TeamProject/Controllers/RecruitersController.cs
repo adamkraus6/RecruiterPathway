@@ -79,12 +79,13 @@ namespace TeamProject.Controllers
                 HttpContext.Session.SetString("JWToken", new JwtSecurityTokenHandler().WriteToken(token));
                 HttpContext.Session.SetString("Id", user.Id);
                 //Return that auth was sucessful and assign the token
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Profile));
             }
             //AUTH FAIL
             return RedirectToAction(nameof(Login));
         }
         // GET: Recruiters/Details/5
+        [Authorize]
         public async Task<IActionResult> Profile(string id)
         {
             if (id == null)
@@ -104,11 +105,6 @@ namespace TeamProject.Controllers
             }
 
             return View(recruiter);
-        }
-        [Authorize]
-        public async Task<IActionResult> SecurePage() 
-        {
-            return View();
         }
 
         // GET: Recruiters/Create
@@ -147,11 +143,13 @@ namespace TeamProject.Controllers
         }
 
         // GET: Recruiters/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        [Authorize]
+        public async Task<IActionResult> Edit()
         {
+            var id = HttpContext.Session.GetString("Id");
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Login));
             }
 
             var recruiter = await _context.Recruiter.FindAsync(id);
@@ -167,8 +165,14 @@ namespace TeamProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PasswordHash")] Recruiter model)
         {
+            var token = HttpContext.Session.GetString("JWToken");
+            if (string.IsNullOrEmpty(token)) 
+            {
+                return Unauthorized();
+            }
             var userExists = await userManager.FindByIdAsync(id);
             if (userExists == null)
                 return View(model);
