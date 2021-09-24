@@ -39,7 +39,7 @@ namespace TeamProject
                     options.UseSqlServer(Configuration.GetConnectionString("RecruiterContext")));
             
             //More auth related stuff, setup identities
-            services.AddIdentity<AuthUser, AuthLevels>()
+            services.AddIdentity<Recruiter, AuthLevels>()
                 .AddEntityFrameworkStores<AuthenticationDbContext>()
                 .AddDefaultTokenProviders();
 
