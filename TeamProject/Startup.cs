@@ -14,6 +14,8 @@ using System.Text;
 using TeamProject.Data;
 using TeamProject.Authentication;
 using TeamProject.Models;
+using Microsoft.AspNetCore.Http;
+using System;
 
 namespace TeamProject
 {
@@ -33,11 +35,16 @@ namespace TeamProject
 
             //Authentication DB, has to be separate
             services.AddDbContext<AuthenticationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDbContext")));
-            
+
             //More auth related stuff, setup identities
             services.AddIdentity<Recruiter, AuthLevels>()
                 .AddEntityFrameworkStores<AuthenticationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
+            });
 
             //Finally, enable the Authentication
             services.AddAuthentication(options =>
@@ -80,6 +87,8 @@ namespace TeamProject
 
             app.UseRouting();
 
+            app.UseSession();
+
             app.UseAuthorization();
             app.UseAuthentication();
 
@@ -88,16 +97,6 @@ namespace TeamProject
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
-
-            app.UseStatusCodePages(async context => {
-                var request = context.HttpContext.Request;
-                var response = context.HttpContext.Response;
-                //Listen for the OK response from the login page
-                if (response.StatusCode == 200 && request.Path.Value.StartsWith("/recruiters/login"))
-                {
-                    response.Redirect("/recruiters/list");
-                }
             });
         }
     }

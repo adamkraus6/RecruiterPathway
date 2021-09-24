@@ -76,22 +76,24 @@ namespace TeamProject.Controllers
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
+                HttpContext.Session.SetString("JWToken", new JwtSecurityTokenHandler().WriteToken(token));
+                HttpContext.Session.SetString("Id", user.Id);
                 //Return that auth was sucessful and assign the token
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
+                return RedirectToAction(nameof(Index));
             }
             //AUTH FAIL
-            return Unauthorized();
+            return RedirectToAction(nameof(Login));
         }
         // GET: Recruiters/Details/5
         public async Task<IActionResult> Profile(string id)
         {
             if (id == null)
             {
-                return NotFound();
+                id = HttpContext.Session.GetString("Id");
+                if (string.IsNullOrEmpty(id))
+                {
+                    return RedirectToAction(nameof(Login));
+                }
             }
 
             var recruiter = await _context.Recruiter
@@ -102,6 +104,11 @@ namespace TeamProject.Controllers
             }
 
             return View(recruiter);
+        }
+        [Authorize]
+        public async Task<IActionResult> SecurePage() 
+        {
+            return View();
         }
 
         // GET: Recruiters/Create
