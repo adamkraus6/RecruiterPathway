@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,6 +14,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 
+
+//TODO: Delete Me once all functions have been fully moved to the Recruiter Controller
 namespace TeamProject.Controllers
 {
     [Route("api/[controller]")]

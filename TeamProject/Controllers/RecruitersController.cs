@@ -8,16 +8,29 @@ using Microsoft.EntityFrameworkCore;
 using TeamProject.Data;
 using TeamProject.Models;
 using TeamProject.Authentication;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace TeamProject.Controllers
 {
     public class RecruitersController : Controller
     {
         private readonly AuthenticationDbContext _context;
+        private readonly UserManager<Recruiter> userManager;
+        private readonly RoleManager<AuthLevels> roleManager;
+        private readonly IConfiguration _configuration;
 
-        public RecruitersController(AuthenticationDbContext context)
+        public RecruitersController(AuthenticationDbContext context, UserManager<Recruiter> userManager, RoleManager<AuthLevels> roleManager, IConfiguration configuration)
         {
             _context = context;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
+            _configuration = configuration;
         }
 
         // GET: Recruiters
@@ -35,8 +48,46 @@ namespace TeamProject.Controllers
         {
             return View();
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login([Bind("UserName,Password")] Recruiter model)
+        {
+            //Find the matching user from the DB
+            var user = await userManager.FindByNameAsync(model.UserName);
+
+            //Check if user exists and if password is valid
+            if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+            {
+                //Not much clue what this does, setup authorization claims
+                var authClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                };
+
+                //Get our private key from the config
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+                //Create the actual authentication token
+                var token = new JwtSecurityToken(
+                    issuer: _configuration["JWT:ValidIssuer"],
+                    audience: _configuration["JWT:ValidAudience"],
+                    expires: DateTime.Now.AddHours(3),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                    );
+                //Return that auth was sucessful and assign the token
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                });
+            }
+            //AUTH FAIL
+            return Unauthorized();
+        }
         // GET: Recruiters/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Profile(string id)
         {
             if (id == null)
             {
@@ -64,21 +115,28 @@ namespace TeamProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,CompanyName,Email")] Recruiter recruiter)
+        public async Task<IActionResult> Create([Bind("Name,CompanyName,UserName,PasswordHash")] Recruiter model)
         {
-            //Received Data will ignore the ID provided and override with a 
-            //GUID instead. IDs are supposed to be unique.
-            recruiter.Id = Guid.NewGuid().ToString();
-            //ModelState is "invalid" since we do NOT get the Id from the client
-            //Write our own validation and pass on.
-            if(recruiter.Email != "")
-            //if (ModelState.IsValid)
+            var userExists = await userManager.FindByNameAsync(model.UserName);
+            if (userExists != null)
+                return View(model);
+            Recruiter recruiter = new Recruiter()
             {
-                _context.Add(recruiter);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(recruiter);
+                UserName = model.UserName,
+                Id = Guid.NewGuid().ToString(),
+                SecurityStamp = Guid.NewGuid().ToString(),
+                Email = model.UserName,
+                Name = model.Name,
+                CompanyName = model.CompanyName,
+                Password = model.Password
+            };
+            //Console.WriteLine(recruiter.ToString());
+            //Hash is NOT hash, it is plan text.
+            //TODO: Implement Hashing
+            var result = await userManager.CreateAsync(recruiter, model.Password);
+            if (!result.Succeeded)
+                return View(model);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Recruiters/Edit/5
@@ -102,36 +160,29 @@ namespace TeamProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,Email")] Recruiter recruiter)
+        public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PasswordHash")] Recruiter model)
         {
-            if (id != recruiter.Id)
-            {
-                return NotFound();
-            }
+            var userExists = await userManager.FindByIdAsync(id);
+            if (userExists == null)
+                return View(model);
+
+            Console.WriteLine("Username: " + model.UserName);
+            Console.WriteLine("Name: " + model.Name);
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    //Sync username and email together
-                    recruiter.UserName = recruiter.Email;
-                    _context.Update(recruiter);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RecruiterExists(recruiter.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                //Sync the complete model with the provided
+                userExists.Name = model.Name;
+                userExists.CompanyName = model.CompanyName;
+                userExists.Email = model.UserName;
+                //Sync up username and email
+                userExists.UserName = model.UserName;
+                userExists.PasswordHash = model.PasswordHash;
+                await userManager.UpdateAsync(userExists);
+                
+                return RedirectToAction(nameof(List));
             }
-            return View(recruiter);
+            return RedirectToAction(nameof(List));
         }
 
         // GET: Recruiters/Delete/5

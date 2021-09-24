@@ -8,5 +8,7 @@ namespace TeamProject.Models
     {
         public string Name { get; set; }
         public string CompanyName { get; set; }
+
+        public string Password { get; set; }
     }
 }

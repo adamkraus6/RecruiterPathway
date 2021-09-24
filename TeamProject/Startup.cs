@@ -89,6 +89,16 @@ namespace TeamProject
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseStatusCodePages(async context => {
+                var request = context.HttpContext.Request;
+                var response = context.HttpContext.Response;
+                //Listen for the OK response from the login page
+                if (response.StatusCode == 200 && request.Path.Value.StartsWith("/recruiters/login"))
+                {
+                    response.Redirect("/recruiters/list");
+                }
+            });
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<TeamProject.Models.Recruiter>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "All Recruiters List";
 }
 
 <h1>Index</h1>
@@ -38,7 +38,7 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Profile" asp-route-id="@item.Id">Profile</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
