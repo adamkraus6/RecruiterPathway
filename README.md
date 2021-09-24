@@ -2,6 +2,8 @@
 
 RecruiterPathway
 
+![Recruiter Pathway Logo](logos/logo-black.png)
+
 # Team #4
 
 - Kraus, Adam L. 
