@@ -33,10 +33,6 @@ namespace TeamProject
 
             //Authentication DB, has to be separate
             services.AddDbContext<AuthenticationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDbContext")));
-
-            //Normal DB for users
-            services.AddDbContext<RecruiterContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("RecruiterContext")));
             
             //More auth related stuff, setup identities
             services.AddIdentity<Recruiter, AuthLevels>()

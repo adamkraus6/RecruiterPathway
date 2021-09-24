@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TeamProject.Data;
 using TeamProject.Models;
+using TeamProject.Authentication;
 
 namespace TeamProject.Controllers
 {
     public class RecruitersController : Controller
     {
-        private readonly RecruiterContext _context;
+        private readonly AuthenticationDbContext _context;
 
-        public RecruitersController(RecruiterContext context)
+        public RecruitersController(AuthenticationDbContext context)
         {
             _context = context;
         }

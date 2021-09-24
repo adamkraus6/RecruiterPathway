@@ -78,9 +78,12 @@ namespace TeamProject.Controllers
             {
                 UserName = model.UserName,
                 Id = Guid.NewGuid().ToString(),
-                SecurityStamp = Guid.NewGuid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(),
+                Email = model.UserName
             };
-            Console.WriteLine(recruiter.ToString());
+            //Console.WriteLine(recruiter.ToString());
+            //Hash is NOT hash, it is plan text.
+            //TODO: Implement Hashing
             var result = await userManager.CreateAsync(recruiter, model.PasswordHash);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError);

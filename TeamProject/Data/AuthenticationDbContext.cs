@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TeamProject.Models;
 
-namespace TeamProject.Authentication
+namespace TeamProject.Data
 {
     public class AuthenticationDbContext : IdentityDbContext<Recruiter>
     { 
@@ -13,5 +13,6 @@ namespace TeamProject.Authentication
         {
             base.OnModelCreating(builder);
         }
+        public DbSet<Recruiter> Recruiter { get; set; }
     }
 }
