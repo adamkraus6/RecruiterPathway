@@ -79,7 +79,9 @@ namespace TeamProject.Controllers
                 UserName = model.UserName,
                 Id = Guid.NewGuid().ToString(),
                 SecurityStamp = Guid.NewGuid().ToString(),
-                Email = model.UserName
+                Email = model.UserName,
+                Name = model.Name,
+                CompanyName = model.CompanyName
             };
             //Console.WriteLine(recruiter.ToString());
             //Hash is NOT hash, it is plan text.

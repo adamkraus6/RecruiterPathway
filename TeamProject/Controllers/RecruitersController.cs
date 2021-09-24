@@ -102,7 +102,7 @@ namespace TeamProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,CompanyName,Email")] Recruiter recruiter)
+        public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,Email")] Recruiter recruiter)
         {
             if (id != recruiter.Id)
             {
@@ -113,6 +113,8 @@ namespace TeamProject.Controllers
             {
                 try
                 {
+                    //Sync username and email together
+                    recruiter.UserName = recruiter.Email;
                     _context.Update(recruiter);
                     await _context.SaveChangesAsync();
                 }
