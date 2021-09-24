@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace TeamProject.Models
 {
-    public class Recruiter : IdentityUser
+    public class Recruiter
     {
         [Required]
         public string Id { get; set; }
@@ -14,7 +14,7 @@ namespace TeamProject.Models
         //It is also the user's email
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress]
-        public string UserName { get; set; }
+        public string Email { get; set; }
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
         public string Password { get; set; }

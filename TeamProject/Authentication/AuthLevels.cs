@@ -1,8 +1,9 @@
-﻿namespace TeamProject.Authentication
+﻿using Microsoft.AspNetCore.Identity;
+namespace TeamProject.Authentication
 {
-    public class AuthLevels
+    public class AuthLevels : IdentityRole
     {
-        public const int USER = 0;
-        public const int ADMIN = 1;
+        public const string USER = "0";
+        public const string ADMIN = "1";
     }
 }

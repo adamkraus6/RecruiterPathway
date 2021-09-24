@@ -19,11 +19,11 @@ namespace TeamProject.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly UserManager<Recruiter> userManager;
+        private readonly UserManager<AuthUser> userManager;
         private readonly RoleManager<AuthLevels> roleManager;
         private readonly IConfiguration _configuration;
 
-        public AuthenticationController(UserManager<Recruiter> userManager, RoleManager<AuthLevels> roleManager, IConfiguration configuration)
+        public AuthenticationController(UserManager<AuthUser> userManager, RoleManager<AuthLevels> roleManager, IConfiguration configuration)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
@@ -69,18 +69,18 @@ namespace TeamProject.Controllers
         }
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] Recruiter model)
+        public async Task<IActionResult> Register([FromBody] AuthUser model)
         {
             var userExists = await userManager.FindByNameAsync(model.UserName);
             if (userExists != null)
                 return StatusCode(StatusCodes.Status400BadRequest);
-            Recruiter recruiter = new Recruiter()
+            AuthUser recruiter = new AuthUser()
             {
                 UserName = model.UserName,
                 Id = Guid.NewGuid().ToString(),
                 SecurityStamp = Guid.NewGuid().ToString()
             };
-            var result = await userManager.CreateAsync(recruiter, model.Password);
+            var result = await userManager.CreateAsync(recruiter, model.PasswordHash);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError);
             return Ok();

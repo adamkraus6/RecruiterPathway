@@ -4,7 +4,7 @@ using TeamProject.Models;
 
 namespace TeamProject.Authentication
 {
-    public class AuthenticationDbContext : IdentityDbContext<Recruiter>
+    public class AuthenticationDbContext : IdentityDbContext<AuthUser>
     { 
         public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options) : base(options){
 
