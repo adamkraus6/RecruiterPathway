@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TeamProject.Data;
 using TeamProject.Models;
@@ -11,9 +9,6 @@ using TeamProject.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
 
 namespace TeamProject.Controllers
@@ -22,14 +17,16 @@ namespace TeamProject.Controllers
     {
         private readonly AuthenticationDbContext _context;
         private readonly UserManager<Recruiter> userManager;
-        private readonly RoleManager<AuthLevels> roleManager;
+        //private readonly RoleManager<AuthLevels> roleManager;
+        private readonly SignInManager<Recruiter> authManager;
         private readonly IConfiguration _configuration;
 
-        public RecruitersController(AuthenticationDbContext context, UserManager<Recruiter> userManager, RoleManager<AuthLevels> roleManager, IConfiguration configuration)
+        public RecruitersController(AuthenticationDbContext context, UserManager<Recruiter> userManager, SignInManager<Recruiter> authManager, IConfiguration configuration)
         {
             _context = context;
             this.userManager = userManager;
-            this.roleManager = roleManager;
+            //this.roleManager = roleManager;
+            this.authManager = authManager;
             _configuration = configuration;
         }
 
@@ -43,6 +40,13 @@ namespace TeamProject.Controllers
         {
             return View(await _context.Recruiter.ToListAsync());
         }
+
+        public async Task<IActionResult> Logout()
+        {
+            await authManager.SignOutAsync();
+            HttpContext.Session.Remove("Id");
+            return RedirectToAction(nameof(Index));
+        }
         // GET: Recruiters/Login
         public async Task<IActionResult> Login()
         {
@@ -53,31 +57,13 @@ namespace TeamProject.Controllers
         public async Task<IActionResult> Login([Bind("UserName,Password")] Recruiter model)
         {
             //Find the matching user from the DB
-            var user = await userManager.FindByNameAsync(model.UserName);
-
+            var result = await authManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
             //Check if user exists and if password is valid
-            if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+            if (result.Succeeded)
             {
-                //Not much clue what this does, setup authorization claims
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-                //Get our private key from the config
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-
-                //Create the actual authentication token
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["JWT:ValidIssuer"],
-                    audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
-                    claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    );
-                HttpContext.Session.SetString("JWToken", new JwtSecurityTokenHandler().WriteToken(token));
+                var user = await userManager.FindByNameAsync(model.UserName);
                 HttpContext.Session.SetString("Id", user.Id);
+                Console.WriteLine(HttpContext.User.GetType().ToString());
                 //Return that auth was sucessful and assign the token
                 return RedirectToAction(nameof(Profile));
             }
@@ -88,17 +74,8 @@ namespace TeamProject.Controllers
         [Authorize]
         public async Task<IActionResult> Profile(string id)
         {
-            if (id == null)
-            {
-                id = HttpContext.Session.GetString("Id");
-                if (string.IsNullOrEmpty(id))
-                {
-                    return RedirectToAction(nameof(Login));
-                }
-            }
+            var recruiter = await userManager.GetUserAsync(HttpContext.User);
 
-            var recruiter = await _context.Recruiter
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (recruiter == null)
             {
                 return NotFound();
@@ -131,28 +108,19 @@ namespace TeamProject.Controllers
                 Email = model.UserName,
                 Name = model.Name,
                 CompanyName = model.CompanyName,
-                Password = model.Password
+                Password = model.PasswordHash
             };
-            //Console.WriteLine(recruiter.ToString());
-            //Hash is NOT hash, it is plan text.
-            //TODO: Implement Hashing
-            var result = await userManager.CreateAsync(recruiter, model.Password);
+            var result = await userManager.CreateAsync(recruiter, model.PasswordHash);
             if (!result.Succeeded)
                 return View(model);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Profile));
         }
 
         // GET: Recruiters/Edit/5
         [Authorize]
         public async Task<IActionResult> Edit()
         {
-            var id = HttpContext.Session.GetString("Id");
-            if (id == null)
-            {
-                return RedirectToAction(nameof(Login));
-            }
-
-            var recruiter = await _context.Recruiter.FindAsync(id);
+            var recruiter = await userManager.GetUserAsync(HttpContext.User);
             if (recruiter == null)
             {
                 return NotFound();
@@ -168,11 +136,6 @@ namespace TeamProject.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PasswordHash")] Recruiter model)
         {
-            var token = HttpContext.Session.GetString("JWToken");
-            if (string.IsNullOrEmpty(token)) 
-            {
-                return Unauthorized();
-            }
             var userExists = await userManager.FindByIdAsync(id);
             if (userExists == null)
                 return View(model);
@@ -219,15 +182,18 @@ namespace TeamProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
+            var self = await userManager.GetUserAsync(HttpContext.User);
             var recruiter = await _context.Recruiter.FindAsync(id);
-            _context.Recruiter.Remove(recruiter);
-            await _context.SaveChangesAsync();
+            if (self != null && id == self.Id)
+            {
+                _context.Recruiter.Remove(recruiter);
+                await authManager.SignOutAsync();
+                await _context.SaveChangesAsync();
+            }
+            else {
+                return Unauthorized();
+            }
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool RecruiterExists(string id)
-        {
-            return _context.Recruiter.Any(e => e.Id == id);
         }
     }
 }

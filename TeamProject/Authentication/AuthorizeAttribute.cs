@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace TeamProject.Authentication
 {
@@ -22,6 +17,12 @@ namespace TeamProject.Authentication
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var IsAuthenticated = context.HttpContext.User.Identity.IsAuthenticated;
+            /*
+            if (context.HttpContext.Session.TryGetValue("Id", out _))
+            {
+                IsAuthenticated = true;
+            }
+            */
 
             if (!IsAuthenticated)
             {
