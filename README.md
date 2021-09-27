@@ -2,7 +2,7 @@
 
 RecruiterPathway
 
-![Recruiter Pathway Logo](logos/logo-black.png)
+![Recruiter Pathway Logo](TeamProject/wwwroot/logos/logo-black.png)
 
 # Team #4
 
