@@ -1,13 +1,21 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+
+//Authentication additions
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+using TeamProject.Data;
+using TeamProject.Authentication;
+using TeamProject.Models;
+using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TeamProject
 {
@@ -24,6 +32,28 @@ namespace TeamProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            //Authentication DB, has to be separate
+            services.AddDbContext<AuthenticationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDbContext")));
+
+            //More auth related stuff, setup identities
+            services.AddIdentityCore<Recruiter>()
+                .AddSignInManager()
+                .AddEntityFrameworkStores<AuthenticationDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
+            });
+
+            //Finally, enable the Authentication
+            services.AddAuthentication(options =>
+            {
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                options.DefaultScheme = IdentityConstants.ApplicationScheme;
+            })
+            .AddIdentityCookies(o => { });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +74,10 @@ namespace TeamProject
 
             app.UseRouting();
 
+            app.UseSession();
+
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
