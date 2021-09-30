@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 
 namespace TeamProject.Authentication
 {
@@ -17,6 +18,10 @@ namespace TeamProject.Authentication
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var IsAuthenticated = context.HttpContext.User.Identity.IsAuthenticated;
+            object controller, action;
+            context.RouteData.Values.TryGetValue("controller", out controller);
+            context.RouteData.Values.TryGetValue("action", out action);
+            //context.HttpContext.Request.Headers
             /*
             if (context.HttpContext.Session.TryGetValue("Id", out _))
             {
@@ -26,7 +31,7 @@ namespace TeamProject.Authentication
 
             if (!IsAuthenticated)
             {
-                context.Result = new RedirectResult("~/Recruiters/Login");
+                context.Result = new RedirectResult("~/Recruiters/Login?returnurl=~/" + controller.ToString() + "/" + action.ToString());
             }
             return;
         }
