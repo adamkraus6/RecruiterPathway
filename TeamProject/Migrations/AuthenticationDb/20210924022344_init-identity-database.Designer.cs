@@ -9,7 +9,7 @@ using TeamProject.Data;
 
 namespace TeamProject.Migrations.AuthenticationDb
 {
-    [DbContext(typeof(AuthenticationDbContext))]
+    [DbContext(typeof(RecruiterDbContext))]
     [Migration("20210924022344_init-identity-database")]
     partial class initidentitydatabase
     {

@@ -8,7 +8,7 @@ using TeamProject.Data;
 
 namespace TeamProject.Migrations.AuthenticationDb
 {
-    [DbContext(typeof(AuthenticationDbContext))]
+    [DbContext(typeof(RecruiterDbContext))]
     partial class AuthenticationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

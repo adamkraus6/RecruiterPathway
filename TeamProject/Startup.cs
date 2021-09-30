@@ -6,15 +6,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 //Authentication additions
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 using TeamProject.Data;
-using TeamProject.Authentication;
 using TeamProject.Models;
-using Microsoft.AspNetCore.Http;
 using System;
 
 namespace TeamProject
@@ -34,12 +29,14 @@ namespace TeamProject
             services.AddControllersWithViews();
 
             //Authentication DB, has to be separate
-            services.AddDbContext<AuthenticationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDbContext")));
+            services.AddDbContext<RecruiterDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDbContext")));
+            services.AddDbContext<TeamProjectContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("TeamProjectContext")));
 
             //More auth related stuff, setup identities
             services.AddIdentityCore<Recruiter>()
                 .AddSignInManager()
-                .AddEntityFrameworkStores<AuthenticationDbContext>()
+                .AddEntityFrameworkStores<RecruiterDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddSession(options =>
@@ -54,9 +51,6 @@ namespace TeamProject
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
             })
             .AddIdentityCookies(o => { });
-
-            services.AddDbContext<TeamProjectContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("TeamProjectContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

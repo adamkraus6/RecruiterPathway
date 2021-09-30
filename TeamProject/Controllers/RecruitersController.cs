@@ -15,13 +15,13 @@ namespace TeamProject.Controllers
 {
     public class RecruitersController : Controller
     {
-        private readonly AuthenticationDbContext _context;
+        private readonly RecruiterDbContext _context;
         private readonly UserManager<Recruiter> userManager;
         //private readonly RoleManager<AuthLevels> roleManager;
         private readonly SignInManager<Recruiter> authManager;
         private readonly IConfiguration _configuration;
 
-        public RecruitersController(AuthenticationDbContext context, UserManager<Recruiter> userManager, SignInManager<Recruiter> authManager, IConfiguration configuration)
+        public RecruitersController(RecruiterDbContext context, UserManager<Recruiter> userManager, SignInManager<Recruiter> authManager, IConfiguration configuration)
         {
             _context = context;
             this.userManager = userManager;
@@ -48,13 +48,14 @@ namespace TeamProject.Controllers
             return RedirectToAction(nameof(Index));
         }
         // GET: Recruiters/Login
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(string returnurl)
         {
+            ViewData["returnurl"] = returnurl;
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([Bind("UserName,Password")] Recruiter model)
+        public async Task<IActionResult> Login([Bind("UserName,Password")] Recruiter model, string returnurl)
         {
             //Find the matching user from the DB
             var result = await authManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
@@ -65,7 +66,15 @@ namespace TeamProject.Controllers
                 HttpContext.Session.SetString("Id", user.Id);
                 Console.WriteLine(HttpContext.User.GetType().ToString());
                 //Return that auth was sucessful and assign the token
-                return RedirectToAction(nameof(Profile));
+                if (returnurl != null)
+                {
+                    //Redirect to the returnurl, from the Login's from paramater, from the Authorize redirect
+                    return Redirect(returnurl);
+                }
+                else 
+                {
+                    return RedirectToAction(nameof(Profile));
+                }
             }
             //AUTH FAIL
             return RedirectToAction(nameof(Login));

@@ -4,9 +4,9 @@ using TeamProject.Models;
 
 namespace TeamProject.Data
 {
-    public class AuthenticationDbContext : IdentityDbContext<Recruiter>
+    public class RecruiterDbContext : IdentityDbContext<Recruiter>
     { 
-        public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options) : base(options){
+        public RecruiterDbContext(DbContextOptions<RecruiterDbContext> options) : base(options){
 
         }
         protected override void OnModelCreating(ModelBuilder builder)

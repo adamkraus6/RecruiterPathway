@@ -9,7 +9,7 @@ using TeamProject.Data;
 
 namespace TeamProject.Migrations.AuthenticationDb
 {
-    [DbContext(typeof(AuthenticationDbContext))]
+    [DbContext(typeof(RecruiterDbContext))]
     [Migration("20210924141855_Refractor1")]
     partial class Refractor1
     {
