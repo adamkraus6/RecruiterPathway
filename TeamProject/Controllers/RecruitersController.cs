@@ -15,13 +15,13 @@ namespace TeamProject.Controllers
 {
     public class RecruitersController : Controller
     {
-        private readonly AuthenticationDbContext _context;
+        private readonly RecruiterDbContext _context;
         private readonly UserManager<Recruiter> userManager;
         //private readonly RoleManager<AuthLevels> roleManager;
         private readonly SignInManager<Recruiter> authManager;
         private readonly IConfiguration _configuration;
 
-        public RecruitersController(AuthenticationDbContext context, UserManager<Recruiter> userManager, SignInManager<Recruiter> authManager, IConfiguration configuration)
+        public RecruitersController(RecruiterDbContext context, UserManager<Recruiter> userManager, SignInManager<Recruiter> authManager, IConfiguration configuration)
         {
             _context = context;
             this.userManager = userManager;
@@ -44,7 +44,6 @@ namespace TeamProject.Controllers
         public async Task<IActionResult> Logout()
         {
             await authManager.SignOutAsync();
-            HttpContext.Session.Remove("Id");
             return RedirectToAction(nameof(Index));
         }
         // GET: Recruiters/Login
@@ -62,7 +61,6 @@ namespace TeamProject.Controllers
             if (result.Succeeded)
             {
                 var user = await userManager.FindByNameAsync(model.UserName);
-                HttpContext.Session.SetString("Id", user.Id);
                 Console.WriteLine(HttpContext.User.GetType().ToString());
                 //Return that auth was sucessful and assign the token
                 return RedirectToAction(nameof(Profile));
@@ -184,14 +182,22 @@ namespace TeamProject.Controllers
         {
             var self = await userManager.GetUserAsync(HttpContext.User);
             var recruiter = await _context.Recruiter.FindAsync(id);
-            if (self != null && id == self.Id)
+            var isAdmin = self != null && self.Email == "administrator@localhost";
+            if (self != null && (id == self.Id || isAdmin))
             {
                 _context.Recruiter.Remove(recruiter);
-                await authManager.SignOutAsync();
+                if (!isAdmin)
+                {
+                    await authManager.SignOutAsync();
+                }
                 await _context.SaveChangesAsync();
             }
             else {
                 return Unauthorized();
+            }
+            if (isAdmin) 
+            {
+                return RedirectToAction(nameof(List));
             }
             return RedirectToAction(nameof(Index));
         }
