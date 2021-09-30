@@ -54,6 +54,9 @@ namespace TeamProject
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
             })
             .AddIdentityCookies(o => { });
+
+            services.AddDbContext<TeamProjectContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("TeamProjectContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
