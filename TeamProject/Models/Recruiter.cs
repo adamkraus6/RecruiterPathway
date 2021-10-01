@@ -12,5 +12,7 @@ namespace TeamProject.Models
         [MinLength(8)]
         [MaxLength(64)]
         public string Password { get; set; }
+        [EmailAddress]
+        override public string Email { get; set; }
     }
 }
