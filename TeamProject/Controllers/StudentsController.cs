@@ -12,9 +12,9 @@ namespace TeamProject.Controllers
     [Authorize]
     public class StudentsController : Controller
     {
-        private readonly TeamProjectContext _context;
+        private readonly DatabaseContext _context;
 
-        public StudentsController(TeamProjectContext context)
+        public StudentsController(DatabaseContext context)
         {
             _context = context;
         }

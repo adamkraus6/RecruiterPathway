@@ -12,7 +12,7 @@ namespace TeamProject.Models
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {
-            using (var context = new RecruiterDbContext(serviceProvider.GetRequiredService<DbContextOptions<RecruiterDbContext>>()))
+            using (var context = new DatabaseContext(serviceProvider.GetRequiredService<DbContextOptions<DatabaseContext>>()))
             {
                 //Check for Admin Recruiter data. If it doesn't exist, create it.
                 if (context.Recruiter.Contains(

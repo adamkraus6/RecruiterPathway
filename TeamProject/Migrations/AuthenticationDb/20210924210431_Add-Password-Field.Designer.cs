@@ -9,7 +9,7 @@ using TeamProject.Data;
 
 namespace TeamProject.Migrations.AuthenticationDb
 {
-    [DbContext(typeof(RecruiterDbContext))]
+    [DbContext(typeof(DatabaseContext))]
     [Migration("20210924210431_Add-Password-Field")]
     partial class AddPasswordField
     {

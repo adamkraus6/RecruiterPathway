@@ -14,9 +14,9 @@ namespace TeamProject.Models
         public static void Initialize(IServiceProvider serviceProvider)
         {
 
-            using (var context = new TeamProjectContext(
+            using (var context = new DatabaseContext(
                 serviceProvider.GetRequiredService<
-                    DbContextOptions<TeamProjectContext>>()))
+                    DbContextOptions<DatabaseContext>>()))
             {
                 // Look for any movies.
                 if (context.Student.Any())

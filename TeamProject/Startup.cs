@@ -29,14 +29,12 @@ namespace TeamProject
             services.AddControllersWithViews();
 
             //Authentication DB, has to be separate
-            services.AddDbContext<RecruiterDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDbContext")));
-            services.AddDbContext<TeamProjectContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("TeamProjectContext")));
+            services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDbContext")));
 
             //More auth related stuff, setup identities
             services.AddIdentityCore<Recruiter>()
                 .AddSignInManager()
-                .AddEntityFrameworkStores<RecruiterDbContext>()
+                .AddEntityFrameworkStores<DatabaseContext>()
                 .AddDefaultTokenProviders();
 
             services.AddSession(options =>

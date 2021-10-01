@@ -9,19 +9,18 @@ using TeamProject.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System.Text;
 
 namespace TeamProject.Controllers
 {
     public class RecruitersController : Controller
     {
-        private readonly RecruiterDbContext _context;
+        private readonly DatabaseContext _context;
         private readonly UserManager<Recruiter> userManager;
         //private readonly RoleManager<AuthLevels> roleManager;
         private readonly SignInManager<Recruiter> authManager;
         private readonly IConfiguration _configuration;
 
-        public RecruitersController(RecruiterDbContext context, UserManager<Recruiter> userManager, SignInManager<Recruiter> authManager, IConfiguration configuration)
+        public RecruitersController(DatabaseContext context, UserManager<Recruiter> userManager, SignInManager<Recruiter> authManager, IConfiguration configuration)
         {
             _context = context;
             this.userManager = userManager;
