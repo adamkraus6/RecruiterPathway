@@ -24,6 +24,10 @@ a {
   border-color: #1861ac;
 }
 
+.error {
+  color: red;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
