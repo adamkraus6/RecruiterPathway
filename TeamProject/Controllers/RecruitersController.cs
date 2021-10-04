@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -65,7 +64,6 @@ namespace TeamProject.Controllers
             {
                 var user = await userManager.FindByNameAsync(model.UserName);
                 HttpContext.Session.SetString("Id", user.Id);
-                Console.WriteLine(HttpContext.User.GetType().ToString());
                 //Return that auth was sucessful and assign the token
                 if (returnurl != null)
                 {
