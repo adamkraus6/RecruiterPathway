@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
 
 namespace TeamProject.Authentication
 {
@@ -21,14 +20,6 @@ namespace TeamProject.Authentication
             object controller, action;
             context.RouteData.Values.TryGetValue("controller", out controller);
             context.RouteData.Values.TryGetValue("action", out action);
-            //context.HttpContext.Request.Headers
-            /*
-            if (context.HttpContext.Session.TryGetValue("Id", out _))
-            {
-                IsAuthenticated = true;
-            }
-            */
-
             if (!IsAuthenticated)
             {
                 context.Result = new RedirectResult("~/Recruiters/Login?returnurl=~/" + controller.ToString() + "/" + action.ToString());

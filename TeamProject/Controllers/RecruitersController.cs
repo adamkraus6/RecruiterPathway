@@ -47,9 +47,11 @@ namespace TeamProject.Controllers
             return RedirectToAction(nameof(Index));
         }
         // GET: Recruiters/Login
-        public async Task<IActionResult> Login(string returnurl)
+        public async Task<IActionResult> Login(string returnurl, bool? error)
         {
             ViewData["returnurl"] = returnurl;
+            if(error != null)
+                ViewData["HasError"] = error;
             return View();
         }
         [HttpPost]
@@ -76,7 +78,11 @@ namespace TeamProject.Controllers
                 }
             }
             //AUTH FAIL
-            return RedirectToAction(nameof(Login));
+            if(returnurl != null) {
+                return Redirect("~/Recruiters/Login?error=true&returnurl=" + returnurl);
+            }
+            return Redirect("~/Recruiters/Login?error=true");
+
         }
         // GET: Recruiters/Details/5
         [Authorize]
