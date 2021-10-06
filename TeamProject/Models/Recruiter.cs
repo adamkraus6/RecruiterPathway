@@ -21,5 +21,7 @@ namespace TeamProject.Models
         [EmailAddress]
         [Display(Name = "Email Address")]
         override public string UserName { get; set; }
+        [Display(Name = "Remember Me")]
+        public bool RememberMe { get; set; }
     }
 }

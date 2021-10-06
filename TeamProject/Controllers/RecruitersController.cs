@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using TeamProject.Data;
 using TeamProject.Models;
 using TeamProject.Authentication;
-using TeamProject.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -57,10 +56,10 @@ namespace TeamProject.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([Bind("UserName,Password")] Recruiter model, string returnurl)
+        public async Task<IActionResult> Login([Bind("UserName,Password,RememberMe")] Recruiter model, string returnurl)
         {
             //Find the matching user from the DB
-            var result = await authManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
+            var result = await authManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
             //Check if user exists and if password is valid
             if (result.Succeeded)
             {
