@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamProject.Data;
 
-namespace TeamProject.Migrations.AuthenticationDb
+namespace TeamProject.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210924022344_init-identity-database")]
-    partial class initidentitydatabase
+    [Migration("20211006202250_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -152,13 +152,16 @@ namespace TeamProject.Migrations.AuthenticationDb
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("TeamProject.Authentication.AuthUser", b =>
+            modelBuilder.Entity("TeamProject.Models.Recruiter", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -177,6 +180,9 @@ namespace TeamProject.Migrations.AuthenticationDb
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -184,6 +190,10 @@ namespace TeamProject.Migrations.AuthenticationDb
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Password")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -217,6 +227,24 @@ namespace TeamProject.Migrations.AuthenticationDb
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("TeamProject.Models.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("firstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("lastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Student");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -228,7 +256,7 @@ namespace TeamProject.Migrations.AuthenticationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("TeamProject.Authentication.AuthUser", null)
+                    b.HasOne("TeamProject.Models.Recruiter", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -237,7 +265,7 @@ namespace TeamProject.Migrations.AuthenticationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("TeamProject.Authentication.AuthUser", null)
+                    b.HasOne("TeamProject.Models.Recruiter", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -252,7 +280,7 @@ namespace TeamProject.Migrations.AuthenticationDb
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TeamProject.Authentication.AuthUser", null)
+                    b.HasOne("TeamProject.Models.Recruiter", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -261,7 +289,7 @@ namespace TeamProject.Migrations.AuthenticationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("TeamProject.Authentication.AuthUser", null)
+                    b.HasOne("TeamProject.Models.Recruiter", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamProject.Data;
 
-namespace TeamProject.Migrations.AuthenticationDb
+namespace TeamProject.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211001140731_TestMerge")]
-    partial class TestMerge
+    [Migration("20211006203322_add-student-fields")]
+    partial class addstudentfields
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -234,15 +234,21 @@ namespace TeamProject.Migrations.AuthenticationDb
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("degree")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("firstName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("gradDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("lastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Students");
+                    b.ToTable("Student");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

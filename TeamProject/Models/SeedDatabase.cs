@@ -45,7 +45,9 @@ namespace TeamProject.Models
                             new Student
                             {
                                 firstName = values[0],
-                                lastName = values[1]
+                                lastName = values[1],
+                                degree = values[2],
+                                gradDate = DateTime.Parse(values[3])
                             }
                         );
 

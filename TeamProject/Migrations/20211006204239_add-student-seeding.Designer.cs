@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeamProject.Data;
 
-namespace TeamProject.Migrations.AuthenticationDb
+namespace TeamProject.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class AuthenticationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211006204239_add-student-seeding")]
+    partial class addstudentseeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,8 +234,14 @@ namespace TeamProject.Migrations.AuthenticationDb
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("degree")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("firstName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("gradDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("lastName")
                         .HasColumnType("nvarchar(max)");
