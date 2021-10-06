@@ -10,8 +10,8 @@ using TeamProject.Data;
 namespace TeamProject.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211006204239_add-student-seeding")]
-    partial class addstudentseeding
+    [Migration("20211006233856_add-rememberme")]
+    partial class addrememberme
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -202,6 +202,9 @@ namespace TeamProject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RememberMe")
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
