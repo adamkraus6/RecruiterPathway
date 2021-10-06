@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using TeamProject.Data;
 using TeamProject.Models;
 using TeamProject.Authentication;
+using TeamProject.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace TeamProject.Controllers
 {
@@ -97,8 +99,25 @@ namespace TeamProject.Controllers
         }
 
         // GET: Recruiters/Create
-        public IActionResult Create()
+        public IActionResult Create(string errormessage)
         {
+            if (errormessage != null)
+            {
+                //Convert the fake newlines to true newlines
+                string error = "";
+                foreach (var chr in errormessage)
+                {
+                    if (chr == '|')
+                    {
+                        error += '\n';
+                    }
+                    else
+                    {
+                        error += chr;
+                    }
+                }
+                ViewData["error-message"] = error;
+            }
             return View();
         }
 
@@ -107,25 +126,41 @@ namespace TeamProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,CompanyName,UserName,PasswordHash")] Recruiter model)
+        public async Task<IActionResult> Create([Bind("Name,CompanyName,UserName,PhoneNumber,PasswordHash")] Recruiter model)
         {
-            var userExists = await userManager.FindByNameAsync(model.UserName);
-            if (userExists != null)
-                return View(model);
-            Recruiter recruiter = new Recruiter()
+            if (ModelState.IsValid)
             {
-                UserName = model.UserName,
-                Id = Guid.NewGuid().ToString(),
-                SecurityStamp = Guid.NewGuid().ToString(),
-                Email = model.UserName,
-                Name = model.Name,
-                CompanyName = model.CompanyName,
-                Password = model.PasswordHash
-            };
-            var result = await userManager.CreateAsync(recruiter, model.PasswordHash);
-            if (!result.Succeeded)
-                return View(model);
-            return RedirectToAction(nameof(Profile));
+                var userExists = await userManager.FindByNameAsync(model.UserName);
+                if (userExists != null)
+                    return View(model);
+                Recruiter recruiter = new Recruiter()
+                {
+                    UserName = model.UserName,
+                    Id = Guid.NewGuid().ToString(),
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    Email = model.UserName,
+                    Name = model.Name,
+                    CompanyName = model.CompanyName,
+                    Password = model.PasswordHash
+                };
+                var result = await userManager.CreateAsync(recruiter, model.PasswordHash);
+                if (!result.Succeeded)
+                    return View(model);
+                return RedirectToAction(nameof(Profile));
+            }
+            else 
+            {
+                var errorMessage = "";
+                foreach (var modelState in ViewData.ModelState.Values)
+                {
+                    foreach (ModelError error in modelState.Errors)
+                    {
+                        errorMessage += error.ErrorMessage;
+                        errorMessage += '|';
+                    }
+                }
+                return Redirect("~/Recruiters/Create/?errormessage="+ errorMessage);
+            }
         }
 
         // GET: Recruiters/Edit/5
