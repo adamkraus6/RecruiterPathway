@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using TeamProject.Data;
 using TeamProject.Models;
 using TeamProject.Authentication;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 
 namespace TeamProject.Controllers
 {
@@ -20,9 +22,43 @@ namespace TeamProject.Controllers
         }
 
         // GET: Students
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string studentDegree, string searchFirstName, string searchLastName, DateTime gradDateStart, DateTime gradDateEnd)
         {
-            return View(await _context.Student.ToListAsync());
+            // Use LING to get list of genres
+            IQueryable<string> degreeQuery = from s in _context.Student
+                                             orderby s.degree
+                                             select s.degree;
+
+            var students = from s in _context.Student
+                           select s;
+
+            if (!string.IsNullOrEmpty(searchFirstName))
+            {
+                students = students.Where(st => st.firstName.Contains(searchFirstName));
+            }
+
+            if (!string.IsNullOrEmpty(searchLastName))
+            {
+                students = students.Where(st => st.lastName.Contains(searchLastName));
+            }
+
+            if (!string.IsNullOrEmpty(studentDegree))
+            {
+                students = students.Where(st => st.degree == studentDegree);
+            }
+
+            if(DateTime.MinValue != gradDateStart && DateTime.MinValue != gradDateEnd)
+            {
+                students = students.Where(st => gradDateStart.CompareTo(st.gradDate) < 0 && gradDateEnd.CompareTo(st.gradDate) >= 0);
+            }
+
+            var studentDegreeVM = new StudentDegreeViewModel
+            {
+                Degrees = new SelectList(await degreeQuery.Distinct().ToListAsync()),
+                Students = await students.ToListAsync()
+            };
+
+            return View(studentDegreeVM);
         }
 
         // GET: Students/Details/5

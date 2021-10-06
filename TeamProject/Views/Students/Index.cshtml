@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TeamProject.Models.Student>
+﻿@model TeamProject.Models.StudentDegreeViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,26 +9,47 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-controller="Students" asp-action="Index" method="get">
+    <p>
+        <select asp-for="StudentDegree" asp-items="Model.Degrees">
+                <option value="">All</option>
+        </select>
+
+        <br />
+
+        First Name: <input type="text" asp-for="SearchFirstName" />
+        Last Name: <input type="text" asp-for="SearchLastName" />
+
+        <br />
+
+        Graduation Date: <input type="date" asp-for="GradDateStart"/> to <input type="date" asp-for="GradDateEnd"/>
+
+        <br />
+
+        <input type="submit" value="Filter" />
+    </p>
+</form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.firstName)
+                @Html.DisplayNameFor(model => model.Students[0].firstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.lastName)
+                @Html.DisplayNameFor(model => model.Students[0].lastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.degree)
+                @Html.DisplayNameFor(model => model.Students[0].degree)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.gradDate)
+                @Html.DisplayNameFor(model => model.Students[0].gradDate)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Students) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.firstName)
