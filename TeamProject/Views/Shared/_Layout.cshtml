@@ -31,16 +31,25 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Index">Student List</a>
                         </li>
+                        </ul>
+                    <ul class="nav navbar-nav navbar-right">
                         @if (!authManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Recruiters" asp-action="Login">Login</a>
                             </li>
+                            <li>
+                                <div class="btn-nav">
+                                    <a class="btn btn-primary btn-small navbar-btn" asp-area="" asp-controller="Recruiters" asp-action="Create">Register</a>
+                                </div>
+                            </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Recruiters" asp-action="Logout">Logout</a>
+                                <div class="btn-nav">
+                                    <a class="btn btn-primary btn-small navbar-btn" asp-area="" asp-controller="Recruiters" asp-action="Logout">Logout</a>
+                                </div>
                             </li>
                         }
                     </ul>

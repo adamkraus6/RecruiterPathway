@@ -97,3 +97,7 @@ body {
 .wrapper label{
     color: black
 }
+
+.auth-status{
+    text-align: right
+}
