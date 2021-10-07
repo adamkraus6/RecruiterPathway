@@ -140,6 +140,7 @@ namespace TeamProject.Controllers
                     Email = model.UserName,
                     Name = model.Name,
                     CompanyName = model.CompanyName,
+                    PhoneNumber = model.PhoneNumber,
                     Password = model.PasswordHash
                 };
                 var result = await userManager.CreateAsync(recruiter, model.PasswordHash);
@@ -180,7 +181,7 @@ namespace TeamProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PasswordHash")] Recruiter model)
+        public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PhoneNumber,PasswordHash")] Recruiter model)
         {
             var userExists = await userManager.FindByIdAsync(id);
             if (userExists == null)
@@ -198,6 +199,7 @@ namespace TeamProject.Controllers
                 //Sync up username and email
                 userExists.UserName = model.UserName;
                 userExists.PasswordHash = model.PasswordHash;
+                userExists.PhoneNumber = model.PhoneNumber;
                 await userManager.UpdateAsync(userExists);
                 
                 return RedirectToAction(nameof(List));
