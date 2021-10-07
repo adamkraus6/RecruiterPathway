@@ -79,7 +79,7 @@ body {
 */
 .wrapper {
     display: grid;
-    grid-template-columns: 400px 400px 400px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 .grid_element {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
