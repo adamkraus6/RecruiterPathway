@@ -181,7 +181,7 @@ namespace TeamProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PhoneNumber,PasswordHash")] Recruiter model)
+        public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PhoneNumber")] Recruiter model)
         {
             var userExists = await userManager.FindByIdAsync(id);
             if (userExists == null)
@@ -198,7 +198,7 @@ namespace TeamProject.Controllers
                 userExists.Email = model.UserName;
                 //Sync up username and email
                 userExists.UserName = model.UserName;
-                userExists.PasswordHash = model.PasswordHash;
+                //userExists.PasswordHash = model.PasswordHash;
                 userExists.PhoneNumber = model.PhoneNumber;
                 await userManager.UpdateAsync(userExists);
                 
