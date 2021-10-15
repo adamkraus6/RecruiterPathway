@@ -100,6 +100,23 @@ namespace TeamProject.Controllers
             }
             return View(student);
         }
+        //This is where i believe code would go but I am commenting mine out as I cannot 
+        //view my testing
+        /*
+         * public bool studentExsists(("firsttName, lastName")] Student student)
+         * {
+         *      var stdnt = db.Student(s => s.firstName == fristName);
+         *      return (stdnt != null)
+         * }
+        {
+        public async Task<IActionResult> checkDuplicates("firsttName, lastName")] Student student)
+        {
+            if (!studentExsists(student))
+                retrun Create(Student);
+             else
+                return ("This name is already taken")
+        }
+         * */
 
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int? id)
