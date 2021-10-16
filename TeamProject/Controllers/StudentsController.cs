@@ -80,8 +80,25 @@ namespace TeamProject.Controllers
         }
 
         // GET: Students/Create
-        public IActionResult Create()
+        public IActionResult Create(string errormessage)
         {
+            if (errormessage != null)
+            {
+                //Convert the fake newlines to true newlines
+                string error = "";
+                foreach (var chr in errormessage)
+                {
+                    if (chr == '|')
+                    {
+                        error += '\n';
+                    }
+                    else
+                    {
+                        error += chr;
+                    }
+                }
+                ViewData["error-message"] = error;
+            }
             return View();
         }
 
@@ -94,29 +111,25 @@ namespace TeamProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(student);
-                await _context.SaveChangesAsync();
+                var students = from s in _context.Student
+                               select s;
+                students = students.Where(st => st.firstName.Contains(student.firstName));
+                students = students.Where(st => st.lastName.Contains(student.lastName));
+                if (students == null)
+                {
+                    _context.Add(student);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return Redirect("~/Students/Create/?errormessage=Already Exists");
+
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(student);
         }
-        //This is where i believe code would go but I am commenting mine out as I cannot 
-        //view my testing
-        /*
-         * public bool studentExsists(("firsttName, lastName")] Student student)
-         * {
-         *      var stdnt = db.Student(s => s.firstName == fristName);
-         *      return (stdnt != null)
-         * }
-        {
-        public async Task<IActionResult> checkDuplicates("firsttName, lastName")] Student student)
-        {
-            if (!studentExsists(student))
-                retrun Create(Student);
-             else
-                return ("This name is already taken")
-        }
-         * */
+
 
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int? id)
