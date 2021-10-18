@@ -10,8 +10,8 @@ using RecruiterPathway.Data;
 namespace RecruiterPathway.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211006202250_initial")]
-    partial class initial
+    [Migration("20211018204029_Initial-Create")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -204,6 +204,9 @@ namespace RecruiterPathway.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("RememberMe")
+                        .HasColumnType("bit");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -234,8 +237,14 @@ namespace RecruiterPathway.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("degree")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("firstName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("gradDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("lastName")
                         .HasColumnType("nvarchar(max)");
