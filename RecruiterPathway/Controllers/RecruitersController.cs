@@ -34,7 +34,7 @@ namespace RecruiterPathway.Controllers
         public IActionResult Logout()
         {
             repository.SignOutRecruiter();
-            return Redirect("~");
+            return Redirect("~/Home/Index");
         }
         // GET: Recruiters/Login
         public IActionResult Login(string returnurl, bool? error)

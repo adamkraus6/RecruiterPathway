@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using RecruiterPathway.Data;
 using Microsoft.AspNetCore.Identity;
+using System.Threading;
 
 namespace RecruiterPathway.Models
 {
@@ -64,8 +65,8 @@ namespace RecruiterPathway.Models
                     CompanyName = "Recruiter Pathway",
                     PhoneNumber = "6055555555",
                     Password = "P@$$w0rd",
-                    Id = Guid.NewGuid().ToString(),
-                    SecurityStamp = Guid.NewGuid().ToString()
+                    Id = "d2166836-4ce9-4b8e-98dd-b102c00f06f8",
+                    SecurityStamp = "32179209-a914-40ad-b052-bff23fe90fc4"
                 };
                 userManager.DeleteAsync(adminuser);
                 try
@@ -96,13 +97,14 @@ namespace RecruiterPathway.Models
                                 PhoneNumber = values[3],
                                 Email = values[1].Replace(' ','.') + "@" + values[2].ToLower() + ".com",
                                 UserName = values[1].Replace(' ', '.') + "@" + values[2].ToLower() + ".com",
-                                Password = values[4] + "!8"
+                                Password = values[4] + "!Ar8"
                             };
-                        var test = context.Recruiter.Where(r => r.Email == values[1] + "@" + values[2].ToLower() + ".com");
+                        var test = context.Recruiter.Where(r => r.Email == values[1].Replace(' ','.') + "@" + values[2].ToLower() + ".com");
                         if (test != null) {
                             try
                             {
-                                userManager.CreateAsync(data_recruiter, values[4] + "!8");
+                                userManager.CreateAsync(data_recruiter, values[4] + "!Ar8");
+                                Thread.Sleep(100);
                             }
                             catch (DbUpdateException ex)
                             {
