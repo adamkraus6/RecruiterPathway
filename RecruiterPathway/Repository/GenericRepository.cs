@@ -52,9 +52,10 @@ namespace RecruiterPathway.Repository
         {
             return await set.FindAsync(id);
         }
-        async public virtual void Insert(TModel obj)
+        async public virtual Task<bool> Insert(TModel obj)
         {
             await set.AddAsync(obj);
+            return true;
         }
         public virtual void Delete(TModel obj)
         {

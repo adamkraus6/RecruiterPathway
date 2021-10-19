@@ -107,7 +107,7 @@ namespace RecruiterPathway.Controllers
                 var students = await repository.Get(st => st.firstName.Contains(student.firstName) && st.lastName.Contains(student.lastName));
                 if (students == null)
                 {
-                    repository.Insert(student);
+                    await repository.Insert(student);
                     repository.Save();
                 }
                 else
@@ -142,7 +142,7 @@ namespace RecruiterPathway.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,firstName,lastName")] Student student)
+        public IActionResult Edit(int id, [Bind("Id,firstName,lastName")] Student student)
         {
             if (id != student.Id)
             {
@@ -178,7 +178,7 @@ namespace RecruiterPathway.Controllers
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
             repository.Delete(id);
             repository.Save();

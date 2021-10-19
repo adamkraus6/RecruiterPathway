@@ -17,7 +17,7 @@ namespace RecruiterPathway.Models
         {
             var assembly = Assembly.GetExecutingAssembly();
             string resourceName = "";
-;            using (var context = new DatabaseContext(
+            using (var context = new DatabaseContext(
                 serviceProvider.GetRequiredService<
                     DbContextOptions<DatabaseContext>>()))
             {
@@ -73,7 +73,7 @@ namespace RecruiterPathway.Models
                 {
                     userManager.CreateAsync(adminuser, "P@$$w0rd");
                 }
-                catch (DbUpdateException ex)
+                catch (DbUpdateException)
                 {
                     //We expect this to fail, try to add the user anyways.
                 }
@@ -99,17 +99,22 @@ namespace RecruiterPathway.Models
                                 UserName = values[1].Replace(' ', '.') + "@" + values[2].ToLower() + ".com",
                                 Password = values[4] + "!Ar8"
                             };
-                        var test = context.Recruiter.Where(r => r.Email == values[1].Replace(' ','.') + "@" + values[2].ToLower() + ".com");
-                        if (test != null) {
+                        var test = context.Recruiter.Where(r => r.Id == values[0]);
+                        if (test != null)
+                        {
                             try
                             {
                                 userManager.CreateAsync(data_recruiter, values[4] + "!Ar8");
                                 Thread.Sleep(100);
                             }
-                            catch (DbUpdateException ex)
+                            catch (DbUpdateException)
                             {
                                 //Tell it we expect this to come up every so often, likely due to processing speed and to ignore it
                             }
+                        }
+                        else 
+                        {
+                            return;
                         }
                     }
                 }

@@ -91,7 +91,7 @@ namespace RecruiterPathway
             {
                 SeedDatabase.Initialize(services, userManager);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }

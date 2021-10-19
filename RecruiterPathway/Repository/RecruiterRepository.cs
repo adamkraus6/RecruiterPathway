@@ -19,10 +19,14 @@ namespace RecruiterPathway.Repository
             this.authManager = authManager;
         }
 
-        override async public void Insert(Recruiter recruiter) 
+        override async public Task<bool> Insert(Recruiter recruiter) 
         {
             if (IsValid(recruiter))
+            {
                 await userManager.CreateAsync(recruiter, recruiter.PasswordHash);
+                return true;
+            }
+            return false;
         }
         override async public void Delete(object id) 
         {
