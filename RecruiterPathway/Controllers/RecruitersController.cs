@@ -23,7 +23,7 @@ namespace RecruiterPathway.Controllers
         {
             if (repository.GetSignedInRecruiter(HttpContext.User).Result.Email == "administrator@recruiterpathway.com")
             {
-                return View(repository.GetAll().Result);
+                return View(await repository.GetAll());
             }
             else 
             {
@@ -31,13 +31,13 @@ namespace RecruiterPathway.Controllers
             }
         }
 
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             repository.SignOutRecruiter();
             return Redirect("~");
         }
         // GET: Recruiters/Login
-        public async Task<IActionResult> Login(string returnurl, bool? error)
+        public IActionResult Login(string returnurl, bool? error)
         {
             ViewData["returnurl"] = returnurl;
             if(error != null)
@@ -49,9 +49,9 @@ namespace RecruiterPathway.Controllers
         public async Task<IActionResult> Login([Bind("UserName,Password,RememberMe")] Recruiter model, string returnurl)
         {
             //Find the matching user from the DB
-            var result = repository.SignInRecruiter(model);
+            var result = await repository.SignInRecruiter(model);
             //Check if user exists and if password is valid
-            if (result.Result)
+            if (result)
             {
                 //Return that auth was sucessful and assign the token
                 if (returnurl != null)
