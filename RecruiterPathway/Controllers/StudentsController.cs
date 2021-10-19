@@ -50,7 +50,7 @@ namespace RecruiterPathway.Controllers
             var studentDegreeVM = new StudentDegreeViewModel
             {
                 Degrees = repository.GetStudentDegrees(),
-                Students = (System.Collections.Generic.List<Student>)students
+                Students = students.ToList()
             };
 
             return View(studentDegreeVM);
