@@ -9,6 +9,7 @@ namespace RecruiterPathway.Data
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options){
 
         }
+        public DatabaseContext() { }
         public DbSet<Recruiter> Recruiter { get; set; }
         public DbSet<Student> Student { get; set; }
     }
