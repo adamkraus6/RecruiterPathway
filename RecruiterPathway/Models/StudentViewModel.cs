@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RecruiterPathway.Models
 {
-    public class StudentDegreeViewModel
+    public class StudentViewModel
     {
         public List<Student> Students { get; set; }
         public SelectList Degrees { get; set; }

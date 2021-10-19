@@ -47,13 +47,13 @@ namespace RecruiterPathway.Controllers
                 students = students.Where(st => gradDateStart.CompareTo(st.gradDate) < 0 && gradDateEnd.CompareTo(st.gradDate) >= 0);
             }
 
-            var studentDegreeVM = new StudentDegreeViewModel
+            var studentVM = new StudentViewModel
             {
                 Degrees = repository.GetStudentDegrees(),
                 Students = students.ToList()
             };
 
-            return View(studentDegreeVM);
+            return View(studentVM);
         }
 
         // GET: Students/Details/5
