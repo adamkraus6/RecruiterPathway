@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using RecruiterPathway.Models;
 using RecruiterPathway.Authentication;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using RecruiterPathway.Repository;
 
@@ -13,31 +12,32 @@ namespace RecruiterPathway.Controllers
     public class RecruitersController : Controller
     {
         private readonly IRecruiterRepository repository;
-        private readonly IConfiguration _configuration;
 
         public RecruitersController(IRecruiterRepository repository)
         {
             this.repository = repository;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            return View(repository.GetAll().Result);
-        }
-        
-        // GET: Recruiters/List
+        [Authorize]
         public async Task<IActionResult> List()
         {
-            return View(repository.GetAll().Result);
+            if (repository.GetSignedInRecruiter(HttpContext.User).Result.Email == "administrator@recruiterpathway.com")
+            {
+                return View(await repository.GetAll());
+            }
+            else 
+            {
+                return Unauthorized();
+            }
         }
 
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             repository.SignOutRecruiter();
-            return RedirectToAction(nameof(Index));
+            return Redirect("~/Home/Index");
         }
         // GET: Recruiters/Login
-        public async Task<IActionResult> Login(string returnurl, bool? error)
+        public IActionResult Login(string returnurl, bool? error)
         {
             ViewData["returnurl"] = returnurl;
             if(error != null)
@@ -49,9 +49,9 @@ namespace RecruiterPathway.Controllers
         public async Task<IActionResult> Login([Bind("UserName,Password,RememberMe")] Recruiter model, string returnurl)
         {
             //Find the matching user from the DB
-            var result = repository.SignInRecruiter(model);
+            var result = await repository.SignInRecruiter(model);
             //Check if user exists and if password is valid
-            if (result.Result)
+            if (result)
             {
                 //Return that auth was sucessful and assign the token
                 if (returnurl != null)
@@ -129,9 +129,10 @@ namespace RecruiterPathway.Controllers
                     Name = model.Name,
                     CompanyName = model.CompanyName,
                     PhoneNumber = model.PhoneNumber,
-                    Password = model.PasswordHash
+                    Password = model.PasswordHash,
+                    PasswordHash = model.PasswordHash
                 };
-                repository.Insert(recruiter);
+                await repository.Insert(recruiter);
                 repository.Save();
                 return RedirectToAction(nameof(Profile));
             }
@@ -194,6 +195,7 @@ namespace RecruiterPathway.Controllers
         }
 
         // GET: Recruiters/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -213,11 +215,12 @@ namespace RecruiterPathway.Controllers
         // POST: Recruiters/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var self = await repository.GetSignedInRecruiter(HttpContext.User);
             var recruiter = await repository.GetById(id);
-            if (self != null && id == self.Id)
+            if (id == self.Id || self.Email == "administrator@recruiterpathway.com")
             {
                 repository.Delete(id);
                 repository.SignOutRecruiter();
@@ -226,7 +229,14 @@ namespace RecruiterPathway.Controllers
             else {
                 return Unauthorized();
             }
-            return RedirectToAction(nameof(Index));
+            if (id == self.Id)
+            {
+                return Redirect("~");
+            }
+            else 
+            {
+                return Redirect(nameof(List));
+            }
         }
     }
 }

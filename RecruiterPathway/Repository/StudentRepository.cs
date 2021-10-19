@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace RecruiterPathway.Repository
 {
@@ -19,10 +20,14 @@ namespace RecruiterPathway.Repository
             return new SelectList(degreeQuery.Distinct());
         }
 
-        override public void Insert(Student student) 
+        override public async Task<bool> Insert(Student student) 
         {
-            if(IsValid(student))
+            if (IsValid(student))
+            {
                 context.Student.Add(student);
+                return true;
+            }
+            return false;
         }
         override async public void Delete(object id) 
         {

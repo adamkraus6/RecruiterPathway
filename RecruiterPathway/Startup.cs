@@ -59,7 +59,7 @@ namespace RecruiterPathway
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services, UserManager<Recruiter> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -87,6 +87,13 @@ namespace RecruiterPathway
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+            try
+            {
+                SeedDatabase.Initialize(services, userManager);
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }
