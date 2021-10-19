@@ -5,10 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Models\SeedData\Recruiters.csv" />
     <None Remove="Models\SeedData\Students.csv" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Models\SeedData\Recruiters.csv" />
     <EmbeddedResource Include="Models\SeedData\Students.csv" />
   </ItemGroup>
 
