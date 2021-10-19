@@ -22,13 +22,13 @@ namespace RecruiterPathway.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(repository.GetRecruiters().Result);
+            return View(repository.GetAll().Result);
         }
         
         // GET: Recruiters/List
         public async Task<IActionResult> List()
         {
-            return View(repository.GetRecruiters().Result);
+            return View(repository.GetAll().Result);
         }
 
         public async Task<IActionResult> Logout()
@@ -131,7 +131,7 @@ namespace RecruiterPathway.Controllers
                     PhoneNumber = model.PhoneNumber,
                     Password = model.PasswordHash
                 };
-                repository.InsertRecruiter(recruiter);
+                repository.Insert(recruiter);
                 repository.Save();
                 return RedirectToAction(nameof(Profile));
             }
@@ -170,7 +170,7 @@ namespace RecruiterPathway.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PhoneNumber")] Recruiter model)
         {
-            var userExists = await repository.GetRecruiterById(id);
+            var userExists = await repository.GetById(id);
             if (userExists == null)
                 return View(model);
 
@@ -185,7 +185,7 @@ namespace RecruiterPathway.Controllers
                 userExists.UserName = model.UserName;
                 //userExists.PasswordHash = model.PasswordHash;
                 userExists.PhoneNumber = model.PhoneNumber;
-                repository.UpdateRecruiter(userExists);
+                repository.Update(userExists);
                 repository.Save();
                 
                 return RedirectToAction(nameof(List));
@@ -201,7 +201,7 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            var recruiter = await repository.GetRecruiterById(id);
+            var recruiter = await repository.GetById(id);
             if (recruiter == null)
             {
                 return NotFound();
@@ -216,10 +216,10 @@ namespace RecruiterPathway.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var self = await repository.GetSignedInRecruiter(HttpContext.User);
-            var recruiter = await repository.GetRecruiterById(id);
+            var recruiter = await repository.GetById(id);
             if (self != null && id == self.Id)
             {
-                repository.DeleteRecruiter(id);
+                repository.Delete(id);
                 repository.SignOutRecruiter();
                 repository.Save();
             }

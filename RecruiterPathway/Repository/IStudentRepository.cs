@@ -1,21 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using RecruiterPathway.Data;
 using RecruiterPathway.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RecruiterPathway.Repository
 {
-    public interface IStudentRepository : IDisposable
+    public abstract class IStudentRepository : GenericRepository<Student>, IDisposable
     {
-        IEnumerable<Student> GetStudents();
-        SelectList GetStudentDegrees();
-        Task<Student> GetStudentById(int id);
-        void InsertStudent(Student student);
-        void DeleteStudent(int id);
-        void UpdateStudent(Student student);
-        void Save();
-
+        public IStudentRepository(DatabaseContext context) : base(context, context.Student){}
+        public abstract SelectList GetStudentDegrees();
     }
 }

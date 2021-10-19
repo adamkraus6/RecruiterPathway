@@ -5,6 +5,7 @@ using RecruiterPathway.Models;
 using RecruiterPathway.Authentication;
 using System;
 using RecruiterPathway.Repository;
+using System.Collections.Generic;
 
 namespace RecruiterPathway.Controllers
 {
@@ -23,7 +24,7 @@ namespace RecruiterPathway.Controllers
         // GET: Students
         public async Task<IActionResult> Index(string studentDegree, string searchFirstName, string searchLastName, DateTime gradDateStart, DateTime gradDateEnd)
         {
-            var students = repository.GetStudents();
+            IEnumerable<Student> students = await repository.GetAll();
 
             //TODO: All of this filter code is broken, will need to fix in the Repositories
             if (!string.IsNullOrEmpty(searchFirstName))
@@ -62,7 +63,7 @@ namespace RecruiterPathway.Controllers
             {
                 return NotFound();
             }
-            var student = await repository.GetStudentById((int)id);
+            var student = await repository.GetById((int)id);
             if (student == null)
             {
                 return NotFound();
@@ -103,13 +104,10 @@ namespace RecruiterPathway.Controllers
         {
             if (ModelState.IsValid)
             {
-                var students = from s in repository.GetStudents()
-                               select s;
-                students = students.Where(st => st.firstName.Contains(student.firstName));
-                students = students.Where(st => st.lastName.Contains(student.lastName));
+                var students = await repository.Get(st => st.firstName.Contains(student.firstName) && st.lastName.Contains(student.lastName));
                 if (students == null)
                 {
-                    repository.InsertStudent(student);
+                    repository.Insert(student);
                     repository.Save();
                 }
                 else
@@ -131,7 +129,7 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            var student = await repository.GetStudentById((int)id);
+            var student = await repository.GetById((int)id);
             if (student == null)
             {
                 return NotFound();
@@ -153,7 +151,7 @@ namespace RecruiterPathway.Controllers
 
             if (ModelState.IsValid)
             {
-                repository.UpdateStudent(student);
+                repository.Update(student);
                 repository.Save();
                 return RedirectToAction(nameof(Index));
             }
@@ -168,7 +166,7 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            var student = await repository.GetStudentById((int)id);
+            var student = await repository.GetById((int)id);
             if (student == null)
             {
                 return NotFound();
@@ -182,7 +180,7 @@ namespace RecruiterPathway.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            repository.DeleteStudent(id);
+            repository.Delete(id);
             repository.Save();
             return RedirectToAction(nameof(Index));
         }
