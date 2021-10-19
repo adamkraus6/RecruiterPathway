@@ -1,12 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RecruiterPathway.Data;
 using RecruiterPathway.Models;
 using RecruiterPathway.Authentication;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using RecruiterPathway.Repository;
 
 namespace RecruiterPathway.Controllers
 {
@@ -14,24 +12,20 @@ namespace RecruiterPathway.Controllers
     [Authorize]
     public class StudentsController : Controller
     {
-        private readonly DatabaseContext _context;
+        private IStudentRepository repository;
 
-        public StudentsController(DatabaseContext context)
+        public StudentsController(IStudentRepository repository)
         {
-            _context = context;
+            this.repository = repository;
         }
+
 
         // GET: Students
         public async Task<IActionResult> Index(string studentDegree, string searchFirstName, string searchLastName, DateTime gradDateStart, DateTime gradDateEnd)
         {
-            // Use LING to get list of genres
-            IQueryable<string> degreeQuery = from s in _context.Student
-                                             orderby s.degree
-                                             select s.degree;
+            var students = repository.GetStudents();
 
-            var students = from s in _context.Student
-                           select s;
-
+            //TODO: All of this filter code is broken, will need to fix in the Repositories
             if (!string.IsNullOrEmpty(searchFirstName))
             {
                 students = students.Where(st => st.firstName.Contains(searchFirstName));
@@ -54,8 +48,8 @@ namespace RecruiterPathway.Controllers
 
             var studentDegreeVM = new StudentDegreeViewModel
             {
-                Degrees = new SelectList(await degreeQuery.Distinct().ToListAsync()),
-                Students = await students.ToListAsync()
+                Degrees = repository.GetStudentDegrees(),
+                Students = (System.Collections.Generic.List<Student>)students
             };
 
             return View(studentDegreeVM);
@@ -68,9 +62,7 @@ namespace RecruiterPathway.Controllers
             {
                 return NotFound();
             }
-
-            var student = await _context.Student
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var student = await repository.GetStudentById((int)id);
             if (student == null)
             {
                 return NotFound();
@@ -111,14 +103,14 @@ namespace RecruiterPathway.Controllers
         {
             if (ModelState.IsValid)
             {
-                var students = from s in _context.Student
+                var students = from s in repository.GetStudents()
                                select s;
                 students = students.Where(st => st.firstName.Contains(student.firstName));
                 students = students.Where(st => st.lastName.Contains(student.lastName));
                 if (students == null)
                 {
-                    _context.Add(student);
-                    await _context.SaveChangesAsync();
+                    repository.InsertStudent(student);
+                    repository.Save();
                 }
                 else
                 {
@@ -139,7 +131,7 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Student.FindAsync(id);
+            var student = await repository.GetStudentById((int)id);
             if (student == null)
             {
                 return NotFound();
@@ -161,22 +153,8 @@ namespace RecruiterPathway.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(student);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StudentExists(student.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                repository.UpdateStudent(student);
+                repository.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(student);
@@ -190,8 +168,7 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Student
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var student = await repository.GetStudentById((int)id);
             if (student == null)
             {
                 return NotFound();
@@ -205,15 +182,14 @@ namespace RecruiterPathway.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var student = await _context.Student.FindAsync(id);
-            _context.Student.Remove(student);
-            await _context.SaveChangesAsync();
+            repository.DeleteStudent(id);
+            repository.Save();
             return RedirectToAction(nameof(Index));
         }
-
-        private bool StudentExists(int id)
+        protected override void Dispose(bool disposing)
         {
-            return _context.Student.Any(e => e.Id == id);
+            repository.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

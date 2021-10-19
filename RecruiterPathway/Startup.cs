@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using RecruiterPathway.Data;
 using RecruiterPathway.Models;
 using System;
+using RecruiterPathway.Repository;
 
 namespace RecruiterPathway
 {
@@ -28,8 +29,11 @@ namespace RecruiterPathway
         {
             services.AddControllersWithViews();
 
+            
             //Authentication DB, has to be separate
             services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDbContext")));
+
+            services.AddScoped<IStudentRepository,StudentRepository>();
 
             //More auth related stuff, setup identities
             services.AddIdentityCore<Recruiter>()
@@ -49,6 +53,9 @@ namespace RecruiterPathway
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
             })
             .AddIdentityCookies(o => { });
+
+            services.AddScoped<IRecruiterRepository, RecruiterRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

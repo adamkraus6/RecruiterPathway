@@ -1,49 +1,39 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RecruiterPathway.Data;
 using RecruiterPathway.Models;
 using RecruiterPathway.Authentication;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using RecruiterPathway.Repository;
 
 namespace RecruiterPathway.Controllers
 {
     public class RecruitersController : Controller
     {
-        private readonly DatabaseContext _context;
-        private readonly UserManager<Recruiter> userManager;
-        //private readonly RoleManager<AuthLevels> roleManager;
-        private readonly SignInManager<Recruiter> authManager;
+        private readonly IRecruiterRepository repository;
         private readonly IConfiguration _configuration;
 
-        public RecruitersController(DatabaseContext context, UserManager<Recruiter> userManager, SignInManager<Recruiter> authManager, IConfiguration configuration)
+        public RecruitersController(IRecruiterRepository repository)
         {
-            _context = context;
-            this.userManager = userManager;
-            //this.roleManager = roleManager;
-            this.authManager = authManager;
-            _configuration = configuration;
+            this.repository = repository;
         }
 
-        // GET: Recruiters
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Recruiter.ToListAsync());
+            return View(repository.GetRecruiters().Result);
         }
+        
         // GET: Recruiters/List
         public async Task<IActionResult> List()
         {
-            return View(await _context.Recruiter.ToListAsync());
+            return View(repository.GetRecruiters().Result);
         }
 
         public async Task<IActionResult> Logout()
         {
-            await authManager.SignOutAsync();
-            HttpContext.Session.Remove("Id");
+            repository.SignOutRecruiter();
             return RedirectToAction(nameof(Index));
         }
         // GET: Recruiters/Login
@@ -59,12 +49,10 @@ namespace RecruiterPathway.Controllers
         public async Task<IActionResult> Login([Bind("UserName,Password,RememberMe")] Recruiter model, string returnurl)
         {
             //Find the matching user from the DB
-            var result = await authManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
+            var result = repository.SignInRecruiter(model);
             //Check if user exists and if password is valid
-            if (result.Succeeded)
+            if (result.Result)
             {
-                var user = await userManager.FindByNameAsync(model.UserName);
-                HttpContext.Session.SetString("Id", user.Id);
                 //Return that auth was sucessful and assign the token
                 if (returnurl != null)
                 {
@@ -87,7 +75,7 @@ namespace RecruiterPathway.Controllers
         [Authorize]
         public async Task<IActionResult> Profile(string id)
         {
-            var recruiter = await userManager.GetUserAsync(HttpContext.User);
+            var recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
 
             if (recruiter == null)
             {
@@ -129,7 +117,7 @@ namespace RecruiterPathway.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userExists = await userManager.FindByNameAsync(model.UserName);
+                var userExists = await repository.GetRecruiterByName(model.Name);
                 if (userExists != null)
                     return View(model);
                 Recruiter recruiter = new Recruiter()
@@ -143,9 +131,8 @@ namespace RecruiterPathway.Controllers
                     PhoneNumber = model.PhoneNumber,
                     Password = model.PasswordHash
                 };
-                var result = await userManager.CreateAsync(recruiter, model.PasswordHash);
-                if (!result.Succeeded)
-                    return View(model);
+                repository.InsertRecruiter(recruiter);
+                repository.Save();
                 return RedirectToAction(nameof(Profile));
             }
             else 
@@ -167,7 +154,7 @@ namespace RecruiterPathway.Controllers
         [Authorize]
         public async Task<IActionResult> Edit()
         {
-            var recruiter = await userManager.GetUserAsync(HttpContext.User);
+            var recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
             if (recruiter == null)
             {
                 return NotFound();
@@ -183,12 +170,10 @@ namespace RecruiterPathway.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PhoneNumber")] Recruiter model)
         {
-            var userExists = await userManager.FindByIdAsync(id);
+            var userExists = await repository.GetRecruiterById(id);
             if (userExists == null)
                 return View(model);
 
-            Console.WriteLine("Username: " + model.UserName);
-            Console.WriteLine("Name: " + model.Name);
 
             if (ModelState.IsValid)
             {
@@ -200,7 +185,8 @@ namespace RecruiterPathway.Controllers
                 userExists.UserName = model.UserName;
                 //userExists.PasswordHash = model.PasswordHash;
                 userExists.PhoneNumber = model.PhoneNumber;
-                await userManager.UpdateAsync(userExists);
+                repository.UpdateRecruiter(userExists);
+                repository.Save();
                 
                 return RedirectToAction(nameof(List));
             }
@@ -215,8 +201,7 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            var recruiter = await _context.Recruiter
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var recruiter = await repository.GetRecruiterById(id);
             if (recruiter == null)
             {
                 return NotFound();
@@ -230,13 +215,13 @@ namespace RecruiterPathway.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var self = await userManager.GetUserAsync(HttpContext.User);
-            var recruiter = await _context.Recruiter.FindAsync(id);
+            var self = await repository.GetSignedInRecruiter(HttpContext.User);
+            var recruiter = await repository.GetRecruiterById(id);
             if (self != null && id == self.Id)
             {
-                _context.Recruiter.Remove(recruiter);
-                await authManager.SignOutAsync();
-                await _context.SaveChangesAsync();
+                repository.DeleteRecruiter(id);
+                repository.SignOutRecruiter();
+                repository.Save();
             }
             else {
                 return Unauthorized();
