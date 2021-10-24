@@ -30,19 +30,6 @@ namespace RecruiterPathway.Controllers
 
             return View(recruiterVM);
         }
-        
-        // GET: Recruiters/List
-        public async Task<IActionResult> List()
-        {
-            var recruiters = await repository.GetAll();
-
-            var recruiterVM = new RecruiterViewModel
-            {
-                Recruiters = recruiters
-            };
-
-            return View(recruiterVM);
-        }
 
         public IActionResult Logout()
         {
