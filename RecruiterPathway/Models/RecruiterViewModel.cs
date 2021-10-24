@@ -8,5 +8,6 @@ namespace RecruiterPathway.Models
     public class RecruiterViewModel
     {
         public List<Recruiter> Recruiters { get; set; }
+        public Recruiter Recruiter { get; set; }
     }
 }

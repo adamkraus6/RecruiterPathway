@@ -22,13 +22,27 @@ namespace RecruiterPathway.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(repository.GetAll().Result);
+            var recruiters = await repository.GetAll();
+
+            var recruiterVM = new RecruiterViewModel
+            {
+                Recruiters = recruiters
+            };
+
+            return View(recruiterVM);
         }
         
         // GET: Recruiters/List
         public async Task<IActionResult> List()
         {
-            return View(repository.GetAll().Result);
+            var recruiters = await repository.GetAll();
+
+            var recruiterVM = new RecruiterViewModel
+            {
+                Recruiters = recruiters
+            };
+
+            return View(recruiterVM);
         }
 
         public async Task<IActionResult> Logout()
@@ -82,7 +96,12 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            return View(recruiter);
+            var recruiterVM = new RecruiterViewModel
+            {
+                Recruiter = recruiter
+            };
+
+            return View(recruiterVM);
         }
 
         // GET: Recruiters/Create
@@ -113,25 +132,33 @@ namespace RecruiterPathway.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,CompanyName,UserName,PhoneNumber,PasswordHash")] Recruiter model)
+        public async Task<IActionResult> Create([Bind("Name,CompanyName,UserName,PhoneNumber,PasswordHash")] Recruiter recruiter)
         {
             if (ModelState.IsValid)
             {
-                var userExists = await repository.GetRecruiterByName(model.Name);
+                var userExists = await repository.GetRecruiterByName(recruiter.Name);
                 if (userExists != null)
-                    return View(model);
-                Recruiter recruiter = new Recruiter()
                 {
-                    UserName = model.UserName,
+                    var recruiterVM = new RecruiterViewModel
+                    {
+                        Recruiter = recruiter
+                    };
+
+                    return View(recruiterVM);
+                }
+
+                Recruiter rec = new Recruiter()
+                {
+                    UserName = recruiter.UserName,
                     Id = Guid.NewGuid().ToString(),
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    Email = model.UserName,
-                    Name = model.Name,
-                    CompanyName = model.CompanyName,
-                    PhoneNumber = model.PhoneNumber,
-                    Password = model.PasswordHash
+                    Email = recruiter.UserName,
+                    Name = recruiter.Name,
+                    CompanyName = recruiter.CompanyName,
+                    PhoneNumber = recruiter.PhoneNumber,
+                    Password = recruiter.PasswordHash
                 };
-                repository.Insert(recruiter);
+                repository.Insert(rec);
                 repository.Save();
                 return RedirectToAction(nameof(Profile));
             }
@@ -159,7 +186,13 @@ namespace RecruiterPathway.Controllers
             {
                 return NotFound();
             }
-            return View(recruiter);
+
+            var recruiterVM = new RecruiterViewModel
+            {
+                Recruiter = recruiter
+            };
+
+            return View(recruiterVM);
         }
 
         // POST: Recruiters/Edit/5
@@ -168,23 +201,29 @@ namespace RecruiterPathway.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PhoneNumber")] Recruiter model)
+        public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PhoneNumber")] Recruiter recruiter)
         {
             var userExists = await repository.GetById(id);
             if (userExists == null)
-                return View(model);
+            {
+                var recruiterVM = new RecruiterViewModel
+                {
+                    Recruiter = recruiter
+                };
 
+                return View(recruiterVM);
+            }
 
             if (ModelState.IsValid)
             {
                 //Sync the complete model with the provided
-                userExists.Name = model.Name;
-                userExists.CompanyName = model.CompanyName;
-                userExists.Email = model.UserName;
+                userExists.Name = recruiter.Name;
+                userExists.CompanyName = recruiter.CompanyName;
+                userExists.Email = recruiter.UserName;
                 //Sync up username and email
-                userExists.UserName = model.UserName;
+                userExists.UserName = recruiter.UserName;
                 //userExists.PasswordHash = model.PasswordHash;
-                userExists.PhoneNumber = model.PhoneNumber;
+                userExists.PhoneNumber = recruiter.PhoneNumber;
                 repository.Update(userExists);
                 repository.Save();
                 
@@ -207,7 +246,12 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            return View(recruiter);
+            var recruiterVM = new RecruiterViewModel
+            {
+                Recruiter = recruiter
+            };
+
+            return View(recruiterVM);
         }
 
         // POST: Recruiters/Delete/5

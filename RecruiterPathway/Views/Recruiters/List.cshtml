@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RecruiterPathway.Models.Recruiter>
+﻿@model RecruiterPathway.Models.RecruiterViewModel
 
 @{
     ViewData["Title"] = "All Recruiters List";
@@ -13,22 +13,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Recruiters[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CompanyName)
+                @Html.DisplayNameFor(model => model.Recruiters[0].CompanyName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.Recruiters[0].Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
+                @Html.DisplayNameFor(model => model.Recruiters[0].PhoneNumber)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Recruiters) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
