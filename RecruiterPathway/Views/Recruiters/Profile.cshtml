@@ -1,4 +1,4 @@
-﻿@model RecruiterPathway.Models.Recruiter
+﻿@model RecruiterPathway.Models.RecruiterViewModel
 
 @{
     ViewData["Title"] = "Profile";
@@ -6,32 +6,32 @@
 <div>
     <div>
         <img src="~/profile_pictures/default.png" alt="ProfilePicture" align="left" height="200" width="200" />
-        <h2>@Html.DisplayFor(model=> model.Name)</h2>
+        <h2>@Html.DisplayFor(model=> model.Recruiter.Name)</h2>
     </div>
     <br />
     <div>
         <dl class="row">
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CompanyName)
+                @Html.DisplayNameFor(model => model.Recruiter.CompanyName)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CompanyName)
+                @Html.DisplayFor(model => model.Recruiter.CompanyName)
             </dd>
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.Recruiter.Email)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Email)
+                @Html.DisplayFor(model => model.Recruiter.Email)
             </dd>
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.PhoneNumber)
+                @Html.DisplayNameFor(model => model.Recruiter.PhoneNumber)
             </dt>
             <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.PhoneNumber)
+                @Html.DisplayFor(model => model.Recruiter.PhoneNumber)
             </dd>
         </dl>
     </div>
 </div>
 <div>
-    <a class="btn btn-primary btn-small" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    <a class="btn btn-primary btn-small" asp-action="Edit" asp-route-id="@Model.Recruiter.Id">Edit</a>
 </div>

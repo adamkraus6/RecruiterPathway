@@ -1,4 +1,4 @@
-﻿@model RecruiterPathway.Models.Student
+﻿@model RecruiterPathway.Models.StudentViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,16 +12,26 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Student.Id" />
             <div class="form-group">
-                <label asp-for="firstName" class="control-label"></label>
-                <input asp-for="firstName" class="form-control" />
-                <span asp-validation-for="firstName" class="text-danger"></span>
+                <label asp-for="Student.firstName" class="control-label"></label>
+                <input asp-for="Student.firstName" class="form-control" />
+                <span asp-validation-for="Student.firstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="lastName" class="control-label"></label>
-                <input asp-for="lastName" class="form-control" />
-                <span asp-validation-for="lastName" class="text-danger"></span>
+                <label asp-for="Student.lastName" class="control-label"></label>
+                <input asp-for="Student.lastName" class="form-control" />
+                <span asp-validation-for="Student.lastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Student.degree" class="control-label"></label>
+                <input asp-for="Student.degree" class="form-control" />
+                <span asp-validation-for="Student.degree" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Student.gradDate" class="control-label"></label>
+                <input asp-for="Student.gradDate" type="date" class="form-control" />
+                <span asp-validation-for="Student.gradDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

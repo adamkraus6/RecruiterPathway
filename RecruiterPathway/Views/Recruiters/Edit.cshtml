@@ -1,4 +1,4 @@
-﻿@model RecruiterPathway.Models.Recruiter
+﻿@model RecruiterPathway.Models.RecruiterViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,26 +10,26 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Recruiter.Id" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Recruiter.Name" class="control-label"></label>
+                <input asp-for="Recruiter.Name" class="form-control" />
+                <span asp-validation-for="Recruiter.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CompanyName" class="control-label"></label>
-                <input asp-for="CompanyName" class="form-control" />
-                <span asp-validation-for="CompanyName" class="text-danger"></span>
+                <label asp-for="Recruiter.CompanyName" class="control-label"></label>
+                <input asp-for="Recruiter.CompanyName" class="form-control" />
+                <span asp-validation-for="Recruiter.CompanyName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
+                <label asp-for="Recruiter.UserName" class="control-label"></label>
+                <input asp-for="Recruiter.UserName" class="form-control" />
+                <span asp-validation-for="Recruiter.UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                <label asp-for="Recruiter.PhoneNumber" class="control-label"></label>
+                <input asp-for="Recruiter.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Recruiter.PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

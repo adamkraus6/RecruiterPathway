@@ -47,13 +47,13 @@ namespace RecruiterPathway.Controllers
                 students = students.Where(st => gradDateStart.CompareTo(st.gradDate) < 0 && gradDateEnd.CompareTo(st.gradDate) >= 0);
             }
 
-            var studentDegreeVM = new StudentDegreeViewModel
+            var studentVM = new StudentViewModel
             {
                 Degrees = repository.GetStudentDegrees(),
                 Students = students.ToList()
             };
 
-            return View(studentDegreeVM);
+            return View(studentVM);
         }
 
         // GET: Students/Details/5
@@ -69,7 +69,12 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            return View(student);
+            var studentVM = new StudentViewModel
+            {
+                Student = student
+            };
+
+            return View(studentVM);
         }
 
         // GET: Students/Create
@@ -104,8 +109,8 @@ namespace RecruiterPathway.Controllers
         {
             if (ModelState.IsValid)
             {
-                var students = await repository.Get(st => st.firstName.Contains(student.firstName) && st.lastName.Contains(student.lastName));
-                if (students == null)
+                var students = await repository.Get(st => st.firstName.CompareTo(student.firstName) == 0 && st.lastName.CompareTo(student.lastName) == 0);
+                if (!students.Any())
                 {
                     await repository.Insert(student);
                     repository.Save();
@@ -117,7 +122,13 @@ namespace RecruiterPathway.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+
+            var studentVM = new StudentViewModel
+            {
+                Student = student
+            };
+
+            return View(studentVM);
         }
 
 
@@ -134,7 +145,13 @@ namespace RecruiterPathway.Controllers
             {
                 return NotFound();
             }
-            return View(student);
+
+            var studentVM = new StudentViewModel
+            {
+                Student = student
+            };
+
+            return View(studentVM);
         }
 
         // POST: Students/Edit/5
@@ -142,7 +159,7 @@ namespace RecruiterPathway.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,firstName,lastName")] Student student)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,firstName,lastName,degree,gradDate")] Student student)
         {
             if (id != student.Id)
             {
@@ -155,7 +172,13 @@ namespace RecruiterPathway.Controllers
                 repository.Save();
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+
+            var studentVM = new StudentViewModel
+            {
+                Student = student
+            };
+
+            return View(studentVM);
         }
 
         // GET: Students/Delete/5
@@ -172,7 +195,12 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            return View(student);
+            var studentVM = new StudentViewModel
+            {
+                Student = student
+            };
+
+            return View(studentVM);
         }
 
         // POST: Students/Delete/5
