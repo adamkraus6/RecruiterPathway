@@ -9,6 +9,7 @@ namespace RecruiterPathway.Models
     public class StudentViewModel
     {
         public List<Student> Students { get; set; }
+        public Student Student { get; set; }
         public SelectList Degrees { get; set; }
         public string StudentDegree { get; set; }
         public string SearchFirstName { get; set; }

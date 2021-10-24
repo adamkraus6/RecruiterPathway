@@ -1,4 +1,4 @@
-﻿@model RecruiterPathway.Models.Student
+﻿@model RecruiterPathway.Models.StudentViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,20 +11,32 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.firstName)
+            @Html.DisplayNameFor(model => model.Student.firstName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.firstName)
+            @Html.DisplayFor(model => model.Student.firstName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.lastName)
+            @Html.DisplayNameFor(model => model.Student.lastName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.lastName)
+            @Html.DisplayFor(model => model.Student.lastName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Student.degree)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Student.degree)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Student.gradDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Student.gradDate)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Student.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
