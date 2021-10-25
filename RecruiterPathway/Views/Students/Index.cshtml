@@ -1,58 +1,100 @@
-﻿@model RecruiterPathway.Models.StudentViewModel
+﻿
 
+@model RecruiterPathway.Models.StudentViewModel
 @{
     ViewData["Title"] = "Index";
 }
-
 <h1>Index</h1>
-
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-
 <form asp-controller="Students" asp-action="Index" method="get">
     <p>
         <select asp-for="StudentDegree" asp-items="Model.Degrees">
-                <option value="">All</option>
+            <option value="">All</option>
         </select>
-
         <br />
-
         First Name: <input type="text" asp-for="SearchFirstName" />
         Last Name: <input type="text" asp-for="SearchLastName" />
-
         <br />
-
-        Graduation Date: <input type="date" asp-for="GradDateStart"/> to <input type="date" asp-for="GradDateEnd"/>
-
+        Graduation Date: <input type="date" asp-for="GradDateStart" /> to <input type="date" asp-for="GradDateEnd" />
         <br />
-
         <input type="submit" value="Filter" />
     </p>
 </form>
-<div>
-    <div class="wrapper">
-        @foreach (var item in Model.Students)
-        {
-        <span onclick="location='Students/Edit/@Html.DisplayFor(modelItem =>item.Id)'" class="grid_element fake_link">
-            <span onclick="location='Students/Edit/@Html.DisplayFor(modelItem =>item.Id)'" class="padded_element fake_link">
-                <img src="~/profile_pictures/default.png" height="100" width="100"/>
-                <label>
-                    @Html.DisplayFor(modelItem => item.firstName) @Html.DisplayFor(modelItem => item.lastName)
-                </label>
-                <br />
-                <label>
-                    @Html.DisplayFor(modelItem => item.degree)
-                </label>
-                <br />
-                <label>
-                    Graduation Date: @Html.DisplayFor(modelItem => item.gradDate)
-                </label>
-                <br />
-                <a href="Students/Delete/@Html.DisplayFor(modelItem =>item.Id)" class="btn btn-primary btn-small">Delete</a>
-                <br/>
-            </span>
-        </span>
-        }
+@if (Model.ListView)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Students[0].firstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Students[0].lastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Students[0].degree)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Students[0].gradDate)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Students)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.firstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.lastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.degree)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.gradDate)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>
+        <div class="wrapper">
+            @foreach (var item in Model.Students)
+            {
+                <span onclick="location='Students/Edit/@Html.DisplayFor(modelItem => item.Id)'" class="grid_element fake_link">
+                    <span onclick="location='Students/Edit/@Html.DisplayFor(modelItem => item.Id)'" class="padded_element fake_link">
+                        <img src="~/profile_pictures/default.png" height="100" width="100" />
+                        <label>
+                            @Html.DisplayFor(modelItem => item.firstName) @Html.DisplayFor(modelItem => item.lastName)
+                        </label>
+                        <br />
+                        <label>
+                            @Html.DisplayFor(modelItem => item.degree)
+                        </label>
+                        <br />
+                        <label>
+                            Graduation Date: @Html.DisplayFor(modelItem => item.gradDate)
+                        </label>
+                        <br />
+                        <a href="Students/Delete/@Html.DisplayFor(modelItem => item.Id)" class="btn btn-primary btn-small">Delete</a>
+                        <br />
+                    </span>
+                </span>
+            }
+        </div>
     </div>
-</div>
+}
+
