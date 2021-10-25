@@ -34,8 +34,8 @@
     <div class="wrapper">
         @foreach (var item in Model.Students)
         {
-        <a href="~/Students/Edit/@Html.DisplayFor(modelItem =>item.Id)" class="grid_element">
-            <div class="padded_element">
+        <span onclick="location='Students/Edit/@Html.DisplayFor(modelItem =>item.Id)'" class="grid_element fake_link">
+            <span onclick="location='Students/Edit/@Html.DisplayFor(modelItem =>item.Id)'" class="padded_element fake_link">
                 <img src="~/profile_pictures/default.png" height="100" width="100"/>
                 <label>
                     @Html.DisplayFor(modelItem => item.firstName) @Html.DisplayFor(modelItem => item.lastName)
@@ -49,8 +49,10 @@
                     Graduation Date: @Html.DisplayFor(modelItem => item.gradDate)
                 </label>
                 <br />
-            </div>
-        </a>
+                <a href="Students/Delete/@Html.DisplayFor(modelItem =>item.Id)" class="btn btn-primary btn-small">Delete</a>
+                <br/>
+            </span>
+        </span>
         }
     </div>
 </div>
