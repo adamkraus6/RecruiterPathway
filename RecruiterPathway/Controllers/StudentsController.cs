@@ -22,7 +22,7 @@ namespace RecruiterPathway.Controllers
 
 
         // GET: Students
-        public async Task<IActionResult> Index(string studentDegree, string searchFirstName, string searchLastName, DateTime gradDateStart, DateTime gradDateEnd)
+        public async Task<IActionResult> Index(string studentDegree, string searchFirstName, string searchLastName, DateTime gradDateStart, DateTime gradDateEnd, bool listView)
         {
             IEnumerable<Student> students = await repository.GetAll();
 
@@ -50,7 +50,8 @@ namespace RecruiterPathway.Controllers
             var studentVM = new StudentViewModel
             {
                 Degrees = repository.GetStudentDegrees(),
-                Students = students.ToList()
+                Students = students.ToList(),
+                ListView = listView
             };
 
             return View(studentVM);

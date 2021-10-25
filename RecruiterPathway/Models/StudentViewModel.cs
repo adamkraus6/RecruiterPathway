@@ -16,5 +16,6 @@ namespace RecruiterPathway.Models
         public string SearchLastName { get; set; }
         public DateTime GradDateStart { get; set; }
         public DateTime GradDateEnd { get; set; }
+        public bool ListView { get; set; }
     }
 }
