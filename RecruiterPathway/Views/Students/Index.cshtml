@@ -19,9 +19,12 @@
         <br />
         Graduation Date: <input type="date" asp-for="GradDateStart" /> to <input type="date" asp-for="GradDateEnd" />
         <br />
+        Use List View: <input type="checkbox" asp-for="ListView"/>
+        <br />
         <input type="submit" value="Filter" />
     </p>
 </form>
+
 @if (Model.ListView)
 {
     <table class="table">
