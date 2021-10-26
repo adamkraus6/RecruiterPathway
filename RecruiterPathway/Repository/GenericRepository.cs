@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RecruiterPathway.Repository
 {
-    public class GenericRepository<TModel> where TModel : class
+    public class GenericRepository<TModel>: IDisposable where TModel : class
     {
         //protected so subclasses can use
         protected DatabaseContext context;
