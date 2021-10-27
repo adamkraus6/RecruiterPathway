@@ -2,7 +2,7 @@
 
 RecruiterPathway
 
-![Recruiter Pathway Logo](TeamProject/wwwroot/logos/logo-black.png)
+<img src="RecruiterPathway/wwwroot/logos/logo-black.png" width="256">
 
 # Product Vision
 
