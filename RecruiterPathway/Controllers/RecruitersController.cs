@@ -30,7 +30,6 @@ namespace RecruiterPathway.Controllers
 
             return View(recruiterVM);
         }
-
         public IActionResult Logout()
         {
             repository.SignOutRecruiter();

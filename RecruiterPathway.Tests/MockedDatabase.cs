@@ -15,15 +15,6 @@ namespace RecruiterPathway.Tests
     class MockedDatabase
     {
         private static List<string> guids = null;
-        public static Mock<DbSet<Recruiter>> GetRecruiterDbSet() 
-        {
-            var dbset =  new Mock<DbSet<Recruiter>>();
-            return dbset;
-        }
-        public static Mock<DbSet<Student>> GetStudentDbSet()
-        {
-            return new Mock<DbSet<Student>>();
-        }
         public static DatabaseContext GetDatabaseContext()
         {
             var db = new DatabaseContext(new DbContextOptionsBuilder<DatabaseContext>().UseInMemoryDatabase(databaseName: "AuthenticationDbContext").Options);
@@ -96,7 +87,7 @@ namespace RecruiterPathway.Tests
         {
             var guids = MockedDatabase.GetRecruiterGuids();
             var rand = new Random();
-            return guids[rand.Next(0, guids.Count + 1)];
+            return guids[rand.Next(0, guids.Count)];
         }
     }
 }

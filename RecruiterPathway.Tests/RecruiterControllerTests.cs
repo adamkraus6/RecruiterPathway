@@ -45,5 +45,35 @@ namespace RecruiterPathway.Tests
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);
         }
+        [Fact]
+        public static void GetLogin()
+        {
+            var controller = MockedDatabase.GetRecruitersController();
+
+            var result = controller.Login("", false);
+
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IActionResult>(result);
+        }
+        [Fact]
+        public static void GetLogout()
+        {
+            var controller = MockedDatabase.GetRecruitersController();
+
+            var result = controller.Logout();
+
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IActionResult>(result);
+        }
+        [Fact]
+        public static void GetList()
+        {
+            var controller = MockedDatabase.GetRecruitersController();
+
+            var result = controller.List();
+
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IActionResult>(result.Result);
+        }
     }
 }
