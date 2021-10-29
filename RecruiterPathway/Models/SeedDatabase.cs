@@ -34,6 +34,7 @@ namespace RecruiterPathway.Models
                     using (StreamReader reader = new StreamReader(stream))
                     {
                         reader.ReadLine();
+                        var i = 1;
                         while ((line = reader.ReadLine()) != null)
                         {
                             // Writes to the Output Window.
@@ -46,6 +47,7 @@ namespace RecruiterPathway.Models
                             context.Student.AddRange(
                                 new Student
                                 {
+                                    Id = i.ToString(),
                                     firstName = values[0],
                                     lastName = values[1],
                                     degree = values[2],
@@ -54,6 +56,7 @@ namespace RecruiterPathway.Models
                             );
 
                             context.SaveChanges();
+                            i++;
                         }
                     }
                 }

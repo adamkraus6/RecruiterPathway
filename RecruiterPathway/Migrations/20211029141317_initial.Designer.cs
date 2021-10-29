@@ -10,15 +10,15 @@ using RecruiterPathway.Data;
 namespace RecruiterPathway.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211018204029_Initial-Create")]
-    partial class InitialCreate
+    [Migration("20211029141317_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -232,10 +232,8 @@ namespace RecruiterPathway.Migrations
 
             modelBuilder.Entity("RecruiterPathway.Models.Student", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("degree")
                         .HasColumnType("nvarchar(max)");

@@ -12,9 +12,5 @@ namespace RecruiterPathway.Data
         public DatabaseContext() { }
         public virtual DbSet<Recruiter> Recruiter { get; set; }
         public virtual DbSet<Student> Student { get; set; }
-        override protected void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-        }
     }
 }
