@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RecruiterPathway.Models;
 using System;
 using Xunit;
 
@@ -65,6 +66,47 @@ namespace RecruiterPathway.Tests
 
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);
+        }
+        [Fact]
+        public static void PostCreate()
+        {
+            var controller = MockedDatabase.GetStudentsController();
+
+            var result = controller.Create( new Student{ 
+                Id = "9002",
+                firstName = "Test",
+                lastName = "Test"
+            });
+
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IActionResult>(result.Result);
+        }
+        [Fact]
+        public static void PostEdit()
+        {
+            var controller = MockedDatabase.GetStudentsController();
+
+            var result = controller.Edit("1", new Student
+            {
+                Id = "1",
+                firstName = "Test",
+                lastName = "Test",
+                degree = "Test",
+                gradDate = new DateTime()
+            });
+
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IActionResult>(result.Result);
+        }
+        [Fact]
+        public static void PostDelete()
+        {
+            var controller = MockedDatabase.GetStudentsController();
+
+            var result = controller.DeleteConfirmed("1");
+
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IActionResult>(result);
         }
     }
 }
