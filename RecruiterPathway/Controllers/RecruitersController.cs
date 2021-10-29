@@ -30,7 +30,6 @@ namespace RecruiterPathway.Controllers
 
             return View(recruiterVM);
         }
-
         public IActionResult Logout()
         {
             repository.SignOutRecruiter();
@@ -50,6 +49,10 @@ namespace RecruiterPathway.Controllers
         {
             //Find the matching user from the DB
             var result = await repository.SignInRecruiter(model);
+            if (result == null)
+            {
+                return StatusCode(500);
+            }
             //Check if user exists and if password is valid
             if (result)
             {
@@ -75,8 +78,15 @@ namespace RecruiterPathway.Controllers
         [Authorize]
         public async Task<IActionResult> Profile(string id)
         {
-            var recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
-
+            Recruiter recruiter;
+            if (id == null)
+            {
+                recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
+            }
+            else 
+            {
+                recruiter = await repository.GetById(id);
+            }
             if (recruiter == null)
             {
                 return NotFound();
@@ -165,9 +175,17 @@ namespace RecruiterPathway.Controllers
 
         // GET: Recruiters/Edit/5
         [Authorize]
-        public async Task<IActionResult> Edit()
+        public async Task<IActionResult> Edit(string id)
         {
-            var recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
+            Recruiter recruiter;
+            if (id == null)
+            {
+                recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
+            }
+            else 
+            {
+                recruiter = await repository.GetById(id);
+            }
             if (recruiter == null)
             {
                 return NotFound();
@@ -247,8 +265,20 @@ namespace RecruiterPathway.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var self = await repository.GetSignedInRecruiter(HttpContext.User);
-            var recruiter = await repository.GetById(id);
+            Recruiter self;
+            if (HttpContext != null)
+            {
+                self = await repository.GetSignedInRecruiter(HttpContext.User);
+            }
+            else
+            {
+                self = await repository.GetById(id);
+            }
+            if (self == null)
+            {
+                //Something didn't work right with the database, return a server error
+                return StatusCode(500);
+            }
             if (id == self.Id || self.Email == "administrator@recruiterpathway.com")
             {
                 repository.Delete(id);

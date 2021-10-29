@@ -43,7 +43,7 @@ namespace RecruiterPathway.Repository
         override async public Task<bool> SignInRecruiter(Recruiter recruiter)
         {
             var result = await authManager.PasswordSignInAsync(recruiter.UserName, recruiter.Password, recruiter.RememberMe, false);
-            if (result.Succeeded)
+            if (result != null && result.Succeeded)
             {
                 return true;
             }

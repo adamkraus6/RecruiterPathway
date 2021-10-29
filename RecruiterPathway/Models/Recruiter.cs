@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace RecruiterPathway.Models
 {
@@ -23,5 +24,6 @@ namespace RecruiterPathway.Models
         override public string UserName { get; set; }
         [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
+
     }
 }

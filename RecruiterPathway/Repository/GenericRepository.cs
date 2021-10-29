@@ -50,6 +50,10 @@ namespace RecruiterPathway.Repository
         }
         async public ValueTask<TModel> GetById(object id)
         {
+            if(id is Guid guid)
+            {
+                return await set.FindAsync(guid);
+            }
             return await set.FindAsync(id);
         }
         async public virtual Task<bool> Insert(TModel obj)

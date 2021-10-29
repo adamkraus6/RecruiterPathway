@@ -58,13 +58,13 @@ namespace RecruiterPathway.Controllers
         }
 
         // GET: Students/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var student = await repository.GetById((int)id);
+            var student = await repository.GetById(id);
             if (student == null)
             {
                 return NotFound();
@@ -134,14 +134,14 @@ namespace RecruiterPathway.Controllers
 
 
         // GET: Students/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var student = await repository.GetById((int)id);
+            var student = await repository.GetById(id);
             if (student == null)
             {
                 return NotFound();
@@ -160,9 +160,9 @@ namespace RecruiterPathway.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,firstName,lastName,degree,gradDate")] Student student)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,firstName,lastName,degree,gradDate")] Student student)
         {
-            if (id != student.Id)
+            if (id.Equals(student.Id))
             {
                 return NotFound();
             }
@@ -183,14 +183,14 @@ namespace RecruiterPathway.Controllers
         }
 
         // GET: Students/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var student = await repository.GetById((int)id);
+            var student = await repository.GetById(id);
             if (student == null)
             {
                 return NotFound();
@@ -207,7 +207,7 @@ namespace RecruiterPathway.Controllers
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(string id)
         {
             repository.Delete(id);
             repository.Save();
