@@ -14,7 +14,7 @@ namespace RecruiterPathway.Controllers
     public class StudentsController : Controller
     {
         private IStudentRepository repository;
-
+        private int i = 1;
         public StudentsController(IStudentRepository repository)
         {
             this.repository = repository;
@@ -113,6 +113,13 @@ namespace RecruiterPathway.Controllers
                 var students = await repository.Get(st => st.firstName.CompareTo(student.firstName) == 0 && st.lastName.CompareTo(student.lastName) == 0);
                 if (!students.Any())
                 {
+                    var getId = await repository.GetById(i.ToString());
+                    while (getId != null)
+                    {
+                        i++;
+                        getId = await repository.GetById(i.ToString());
+                    }
+                    student.Id = i.ToString();
                     await repository.Insert(student);
                     repository.Save();
                 }
