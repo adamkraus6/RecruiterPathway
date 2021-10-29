@@ -46,7 +46,7 @@ namespace RecruiterPathway.Repository
         //TODO: FINISH ME
         private bool exists(object id)
         {
-            return context.Student.Any(e => e.Id == (int)id);
+            return context.Student.Any(e => e.Id.Equals(id));
         }
     }
 }
