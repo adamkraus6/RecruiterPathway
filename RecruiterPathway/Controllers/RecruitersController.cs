@@ -75,8 +75,15 @@ namespace RecruiterPathway.Controllers
         [Authorize]
         public async Task<IActionResult> Profile(string id)
         {
-            var recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
-
+            Recruiter recruiter;
+            if (id == null)
+            {
+                recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
+            }
+            else 
+            {
+                recruiter = await repository.GetById(id);
+            }
             if (recruiter == null)
             {
                 return NotFound();
@@ -165,9 +172,17 @@ namespace RecruiterPathway.Controllers
 
         // GET: Recruiters/Edit/5
         [Authorize]
-        public async Task<IActionResult> Edit()
+        public async Task<IActionResult> Edit(string id)
         {
-            var recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
+            Recruiter recruiter;
+            if (id == null)
+            {
+                recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
+            }
+            else 
+            {
+                recruiter = await repository.GetById(id);
+            }
             if (recruiter == null)
             {
                 return NotFound();

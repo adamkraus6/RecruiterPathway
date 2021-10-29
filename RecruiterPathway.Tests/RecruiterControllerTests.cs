@@ -10,7 +10,7 @@ namespace RecruiterPathway.Tests
         {
             var controller = MockedDatabase.GetRecruitersController();
 
-            var result = controller.Profile("");
+            var result = controller.Profile(MockedDatabase.GetRandomGuid());
 
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);
@@ -30,7 +30,7 @@ namespace RecruiterPathway.Tests
         {
             var controller = MockedDatabase.GetRecruitersController();
 
-            var result = controller.Edit();
+            var result = controller.Edit(MockedDatabase.GetRandomGuid());
 
             Assert.NotNull(result.Result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);
