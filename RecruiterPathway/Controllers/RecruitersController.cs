@@ -152,9 +152,10 @@ namespace RecruiterPathway.Controllers
                     Name = recruiter.Name,
                     CompanyName = recruiter.CompanyName,
                     PhoneNumber = recruiter.PhoneNumber,
-                    Password = recruiter.PasswordHash
+                    Password = recruiter.PasswordHash,
+                    PasswordHash = recruiter.PasswordHash
                 };
-                await repository.Insert(recruiter);
+                await repository.Insert(rec);
                 repository.Save();
                 return RedirectToAction(nameof(Profile));
             }
