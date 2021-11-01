@@ -46,15 +46,28 @@ namespace RecruiterPathway.Repository
         }
         async public Task<List<TModel>> GetAll()
         {
-            return await set.ToListAsync();
+            Task<List<TModel>> result;
+            lock (set)
+            {
+                result =  set.ToListAsync();
+            }
+            return await result;
         }
         async public ValueTask<TModel> GetById(object id)
         {
-            if(id is Guid guid)
+            ValueTask<TModel> result;
+            lock (set)
             {
-                return await set.FindAsync(guid);
+                if (id is Guid guid)
+                {
+                    result = set.FindAsync(guid);
+                }
+                else
+                {
+                    result = set.FindAsync(id);
+                }
             }
-            return await set.FindAsync(id);
+            return await result;
         }
         async public virtual Task<bool> Insert(TModel obj)
         {
@@ -68,7 +81,10 @@ namespace RecruiterPathway.Repository
         async public virtual void Delete(object id)
         {
             TModel model = await GetById(id);
-            set.Remove(model);
+            lock (set)
+            {
+                set.Remove(model);
+            }
         }
         public void Update(TModel obj)
         {
@@ -76,7 +92,10 @@ namespace RecruiterPathway.Repository
         }
         public void Save()
         {
-            context.SaveChanges();
+            lock (context)
+            {
+                context.SaveChanges();
+            }
         }
 
         private bool disposed = false;

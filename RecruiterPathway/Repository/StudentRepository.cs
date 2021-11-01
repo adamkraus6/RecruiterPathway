@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace RecruiterPathway.Repository
 {
@@ -33,8 +34,12 @@ namespace RecruiterPathway.Repository
         {
             if (exists(id))
             {
-                Student student = (await context.Student.FindAsync(id).AsTask());
-                context.Student.Remove(student);
+                Task<Student> student = context.Student.FindAsync(id).AsTask();
+                while (!student.IsCompleted) 
+                {
+                    Thread.Sleep(1);
+                }
+                context.Student.Remove(student.Result);
             }
         }
         //TODO: FINISH ME

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -15,11 +16,26 @@ namespace RecruiterPathway.Tests
     class MockedDatabase
     {
         private static List<string> guids = null;
+        private static DatabaseContext dbContext = null;
+        private static bool seeded = false;
         public static DatabaseContext GetDatabaseContext()
         {
-            var db = new DatabaseContext(new DbContextOptionsBuilder<DatabaseContext>().UseInMemoryDatabase(databaseName: "AuthenticationDbContext").Options);
-            SeedDatabase.SeedStudents(db);
-            return db;
+            if (dbContext == null)
+            {
+                dbContext = new DatabaseContext(new DbContextOptionsBuilder<DatabaseContext>().UseInMemoryDatabase(databaseName: "AuthenticationDbContext").Options);
+                //Since tests run multi threaded, we need to lock the cached dbContext while we seed it.
+                Thread.Sleep(1);
+                lock (dbContext)
+                {
+                    if (!seeded)
+                    {
+                        SeedDatabase.SeedStudents(dbContext);
+                        seeded = true;
+                    }
+                }
+                return new DatabaseContext(dbContext);
+            }
+            return new DatabaseContext(dbContext);
         }
         public static Mock<UserManager<Recruiter>> GetRecruiterUserManager()
         {
@@ -37,14 +53,10 @@ namespace RecruiterPathway.Tests
             userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>())).Returns(Task.FromResult(new Recruiter()));
             if (guids == null)
             {
+                var db = GetDatabaseContext();
                 guids = new List<string>();
-                SeedDatabase.SeedRecruiters(GetDatabaseContext(), userManagerMock.Object, ref guids);
-            }
-            else 
-            {
-                //Discard the list we generate here since it's the same each time
-                var _ = new List<string>();
-                SeedDatabase.SeedRecruiters(GetDatabaseContext(), userManagerMock.Object, ref _);
+                SeedDatabase.SeedRecruiters(db, userManagerMock.Object, ref guids);
+                dbContext = db;
             }
             return userManagerMock;
         }
