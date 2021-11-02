@@ -12,7 +12,17 @@ namespace RecruiterPathway.Tests
         {
             var controller = MockedDatabase.GetStudentsController();
 
-            var result = controller.Index("", "", "", new DateTime(), new DateTime(), false);
+            var viewModel = new StudentViewModel
+            {
+                StudentDegree = "",
+                SearchFirstName = "",
+                SearchLastName = "",
+                GradDateStart = new DateTime(),
+                GradDateEnd = new DateTime(),
+                ListView = false
+            };
+
+            var result = controller.Index(viewModel);
 
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);
@@ -22,7 +32,17 @@ namespace RecruiterPathway.Tests
         {
             var controller = MockedDatabase.GetStudentsController();
 
-            var result = controller.Index("", "Ira", "Matzen", new DateTime(), new DateTime(), false);
+            var viewModel = new StudentViewModel
+            {
+                StudentDegree = "",
+                SearchFirstName = "Ira",
+                SearchLastName = "Matzen",
+                GradDateStart = new DateTime(),
+                GradDateEnd = new DateTime(),
+                ListView = false
+            };
+
+            var result = controller.Index(viewModel);
 
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);
@@ -72,11 +92,17 @@ namespace RecruiterPathway.Tests
         {
             var controller = MockedDatabase.GetStudentsController();
 
-            var result = controller.Create( new Student{ 
-                Id = "9002",
-                firstName = "Test",
-                lastName = "Test"
-            });
+            var viewModel = new StudentViewModel
+            {
+                Student = new Student
+                {
+                    Id = "9002",
+                    firstName = "Test",
+                    lastName = "Test"
+                }
+            };
+
+            var result = controller.Create(viewModel);
 
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);
@@ -86,14 +112,19 @@ namespace RecruiterPathway.Tests
         {
             var controller = MockedDatabase.GetStudentsController();
 
-            var result = controller.Edit("1", new Student
+            var viewModel = new StudentViewModel
             {
-                Id = "1",
-                firstName = "Test",
-                lastName = "Test",
-                degree = "Test",
-                gradDate = new DateTime()
-            });
+                Student = new Student
+                {
+                    Id = "1",
+                    firstName = "Test",
+                    lastName = "Test",
+                    degree = "Test",
+                    gradDate = new DateTime()
+                }
+            };
+
+            var result = controller.Edit("1", viewModel);
 
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);

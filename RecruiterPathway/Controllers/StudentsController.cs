@@ -27,7 +27,6 @@ namespace RecruiterPathway.Controllers
             // string studentDegree, string searchFirstName, string searchLastName, DateTime gradDateStart, DateTime gradDateEnd, bool listView
             IEnumerable<Student> students = await repository.GetAll();
 
-            //TODO: All of this filter code is broken, will need to fix in the Repositories
             if (!string.IsNullOrEmpty(studentViewModel.SearchFirstName))
             {
                 students = students.Where(st => st.firstName.Contains(studentViewModel.SearchFirstName));
@@ -122,7 +121,6 @@ namespace RecruiterPathway.Controllers
                     }
                     studentViewModel.Student.Id = i.ToString();
                     await repository.Insert(studentViewModel.Student);
-                    repository.Save();
                 }
                 else
                 {
@@ -218,7 +216,6 @@ namespace RecruiterPathway.Controllers
         public IActionResult DeleteConfirmed(string id)
         {
             repository.Delete(id);
-            repository.Save();
             return RedirectToAction(nameof(Index));
         }
         protected override void Dispose(bool disposing)

@@ -25,6 +25,7 @@ namespace RecruiterPathway.Repository
             if (IsValid(student))
             {
                 context.Student.Add(student);
+                Save();
                 return true;
             }
             return false;
@@ -35,6 +36,7 @@ namespace RecruiterPathway.Repository
             {
                 Student student = (await context.Student.FindAsync(id).AsTask());
                 context.Student.Remove(student);
+                Save();
             }
         }
         //TODO: FINISH ME
