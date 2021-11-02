@@ -107,11 +107,11 @@ namespace RecruiterPathway.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,firstName,lastName,gradDate,degree")] Student student)
+        public async Task<IActionResult> Create(StudentViewModel studentViewModel)
         {
             if (ModelState.IsValid)
             {
-                var students = await repository.Get(st => st.firstName.CompareTo(student.firstName) == 0 && st.lastName.CompareTo(student.lastName) == 0);
+                var students = await repository.Get(st => st.firstName.CompareTo(studentViewModel.Student.firstName) == 0 && st.lastName.CompareTo(studentViewModel.Student.lastName) == 0);
                 if (!students.Any())
                 {
                     var getId = await repository.GetById(i.ToString());
@@ -120,8 +120,8 @@ namespace RecruiterPathway.Controllers
                         i++;
                         getId = await repository.GetById(i.ToString());
                     }
-                    student.Id = i.ToString();
-                    await repository.Insert(student);
+                    studentViewModel.Student.Id = i.ToString();
+                    await repository.Insert(studentViewModel.Student);
                     repository.Save();
                 }
                 else
@@ -134,7 +134,7 @@ namespace RecruiterPathway.Controllers
 
             var studentVM = new StudentViewModel
             {
-                Student = student
+                Student = studentViewModel.Student
             };
 
             return View(studentVM);
@@ -168,23 +168,23 @@ namespace RecruiterPathway.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,firstName,lastName,degree,gradDate")] Student student)
+        public async Task<IActionResult> Edit(string id, StudentViewModel studentViewModel)
         {
-            if (!id.Equals(student.Id))
+            if (!id.Equals(studentViewModel.Student.Id))
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                repository.Update(student);
+                repository.Update(studentViewModel.Student);
                 repository.Save();
                 return RedirectToAction(nameof(Index));
             }
 
             var studentVM = new StudentViewModel
             {
-                Student = student
+                Student = studentViewModel.Student
             };
 
             return View(studentVM);
