@@ -6,6 +6,8 @@ using RecruiterPathway.Authentication;
 using System;
 using RecruiterPathway.Repository;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RecruiterPathway.Controllers
 {
@@ -15,16 +17,15 @@ namespace RecruiterPathway.Controllers
     {
         private IStudentRepository repository;
         private int i = 1;
+        private string[] sortOptions = { "First Name", "Last Name", "Degree", "Graduation Date" };
         public StudentsController(IStudentRepository repository)
         {
             this.repository = repository;
         }
 
-
         // GET: Students
         public async Task<IActionResult> Index(StudentViewModel studentViewModel)
         {
-            // string studentDegree, string searchFirstName, string searchLastName, DateTime gradDateStart, DateTime gradDateEnd, bool listView
             IEnumerable<Student> students = await repository.GetAll();
 
             if (!string.IsNullOrEmpty(studentViewModel.SearchFirstName))
@@ -47,11 +48,30 @@ namespace RecruiterPathway.Controllers
                 students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.gradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.gradDate) >= 0);
             }
 
+            switch(studentViewModel.SortBy)
+            {
+                default:
+                    break;
+                case "First Name":
+                    students = students.OrderBy(st => st.firstName);
+                    break;
+                case "Last Name":
+                    students = students.OrderBy(st => st.lastName);
+                    break;
+                case "Degree":
+                    students = students.OrderBy(st => st.degree);
+                    break;
+                case "Graduation Date":
+                    students = students.OrderBy(st => st.gradDate);
+                    break;
+            }
+
             var studentVM = new StudentViewModel
             {
                 Degrees = repository.GetStudentDegrees(),
                 Students = students.ToList(),
-                ListView = studentViewModel.ListView
+                ListView = studentViewModel.ListView,
+                SortOptions = new SelectList(sortOptions)
             };
 
             return View(studentVM);
