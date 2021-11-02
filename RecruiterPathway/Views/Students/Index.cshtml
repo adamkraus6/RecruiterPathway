@@ -1,6 +1,4 @@
-﻿
-
-@model RecruiterPathway.Models.StudentViewModel
+﻿@model RecruiterPathway.Models.StudentViewModel
 @{
     ViewData["Title"] = "Index";
 }
@@ -10,20 +8,28 @@
 </p>
 <form asp-controller="Students" asp-action="Index" method="get">
     <p>
+        <label>First Name:</label> <input type="text" asp-for="SearchFirstName" />
+        <br />
+        <label>Last Name:</label> <input type="text" asp-for="SearchLastName" />
+        <br />
+        <label>Degree:</label>
         <select asp-for="StudentDegree" asp-items="Model.Degrees">
             <option value="">All</option>
         </select>
         <br />
-        First Name: <input type="text" asp-for="SearchFirstName" />
-        Last Name: <input type="text" asp-for="SearchLastName" />
+        <label>Graduation Date:</label> <input type="date" asp-for="GradDateStart" /> to <input type="date" asp-for="GradDateEnd" />
         <br />
-        Graduation Date: <input type="date" asp-for="GradDateStart" /> to <input type="date" asp-for="GradDateEnd" />
+        <label>Sort by:</label>
+        <select asp-for="SortBy" asp-items="Model.SortOptions">
+            <option name="">None</option>
+        </select>
         <br />
-        Use List View: <input type="checkbox" asp-for="ListView"/>
+        <label>Use List View:</label> <input type="checkbox" asp-for="ListView" />
         <br />
         <input type="submit" value="Filter" />
     </p>
 </form>
+<a href="~/Students" class="btn btn-primary btn-small">Clear Filter</a>
 
 @if (Model.ListView)
 {

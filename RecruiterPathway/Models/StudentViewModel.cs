@@ -17,5 +17,7 @@ namespace RecruiterPathway.Models
         public DateTime GradDateStart { get; set; }
         public DateTime GradDateEnd { get; set; }
         public bool ListView { get; set; }
+        public SelectList SortOptions { get; set; }
+        public string SortBy { get; set; }
     }
 }
