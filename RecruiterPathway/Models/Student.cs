@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RecruiterPathway.Models
 {
-    public class Student
+    public class Student : IEquatable<Student>
     {
         public string Id { get; set; }
         [Display(Name = "First Name")]
@@ -17,5 +17,10 @@ namespace RecruiterPathway.Models
         
         [DataType(DataType.Date)]
         public DateTime gradDate { get; set; }
+
+        public bool Equals(Student other)
+        {
+            return Id.Equals(other.Id) && firstName.Equals(other.firstName) && lastName.Equals(other.lastName) && degree.Equals(other.degree) && gradDate == other.gradDate;
+        }
     }
 }

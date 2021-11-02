@@ -77,6 +77,7 @@ namespace RecruiterPathway.Repository
         public virtual void Delete(TModel obj)
         {
             set.Remove(obj);
+            Save();
         }
         async public virtual void Delete(object id)
         {
@@ -85,12 +86,15 @@ namespace RecruiterPathway.Repository
             {
                 set.Remove(model);
             }
+            Save();
         }
-        public void Update(TModel obj)
+        public async void Update(TModel obj)
         {
-            context.Entry(obj).State = EntityState.Modified;
+            Delete(obj);
+            await Insert(obj);
+            Save();
         }
-        public void Save()
+        public virtual void Save()
         {
             lock (context)
             {

@@ -21,27 +21,21 @@ namespace RecruiterPathway.Repository
             return new SelectList(degreeQuery.Distinct());
         }
 
-        override public async Task<bool> Insert(Student student) 
+        override public async Task<bool> Insert(Student student)
         {
             if (IsValid(student))
             {
-                context.Student.Add(student);
+                await set.AddAsync(student);
                 return true;
             }
             return false;
         }
-        override async public void Delete(object id) 
+        override public void Save()
         {
-            if (exists(id))
-            {
-                Task<Student> student = context.Student.FindAsync(id).AsTask();
-                while (!student.IsCompleted) 
-                {
-                    Thread.Sleep(1);
-                }
-                context.Student.Remove(student.Result);
-            }
+            context.Student = set;
+            base.Save();
         }
+
         //TODO: FINISH ME
         private bool IsValid(Student student)
         {
@@ -51,7 +45,7 @@ namespace RecruiterPathway.Repository
         //TODO: FINISH ME
         private bool exists(object id)
         {
-            return context.Student.Any(e => e.Id.Equals(id));
+            return set.Any(e => e.Id.Equals(id));
         }
     }
 }
