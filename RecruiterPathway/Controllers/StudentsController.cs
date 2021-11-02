@@ -8,6 +8,7 @@ using RecruiterPathway.Repository;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using RecruiterPathway.ViewModels;
 
 namespace RecruiterPathway.Controllers
 {
@@ -16,11 +17,13 @@ namespace RecruiterPathway.Controllers
     public class StudentsController : Controller
     {
         private IStudentRepository repository;
+        private IRecruiterRepository recruiterRepo;
         private int i = 1;
         private string[] sortOptions = { "First Name", "Last Name", "Degree", "Graduation Date" };
-        public StudentsController(IStudentRepository repository)
+        public StudentsController(IStudentRepository repository, IRecruiterRepository recruiterRepo)
         {
             this.repository = repository;
+            this.recruiterRepo = recruiterRepo;
         }
 
         // GET: Students
@@ -237,6 +240,23 @@ namespace RecruiterPathway.Controllers
         {
             repository.Delete(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> NewView(string id)
+        {
+            var student = await repository.GetById(id);
+            if (student == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            Dictionary<string, Tuple<DateTime, string>> Comments = new();
+            foreach (var comment in student.comments)
+            {
+                var recruiter = await recruiterRepo.GetById(comment.Key);
+                Comments.Add(recruiter.Name, comment.Value);
+            }
+            var viewModel = new NewStudentViewModel { Student = await repository.GetById(id), CommentView = Comments };
+            return View(viewModel);
         }
         protected override void Dispose(bool disposing)
         {

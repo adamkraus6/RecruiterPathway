@@ -1,0 +1,13 @@
+﻿@model RecruiterPathway.ViewModels.NewStudentViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+@foreach (var comment in Model.CommentView)
+{
+<div>
+    <p>Name: @comment.Key</p>
+    <br />
+    <p>Comment: @comment.Value.Item1.ToShortDateString() at @comment.Value.Item1.ToShortTimeString() - @comment.Value.Item2</p>
+</div>
+}
+
