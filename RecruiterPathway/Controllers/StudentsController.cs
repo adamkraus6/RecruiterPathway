@@ -22,36 +22,36 @@ namespace RecruiterPathway.Controllers
 
 
         // GET: Students
-        public async Task<IActionResult> Index(string studentDegree, string searchFirstName, string searchLastName, DateTime gradDateStart, DateTime gradDateEnd, bool listView)
+        public async Task<IActionResult> Index(StudentViewModel studentViewModel)
         {
+            // string studentDegree, string searchFirstName, string searchLastName, DateTime gradDateStart, DateTime gradDateEnd, bool listView
             IEnumerable<Student> students = await repository.GetAll();
 
-            //TODO: All of this filter code is broken, will need to fix in the Repositories
-            if (!string.IsNullOrEmpty(searchFirstName))
+            if (!string.IsNullOrEmpty(studentViewModel.SearchFirstName))
             {
-                students = students.Where(st => st.firstName.Contains(searchFirstName));
+                students = students.Where(st => st.firstName.Contains(studentViewModel.SearchFirstName));
             }
 
-            if (!string.IsNullOrEmpty(searchLastName))
+            if (!string.IsNullOrEmpty(studentViewModel.SearchLastName))
             {
-                students = students.Where(st => st.lastName.Contains(searchLastName));
+                students = students.Where(st => st.lastName.Contains(studentViewModel.SearchLastName));
             }
 
-            if (!string.IsNullOrEmpty(studentDegree))
+            if (!string.IsNullOrEmpty(studentViewModel.StudentDegree))
             {
-                students = students.Where(st => st.degree == studentDegree);
+                students = students.Where(st => st.degree == studentViewModel.StudentDegree);
             }
 
-            if(DateTime.MinValue != gradDateStart && DateTime.MinValue != gradDateEnd)
+            if (DateTime.MinValue != studentViewModel.GradDateStart && DateTime.MinValue != studentViewModel.GradDateEnd)
             {
-                students = students.Where(st => gradDateStart.CompareTo(st.gradDate) < 0 && gradDateEnd.CompareTo(st.gradDate) >= 0);
+                students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.gradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.gradDate) >= 0);
             }
 
             var studentVM = new StudentViewModel
             {
                 Degrees = repository.GetStudentDegrees(),
                 Students = students.ToList(),
-                ListView = listView
+                ListView = studentViewModel.ListView
             };
 
             return View(studentVM);
@@ -106,11 +106,11 @@ namespace RecruiterPathway.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,firstName,lastName,gradDate,degree")] Student student)
+        public async Task<IActionResult> Create(StudentViewModel studentViewModel)
         {
             if (ModelState.IsValid)
             {
-                var students = await repository.Get(st => st.firstName.CompareTo(student.firstName) == 0 && st.lastName.CompareTo(student.lastName) == 0);
+                var students = await repository.Get(st => st.firstName.CompareTo(studentViewModel.Student.firstName) == 0 && st.lastName.CompareTo(studentViewModel.Student.lastName) == 0);
                 if (!students.Any())
                 {
                     var getId = await repository.GetById(i.ToString());
@@ -119,9 +119,8 @@ namespace RecruiterPathway.Controllers
                         i++;
                         getId = await repository.GetById(i.ToString());
                     }
-                    student.Id = i.ToString();
-                    await repository.Insert(student);
-                    repository.Save();
+                    studentViewModel.Student.Id = i.ToString();
+                    await repository.Insert(studentViewModel.Student);
                 }
                 else
                 {
@@ -133,7 +132,7 @@ namespace RecruiterPathway.Controllers
 
             var studentVM = new StudentViewModel
             {
-                Student = student
+                Student = studentViewModel.Student
             };
 
             return View(studentVM);
@@ -167,23 +166,23 @@ namespace RecruiterPathway.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,firstName,lastName,degree,gradDate")] Student student)
+        public async Task<IActionResult> Edit(string id, StudentViewModel studentViewModel)
         {
-            if (!id.Equals(student.Id))
+            if (!id.Equals(studentViewModel.Student.Id))
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                repository.Update(student);
+                repository.Update(studentViewModel.Student);
                 repository.Save();
                 return RedirectToAction(nameof(Index));
             }
 
             var studentVM = new StudentViewModel
             {
-                Student = student
+                Student = studentViewModel.Student
             };
 
             return View(studentVM);
@@ -217,7 +216,6 @@ namespace RecruiterPathway.Controllers
         public IActionResult DeleteConfirmed(string id)
         {
             repository.Delete(id);
-            repository.Save();
             return RedirectToAction(nameof(Index));
         }
         protected override void Dispose(bool disposing)
