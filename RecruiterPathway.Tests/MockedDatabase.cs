@@ -83,7 +83,7 @@ namespace RecruiterPathway.Tests
         }
         public static StudentsController GetStudentsController()
         {
-            return new StudentsController(GetStudentRepository());
+            return new StudentsController(GetStudentRepository(), GetRecruiterRepository());
         }
         public static RecruitersController GetRecruitersController()
         {

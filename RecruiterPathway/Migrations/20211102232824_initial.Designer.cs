@@ -10,7 +10,7 @@ using RecruiterPathway.Data;
 namespace RecruiterPathway.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211029141317_initial")]
+    [Migration("20211102232824_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

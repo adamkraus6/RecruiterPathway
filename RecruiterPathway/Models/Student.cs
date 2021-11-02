@@ -19,9 +19,9 @@ namespace RecruiterPathway.Models
         [DataType(DataType.Date)]
         public DateTime gradDate { get; set; }
 
-        //std::map<string,std::pair<DateTime, string>>
-        //Map of Recruiter Ids to timestamped comments. These are global to all recruiters.
-        public Dictionary<string, Tuple<DateTime, string>> comments;
+        //std::list<Triple<string, DateTime, string>>
+        //List of Recruiter Ids to timestamped comments. These are global to all recruiters.
+        public List<Tuple<string, DateTime, string>> comments;
 
         public bool Equals(Student other)
         {

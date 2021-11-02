@@ -13,7 +13,7 @@ using RecruiterPathway.ViewModels;
 namespace RecruiterPathway.Controllers
 {
     //Force authorization to view ANYTHING on the student controller
-    [Authorize]
+    //[Authorize]
     public class StudentsController : Controller
     {
         private IStudentRepository repository;
@@ -51,7 +51,7 @@ namespace RecruiterPathway.Controllers
                 students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.gradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.gradDate) >= 0);
             }
 
-            switch(studentViewModel.SortBy)
+            switch (studentViewModel.SortBy)
             {
                 default:
                     break;
@@ -249,15 +249,28 @@ namespace RecruiterPathway.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            Dictionary<string, Tuple<DateTime, string>> Comments = new();
+            List<Tuple<string, DateTime, string>> Comments = new();
+            if (student.comments == null)
+            {
+                return View(new NewStudentViewModel { CommentView = new List<Tuple<string, DateTime, string>>() });
+            }
             foreach (var comment in student.comments)
             {
-                var recruiter = await recruiterRepo.GetById(comment.Key);
-                Comments.Add(recruiter.Name, comment.Value);
+                var recruiter = await recruiterRepo.GetById(comment.Item1);
+                Comments.Add(Tuple.Create(recruiter.Name, comment.Item2, comment.Item3));
             }
             var viewModel = new NewStudentViewModel { Student = await repository.GetById(id), CommentView = Comments };
             return View(viewModel);
         }
+
+        [HttpPost, ActionName("Comment")]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Comment(string recruiterId, string studentId, string comment)
+        {
+            repository.AddComment(new CommentViewModel {Student = await repository.GetById(studentId), Recruiter = await recruiterRepo.GetById(recruiterId), Comment = comment });
+            return RedirectToAction(nameof(Index));
+        }
+
         protected override void Dispose(bool disposing)
         {
             repository.Dispose();

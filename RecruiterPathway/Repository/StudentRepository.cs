@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 using System.Threading;
+using RecruiterPathway.ViewModels;
 
 namespace RecruiterPathway.Repository
 {
@@ -28,8 +29,9 @@ namespace RecruiterPathway.Repository
 
                 await set.AddAsync(student);
 
-                context.Student.Add(student);
+                //context.Student.Add(student);
                 Save();
+                Console.WriteLine("called insert(student)");
                 return true;
             }
             return false;
@@ -39,7 +41,20 @@ namespace RecruiterPathway.Repository
             context.Student = set;
             base.Save();
         }
-
+        public override void AddComment(CommentViewModel view)
+        {
+            var student = view.Student;
+            if (student.comments == null)
+            {
+                student.comments = new List<Tuple<string, DateTime, string>>();
+            }
+            student.comments.Add(Tuple.Create(view.Recruiter.Id, DateTime.UtcNow, view.Comment));
+            Update(student);
+        }
+        public override void RemoveComment(CommentViewModel view)
+        {
+            
+        }
         //TODO: FINISH ME
         private bool IsValid(Student student)
         {

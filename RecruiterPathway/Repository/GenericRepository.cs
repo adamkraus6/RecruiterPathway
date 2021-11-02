@@ -78,6 +78,7 @@ namespace RecruiterPathway.Repository
         {
             set.Remove(obj);
             Save();
+            Console.WriteLine("Called Delete(obj)");
         }
         async public virtual void Delete(object id)
         {
@@ -92,13 +93,14 @@ namespace RecruiterPathway.Repository
         {
             Delete(obj);
             await Insert(obj);
-            Save();
+            Console.WriteLine("called update(obj)");
         }
         public virtual void Save()
         {
             lock (context)
             {
-                context.SaveChanges();
+                var updated = context.SaveChanges();
+                Console.WriteLine("updated " + updated);
             }
         }
 

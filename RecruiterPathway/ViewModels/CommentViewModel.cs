@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace RecruiterPathway.ViewModels
 {
-    public class NewStudentViewModel : StudentViewModel
+    public class CommentViewModel
     {
-        public List<Tuple<string, DateTime, string>> CommentView { get; set; }
+        public Recruiter Recruiter { get; set; }
+        public Student Student { get; set; }
+        public string Comment { get; set; }
     }
 }
