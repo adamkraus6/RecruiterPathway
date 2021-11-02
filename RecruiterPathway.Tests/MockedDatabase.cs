@@ -33,9 +33,9 @@ namespace RecruiterPathway.Tests
                         seeded = true;
                     }
                 }
-                return new DatabaseContext(dbContext);
+                return dbContext.Copy();
             }
-            return new DatabaseContext(dbContext);
+            return dbContext.Copy();
         }
         public static Mock<UserManager<Recruiter>> GetRecruiterUserManager()
         {
