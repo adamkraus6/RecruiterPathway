@@ -25,7 +25,11 @@ namespace RecruiterPathway.Repository
         {
             if (IsValid(student))
             {
+
                 await set.AddAsync(student);
+
+                context.Student.Add(student);
+                Save();
                 return true;
             }
             return false;
