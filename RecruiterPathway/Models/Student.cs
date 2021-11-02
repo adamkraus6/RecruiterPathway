@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,6 +18,10 @@ namespace RecruiterPathway.Models
         
         [DataType(DataType.Date)]
         public DateTime gradDate { get; set; }
+
+        //std::map<string,std::pair<DateTime, string>>
+        //Map of Recruiter Ids to timestamped comments. These are global to all recruiters.
+        public Dictionary<string, Tuple<DateTime, string>> comments;
 
         public bool Equals(Student other)
         {
