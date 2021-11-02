@@ -22,36 +22,37 @@ namespace RecruiterPathway.Controllers
 
 
         // GET: Students
-        public async Task<IActionResult> Index(string studentDegree, string searchFirstName, string searchLastName, DateTime gradDateStart, DateTime gradDateEnd, bool listView)
+        public async Task<IActionResult> Index(StudentViewModel studentViewModel)
         {
+            // string studentDegree, string searchFirstName, string searchLastName, DateTime gradDateStart, DateTime gradDateEnd, bool listView
             IEnumerable<Student> students = await repository.GetAll();
 
             //TODO: All of this filter code is broken, will need to fix in the Repositories
-            if (!string.IsNullOrEmpty(searchFirstName))
+            if (!string.IsNullOrEmpty(studentViewModel.SearchFirstName))
             {
-                students = students.Where(st => st.firstName.Contains(searchFirstName));
+                students = students.Where(st => st.firstName.Contains(studentViewModel.SearchFirstName));
             }
 
-            if (!string.IsNullOrEmpty(searchLastName))
+            if (!string.IsNullOrEmpty(studentViewModel.SearchLastName))
             {
-                students = students.Where(st => st.lastName.Contains(searchLastName));
+                students = students.Where(st => st.lastName.Contains(studentViewModel.SearchLastName));
             }
 
-            if (!string.IsNullOrEmpty(studentDegree))
+            if (!string.IsNullOrEmpty(studentViewModel.StudentDegree))
             {
-                students = students.Where(st => st.degree == studentDegree);
+                students = students.Where(st => st.degree == studentViewModel.StudentDegree);
             }
 
-            if(DateTime.MinValue != gradDateStart && DateTime.MinValue != gradDateEnd)
+            if (DateTime.MinValue != studentViewModel.GradDateStart && DateTime.MinValue != studentViewModel.GradDateEnd)
             {
-                students = students.Where(st => gradDateStart.CompareTo(st.gradDate) < 0 && gradDateEnd.CompareTo(st.gradDate) >= 0);
+                students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.gradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.gradDate) >= 0);
             }
 
             var studentVM = new StudentViewModel
             {
                 Degrees = repository.GetStudentDegrees(),
                 Students = students.ToList(),
-                ListView = listView
+                ListView = studentViewModel.ListView
             };
 
             return View(studentVM);
