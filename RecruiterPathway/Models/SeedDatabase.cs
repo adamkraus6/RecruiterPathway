@@ -148,6 +148,12 @@ namespace RecruiterPathway.Models
                         // to the Student model.
                         string[] values = line.Split(',');
 
+                        IEnumerable<Student> all = context.Student.Where(s => s.Id == i.ToString());
+                        if (all.Any())
+                        {
+                            return;
+                        }
+                        
                         context.Student.AddRange(
                             new Student
                             {

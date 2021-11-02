@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace RecruiterPathway.Repository
 {
@@ -20,25 +21,25 @@ namespace RecruiterPathway.Repository
             return new SelectList(degreeQuery.Distinct());
         }
 
-        override public async Task<bool> Insert(Student student) 
+        override public async Task<bool> Insert(Student student)
         {
             if (IsValid(student))
             {
+
+                await set.AddAsync(student);
+
                 context.Student.Add(student);
                 Save();
                 return true;
             }
             return false;
         }
-        override async public void Delete(object id) 
+        override public void Save()
         {
-            if (exists(id))
-            {
-                Student student = (await context.Student.FindAsync(id).AsTask());
-                context.Student.Remove(student);
-                Save();
-            }
+            context.Student = set;
+            base.Save();
         }
+
         //TODO: FINISH ME
         private bool IsValid(Student student)
         {
@@ -48,7 +49,7 @@ namespace RecruiterPathway.Repository
         //TODO: FINISH ME
         private bool exists(object id)
         {
-            return context.Student.Any(e => e.Id.Equals(id));
+            return set.Any(e => e.Id.Equals(id));
         }
     }
 }
