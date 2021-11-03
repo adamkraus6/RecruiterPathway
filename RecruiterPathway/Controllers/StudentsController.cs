@@ -250,7 +250,7 @@ namespace RecruiterPathway.Controllers
                 return RedirectToAction(nameof(Index));
             }
             List<Tuple<string, DateTime, string>> Comments = new();
-            if (student.comments == null)
+            if (student.Comments == null)
             {
                 return View(new NewStudentViewModel { CommentView = new List<Tuple<string, DateTime, string>>() });
             }

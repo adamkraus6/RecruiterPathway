@@ -10,8 +10,8 @@ using RecruiterPathway.Data;
 namespace RecruiterPathway.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211103142254_6")]
-    partial class _6
+    [Migration("20211103223633_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -354,7 +354,7 @@ namespace RecruiterPathway.Migrations
             modelBuilder.Entity("RecruiterPathway.Models.Comment", b =>
                 {
                     b.HasOne("RecruiterPathway.Models.Student", "Student")
-                        .WithMany("comments")
+                        .WithMany("Comments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -378,7 +378,7 @@ namespace RecruiterPathway.Migrations
 
             modelBuilder.Entity("RecruiterPathway.Models.Student", b =>
                 {
-                    b.Navigation("comments");
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

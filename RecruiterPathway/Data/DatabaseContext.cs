@@ -45,11 +45,11 @@ namespace RecruiterPathway.Data
             builder.Entity<Comment>()
                 .ToTable("Comment")
                 .HasOne(s => s.Student)
-                .WithMany(b => b.comments)
+                .WithMany(b => b.Comments)
                 .HasForeignKey(i => i.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Student>()
-                .HasMany(c => c.comments)
+                .HasMany(c => c.Comments)
                 .WithOne(s => s.Student)
                 .HasForeignKey(i => i.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);

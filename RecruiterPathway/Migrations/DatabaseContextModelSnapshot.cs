@@ -352,7 +352,7 @@ namespace RecruiterPathway.Migrations
             modelBuilder.Entity("RecruiterPathway.Models.Comment", b =>
                 {
                     b.HasOne("RecruiterPathway.Models.Student", "Student")
-                        .WithMany("comments")
+                        .WithMany("Comments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -376,7 +376,7 @@ namespace RecruiterPathway.Migrations
 
             modelBuilder.Entity("RecruiterPathway.Models.Student", b =>
                 {
-                    b.Navigation("comments");
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }
