@@ -46,9 +46,9 @@ namespace RecruiterPathway.Repository
             var student = view.Student;
             if (student.comments == null)
             {
-                student.comments = new List<Tuple<string, DateTime, string>>();
+                student.comments = new List<Comment>();
             }
-            student.comments.Add(Tuple.Create(view.Recruiter.Id, DateTime.UtcNow, view.Comment));
+            student.comments.Add(new Comment{RecruiterId = view.Recruiter.Id, Time = DateTime.UtcNow, ActualComment = view.Comment});
             Update(student);
         }
         public override void RemoveComment(CommentViewModel view)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RecruiterPathway.Models;
+using System;
 
 namespace RecruiterPathway.Data
 {
@@ -23,6 +24,14 @@ namespace RecruiterPathway.Data
         public DatabaseContext Copy()
         {
             return new DatabaseContext(this);
+        }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            //Yay for stackoverflow https://stackoverflow.com/a/53703521
+            builder.Entity<Recruiter>()
+                .Property(p => p.WatchList)
+                .HasConversion(e => string.Join('|', e), e => e.Split('|', StringSplitOptions.RemoveEmptyEntries));
+            base.OnModelCreating(builder);
         }
 
     }

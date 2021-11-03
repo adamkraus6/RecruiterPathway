@@ -256,8 +256,8 @@ namespace RecruiterPathway.Controllers
             }
             foreach (var comment in student.comments)
             {
-                var recruiter = await recruiterRepo.GetById(comment.Item1);
-                Comments.Add(Tuple.Create(recruiter.Name, comment.Item2, comment.Item3));
+                var recruiter = await recruiterRepo.GetById(comment.RecruiterId);
+                Comments.Add(Tuple.Create(recruiter.Name, comment.Time, comment.ActualComment));
             }
             var viewModel = new NewStudentViewModel { Student = await repository.GetById(id), CommentView = Comments };
             return View(viewModel);
