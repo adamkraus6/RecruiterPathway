@@ -28,14 +28,6 @@ namespace RecruiterPathway.Repository
             }
             return false;
         }
-        override async public void Delete(object id) 
-        {
-            if (exists((string)id))
-            {
-                Recruiter student = (await context.Recruiter.FindAsync(id).AsTask());
-                context.Recruiter.Remove(student);
-            }
-        }
         override async public void SignOutRecruiter()
         {
             await authManager.SignOutAsync();

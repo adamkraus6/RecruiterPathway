@@ -41,6 +41,15 @@ namespace RecruiterPathway.Repository
             context.Student = set;
             base.Save();
         }
+        override async public Task Delete(object id)
+        {
+            var student = await GetById(id);
+            if (student.comments != null)
+            {
+                student.comments.Clear();
+            }
+            await base.Delete(id);
+        }
         public override void AddComment(CommentViewModel view)
         {
             var student = view.Student;
@@ -48,7 +57,7 @@ namespace RecruiterPathway.Repository
             {
                 student.comments = new List<Comment>();
             }
-            student.comments.Add(new Comment{RecruiterId = view.Recruiter.Id, Time = DateTime.UtcNow, ActualComment = view.Comment});
+            student.comments.Add(new Comment(view.Recruiter.Id, DateTime.UtcNow, view.Comment));
             Update(student);
         }
         public override void RemoveComment(CommentViewModel view)

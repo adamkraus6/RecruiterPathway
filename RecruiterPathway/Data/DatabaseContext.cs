@@ -31,6 +31,21 @@ namespace RecruiterPathway.Data
             builder.Entity<Recruiter>()
                 .Property(p => p.WatchList)
                 .HasConversion(e => string.Join('|', e), e => e.Split('|', StringSplitOptions.RemoveEmptyEntries));
+            builder.Entity<PipelineStatus>()
+                .HasOne(r => r.Recruiter)
+                .WithMany(p => p.PipelineStatus)
+                .HasForeignKey(r => r.RecruiterId)
+                .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Comment>()
+                .HasOne(s => s.Student)
+                .WithMany(b => b.comments)
+                .HasForeignKey(i => i.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Student>()
+                .HasMany(c => c.comments)
+                .WithOne(s => s.Student)
+                .HasForeignKey(i => i.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
             base.OnModelCreating(builder);
         }
 

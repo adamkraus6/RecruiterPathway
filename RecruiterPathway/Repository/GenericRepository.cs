@@ -74,34 +74,29 @@ namespace RecruiterPathway.Repository
             await set.AddAsync(obj);
             return true;
         }
-        public virtual void Delete(TModel obj)
+        public async virtual Task Delete(TModel obj)
         {
-            set.Remove(obj);
+            context.Attach(obj);
+            context.Remove(obj);
             Save();
             Console.WriteLine("Called Delete(obj)");
         }
-        async public virtual void Delete(object id)
+        async public virtual Task Delete(object id)
         {
             TModel model = await GetById(id);
-            lock (set)
-            {
-                set.Remove(model);
-            }
+            context.Attach(model);
+            context.Remove(model);
             Save();
         }
-        public async void Update(TModel obj)
+        public async Task Update(TModel obj)
         {
-            Delete(obj);
             await Insert(obj);
             Console.WriteLine("called update(obj)");
         }
         public virtual void Save()
         {
-            lock (context)
-            {
-                var updated = context.SaveChanges();
-                Console.WriteLine("updated " + updated);
-            }
+            var updated = context.SaveChanges();
+            Console.WriteLine("updated " + updated);
         }
 
         private bool disposed = false;

@@ -236,9 +236,9 @@ namespace RecruiterPathway.Controllers
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            repository.Delete(id);
+            await repository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
