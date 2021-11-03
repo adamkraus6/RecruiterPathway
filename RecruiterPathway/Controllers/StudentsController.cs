@@ -254,7 +254,7 @@ namespace RecruiterPathway.Controllers
             {
                 return View(new NewStudentViewModel { CommentView = new List<Tuple<string, DateTime, string>>() });
             }
-            foreach (var comment in student.comments)
+            foreach (var comment in repository.GetCommentsForStudent(student))
             {
                 var recruiter = await recruiterRepo.GetById(comment.RecruiterId);
                 Comments.Add(Tuple.Create(recruiter.Name, comment.Time, comment.ActualComment));
@@ -267,7 +267,7 @@ namespace RecruiterPathway.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Comment(string recruiterId, string studentId, string comment)
         {
-            repository.AddComment(new CommentViewModel {Student = await repository.GetById(studentId), Recruiter = await recruiterRepo.GetById(recruiterId), Comment = comment });
+            await repository.AddComment(new CommentViewModel {Comment = new Comment (recruiterId, studentId, comment)});
             return RedirectToAction(nameof(Index));
         }
 

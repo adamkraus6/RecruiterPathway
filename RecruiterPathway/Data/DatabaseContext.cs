@@ -16,10 +16,15 @@ namespace RecruiterPathway.Data
         {
             this.Recruiter = context.Recruiter;
             this.Student = context.Student;
+            this.Comment = context.Comment;
+            this.PipelineStatus = context.PipelineStatus;
             this.options = context.options;
         }
         public virtual DbSet<Recruiter> Recruiter { get; set; }
         public virtual DbSet<Student> Student { get; set; }
+
+        public virtual DbSet<Comment> Comment { get; set; }
+        public virtual DbSet<PipelineStatus> PipelineStatus { get; set; }
         //Workaround since dependency injection did not like the copy constructor public.
         public DatabaseContext Copy()
         {
@@ -36,7 +41,9 @@ namespace RecruiterPathway.Data
                 .WithMany(p => p.PipelineStatus)
                 .HasForeignKey(r => r.RecruiterId)
                 .OnDelete(DeleteBehavior.Cascade);
+            //ToTable from https://stackoverflow.com/a/60958165 in relation to crashing on adding a comment
             builder.Entity<Comment>()
+                .ToTable("Comment")
                 .HasOne(s => s.Student)
                 .WithMany(b => b.comments)
                 .HasForeignKey(i => i.StudentId)

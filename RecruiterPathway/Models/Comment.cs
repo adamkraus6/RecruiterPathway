@@ -7,11 +7,20 @@ namespace RecruiterPathway.Models
 {
     public class Comment
     {
-        public Comment(string RecruiterId, DateTime Time, string ActualComment)
+        public Comment(string RecruiterId, string StudentId, DateTime Time, string ActualComment)
         {
             this.Id = Guid.NewGuid().ToString();
             this.RecruiterId = RecruiterId;
+            this.StudentId = StudentId;
             this.Time = Time;
+            this.ActualComment = ActualComment;
+        }
+        public Comment(string RecruiterId, string StudentId, string ActualComment)
+        {
+            this.Id = Guid.NewGuid().ToString();
+            this.RecruiterId = RecruiterId;
+            this.StudentId = StudentId;
+            this.Time = DateTime.UtcNow;
             this.ActualComment = ActualComment;
         }
         public string Id { get; set; }

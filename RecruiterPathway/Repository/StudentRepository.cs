@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 using System.Threading;
 using RecruiterPathway.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace RecruiterPathway.Repository
 {
@@ -36,11 +37,6 @@ namespace RecruiterPathway.Repository
             }
             return false;
         }
-        override public void Save()
-        {
-            context.Student = set;
-            base.Save();
-        }
         override async public Task Delete(object id)
         {
             var student = await GetById(id);
@@ -50,19 +46,31 @@ namespace RecruiterPathway.Repository
             }
             await base.Delete(id);
         }
-        public override void AddComment(CommentViewModel view)
+        public override async Task AddComment(CommentViewModel view)
         {
-            var student = view.Student;
+            //context.Student.Include(p => p.comments).FirstOrDefault();
+            var student = await GetById(view.Comment.StudentId);
             if (student.comments == null)
             {
                 student.comments = new List<Comment>();
             }
-            student.comments.Add(new Comment(view.Recruiter.Id, DateTime.UtcNow, view.Comment));
-            Update(student);
+            context.Comment.Add(view.Comment);
+            Save();
         }
-        public override void RemoveComment(CommentViewModel view)
+        public override async Task RemoveComment(CommentViewModel view)
         {
-            
+            var student = view.Comment.Student;
+            if (student.comments == null)
+            {
+                return;
+            }
+            context.Comment.Remove(view.Comment);
+            Save();
+        }
+
+        override public ICollection<Comment> GetCommentsForStudent(Student student)
+        {
+            return context.Comment.Where(s => s.Student == student).ToList();
         }
         //TODO: FINISH ME
         private bool IsValid(Student student)

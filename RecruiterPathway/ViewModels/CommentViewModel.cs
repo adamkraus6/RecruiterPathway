@@ -8,8 +8,6 @@ namespace RecruiterPathway.ViewModels
 {
     public class CommentViewModel
     {
-        public Recruiter Recruiter { get; set; }
-        public Student Student { get; set; }
-        public string Comment { get; set; }
+        public Comment Comment { get; set; }
     }
 }

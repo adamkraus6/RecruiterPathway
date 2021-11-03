@@ -90,7 +90,8 @@ namespace RecruiterPathway.Repository
         }
         public async Task Update(TModel obj)
         {
-            await Insert(obj);
+            context.Entry(obj).State = EntityState.Modified;
+            Save();
             Console.WriteLine("called update(obj)");
         }
         public virtual void Save()
