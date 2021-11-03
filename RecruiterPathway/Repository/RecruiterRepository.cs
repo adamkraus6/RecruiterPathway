@@ -55,6 +55,65 @@ namespace RecruiterPathway.Repository
             return await userManager.FindByNameAsync(name);
         }
 
+        override async public Task<PipelineStatus> GetPipelineStatus(string recruiterId, string studentId) 
+        {
+            var recruiter = await GetById(recruiterId);
+            //Assuming that there's only 1 for each student. This should be enforced in the set method.
+            var pstatus = recruiter.PipelineStatus.First(p => p.StudentId == studentId);
+            return pstatus;
+        }
+        //Lazy aliases, TODO: remove unused ones
+        override async public Task<PipelineStatus> GetPipelineStatus(Recruiter recruiter, Student student)
+        {
+            return await GetPipelineStatus(recruiter.Id, student.Id);
+        }
+        override async public Task<PipelineStatus> GetPipelineStatus(string recruiterId, Student student)
+        {
+            return await GetPipelineStatus(recruiterId, student.Id);
+        }
+        override async public Task<PipelineStatus> GetPipelineStatus(Recruiter recruiter, string studentId)
+        {
+            return await GetPipelineStatus(recruiter.Id, studentId);
+        }
+
+        override async public Task<bool> SetPipelineStatus(string recruiterId, string studentId, string status)
+        {
+            var recruiter = await GetById(recruiterId);
+            var pstatus = await GetPipelineStatus(recruiterId, studentId);
+            if (pstatus == null)
+            {
+                recruiter.PipelineStatus.Add(new PipelineStatus(studentId, status));
+                return true;
+            }
+            recruiter.PipelineStatus.Remove(pstatus);
+            recruiter.PipelineStatus.Add(new PipelineStatus(studentId, status));
+            return true;
+        }
+        override async public Task<bool> SetPipelineStatus(Recruiter recruiter, Student student, string status)
+        {
+            return await SetPipelineStatus(recruiter.Id, student.Id, status);
+        }
+        override async public Task AddWatch(Recruiter recruiter, Student student)
+        {
+            await AddWatch(recruiter.Id, student.Id);
+        }
+        override async public Task AddWatch(string recruiterId, string studentId)
+        {
+            var recruiter = await GetById(recruiterId);
+            if (!recruiter.WatchList.Contains(studentId))
+            {
+                recruiter.WatchList.Add(studentId);
+            }
+        }
+        override async public Task RemoveWatch(Recruiter recruiter, Student student) 
+        {
+            await RemoveWatch(recruiter.Id, student.Id);
+        }
+        override async public Task RemoveWatch(string recruiterId, string studentId)
+        {
+            var recruiter = await GetById(recruiterId);
+            recruiter.WatchList.Remove(studentId);
+        }
         private bool IsValid(Recruiter student)
         {
             return true;

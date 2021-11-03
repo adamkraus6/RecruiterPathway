@@ -13,7 +13,7 @@ namespace RecruiterPathway.Repository
         public IStudentRepository(DatabaseContext context) : base(context, context.Student){}
         public abstract SelectList GetStudentDegrees();
         public abstract Task AddComment(CommentViewModel view);
-        public abstract Task RemoveComment(CommentViewModel view);
+        public abstract void RemoveComment(CommentViewModel view);
 
         public abstract ICollection<Comment> GetCommentsForStudent(Student student);
         //public abstract void UpdateComment(CommentViewModel view);
