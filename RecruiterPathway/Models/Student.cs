@@ -21,7 +21,7 @@ namespace RecruiterPathway.Models
 
         //std::list<Triple<string, DateTime, string>>
         //List of Recruiter Ids to timestamped comments. These are global to all recruiters.
-        public ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
 
         public bool Equals(Student other)
         {

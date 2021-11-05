@@ -8,13 +8,12 @@ using System.Collections.Generic;
 
 namespace RecruiterPathway.Repository
 {
-    public abstract class IStudentRepository : GenericRepository<Student>, IDisposable
+    public abstract class IStudentRepository : GenericRepository<Student>
     {
-        public IStudentRepository(DatabaseContext context) : base(context, context.Student){}
+        protected IStudentRepository(DatabaseContext context) : base(context, context.Student){}
         public abstract SelectList GetStudentDegrees();
         public abstract Task AddComment(CommentViewModel view);
         public abstract void RemoveComment(CommentViewModel view);
-
         public abstract ICollection<Comment> GetCommentsForStudent(Student student);
         //public abstract void UpdateComment(CommentViewModel view);
     }

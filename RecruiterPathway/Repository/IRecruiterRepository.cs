@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace RecruiterPathway.Repository
 {
-    public abstract class IRecruiterRepository : GenericRepository<Recruiter>, IDisposable
+    public abstract class IRecruiterRepository : GenericRepository<Recruiter>
     {
-        public IRecruiterRepository(DatabaseContext context) : base(context, context.Recruiter) { }
+        protected IRecruiterRepository(DatabaseContext context) : base(context, context.Recruiter) { }
         public abstract void SignOutRecruiter();
         public abstract Task<bool> SignInRecruiter(Recruiter recruiter);
         public abstract Task<Recruiter> GetSignedInRecruiter(ClaimsPrincipal principal);

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RecruiterPathway.Repository
 {
-    public class StudentRepository : IStudentRepository, IDisposable
+    public class StudentRepository : IStudentRepository
     {
         public StudentRepository(DatabaseContext context) : base(context) { }
 
@@ -23,6 +23,10 @@ namespace RecruiterPathway.Repository
             return new SelectList(degreeQuery.Distinct());
         }
 
+        override public async ValueTask<Student> GetById(object id)
+        {
+            return await context.Student.Include(c => c.Comments).FirstOrDefaultAsync(s => s.Id == (string)id);
+        }
         override public async Task<bool> Insert(Student student)
         {
             if (IsValid(student))
@@ -67,7 +71,6 @@ namespace RecruiterPathway.Repository
             context.Comment.Remove(view.Comment);
             Save();
         }
-
         override public ICollection<Comment> GetCommentsForStudent(Student student)
         {
             return context.Comment.Where(s => s.Student == student).ToList();
@@ -76,12 +79,6 @@ namespace RecruiterPathway.Repository
         private bool IsValid(Student student)
         {
             return true;
-        }
-
-        //TODO: FINISH ME
-        private bool exists(object id)
-        {
-            return set.Any(e => e.Id.Equals(id));
         }
     }
 }

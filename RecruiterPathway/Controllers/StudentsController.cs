@@ -16,10 +16,10 @@ namespace RecruiterPathway.Controllers
     //[Authorize]
     public class StudentsController : Controller
     {
-        private IStudentRepository repository;
-        private IRecruiterRepository recruiterRepo;
+        private readonly IStudentRepository repository;
+        private readonly IRecruiterRepository recruiterRepo;
         private int i = 1;
-        private string[] sortOptions = { "First Name", "Last Name", "Degree", "Graduation Date" };
+        private readonly string[] sortOptions = { "First Name", "Last Name", "Degree", "Graduation Date" };
         public StudentsController(IStudentRepository repository, IRecruiterRepository recruiterRepo)
         {
             this.repository = repository;
@@ -198,7 +198,7 @@ namespace RecruiterPathway.Controllers
 
             if (ModelState.IsValid)
             {
-                repository.Update(studentViewModel.Student);
+                await repository.Update(studentViewModel.Student);
                 repository.Save();
                 return RedirectToAction(nameof(Index));
             }
@@ -254,7 +254,7 @@ namespace RecruiterPathway.Controllers
             {
                 return View(new NewStudentViewModel { CommentView = new List<Tuple<string, DateTime, string>>() });
             }
-            foreach (var comment in repository.GetCommentsForStudent(student))
+            foreach (var comment in student.Comments)
             {
                 var recruiter = await recruiterRepo.GetById(comment.RecruiterId);
                 Comments.Add(Tuple.Create(recruiter.Name, comment.Time, comment.ActualComment));

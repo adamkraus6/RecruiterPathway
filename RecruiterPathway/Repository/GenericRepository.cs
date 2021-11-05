@@ -53,7 +53,7 @@ namespace RecruiterPathway.Repository
             }
             return await result;
         }
-        async public ValueTask<TModel> GetById(object id)
+        async virtual public ValueTask<TModel> GetById(object id)
         {
             ValueTask<TModel> result;
             lock (set)
