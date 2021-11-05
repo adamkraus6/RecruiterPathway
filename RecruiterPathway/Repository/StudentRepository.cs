@@ -71,10 +71,6 @@ namespace RecruiterPathway.Repository
             context.Comment.Remove(view.Comment);
             Save();
         }
-        override public ICollection<Comment> GetCommentsForStudent(Student student)
-        {
-            return context.Comment.Where(s => s.Student == student).ToList();
-        }
         //TODO: FINISH ME
         private bool IsValid(Student student)
         {
