@@ -33,7 +33,7 @@ namespace RecruiterPathway.Models
 
         //std::map<std::string,std::string>
         //Map of student id's to their pipeline status.
-        public virtual ICollection<PipelineStatus> PipelineStatus { get; set; }
+        public virtual ICollection<PipelineStatus> PipelineStatuses { get; set; }
 
     }
 }

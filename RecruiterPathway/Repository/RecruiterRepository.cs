@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using RecruiterPathway.Data;
 using RecruiterPathway.Models;
 using System;
@@ -28,6 +29,11 @@ namespace RecruiterPathway.Repository
             }
             return false;
         }
+
+        override async public ValueTask<Recruiter> GetById(object id)
+        {
+            return await context.Recruiter.Include(p => p.PipelineStatuses).Include(w => w.WatchList).FirstOrDefaultAsync(r => r.Id == (string)id);
+        }
         override async public void SignOutRecruiter()
         {
             await authManager.SignOutAsync();
@@ -55,38 +61,17 @@ namespace RecruiterPathway.Repository
             return await userManager.FindByNameAsync(name);
         }
 
-        override async public Task<PipelineStatus> GetPipelineStatus(string recruiterId, string studentId) 
-        {
-            var recruiter = await GetById(recruiterId);
-            //Assuming that there's only 1 for each student. This should be enforced in the set method.
-            var pstatus = recruiter.PipelineStatus.First(p => p.StudentId == studentId);
-            return pstatus;
-        }
-        //Lazy aliases, TODO: remove unused ones
-        override async public Task<PipelineStatus> GetPipelineStatus(Recruiter recruiter, Student student)
-        {
-            return await GetPipelineStatus(recruiter.Id, student.Id);
-        }
-        override async public Task<PipelineStatus> GetPipelineStatus(string recruiterId, Student student)
-        {
-            return await GetPipelineStatus(recruiterId, student.Id);
-        }
-        override async public Task<PipelineStatus> GetPipelineStatus(Recruiter recruiter, string studentId)
-        {
-            return await GetPipelineStatus(recruiter.Id, studentId);
-        }
-
         override async public Task<bool> SetPipelineStatus(string recruiterId, string studentId, string status)
         {
             var recruiter = await GetById(recruiterId);
-            var pstatus = await GetPipelineStatus(recruiterId, studentId);
+            var pstatus = recruiter.PipelineStatuses.Where(r => r.RecruiterId == recruiterId).FirstOrDefault(r => r.StudentId == studentId);
             if (pstatus == null)
             {
-                recruiter.PipelineStatus.Add(new PipelineStatus(studentId, status));
+                context.PipelineStatus.Add(new PipelineStatus(studentId, status));
                 return true;
             }
-            recruiter.PipelineStatus.Remove(pstatus);
-            recruiter.PipelineStatus.Add(new PipelineStatus(studentId, status));
+            context.PipelineStatus.Remove(pstatus);
+            context.PipelineStatus.Add(new PipelineStatus(studentId, status));
             return true;
         }
         override async public Task<bool> SetPipelineStatus(Recruiter recruiter, Student student, string status)
