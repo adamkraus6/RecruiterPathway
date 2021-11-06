@@ -22,8 +22,11 @@ namespace RecruiterPathway.Repository
             Func<IQueryable<TModel>, IOrderedQueryable<TModel>> orderBy = null,
             string includeProperties = "")
         {
-            IQueryable<TModel> query = set;
-
+            IQueryable<TModel> query;
+            lock (set)
+            {
+                 query = set;
+            }
             if (filter != null)
             {
                 query = query.Where(filter);
@@ -76,16 +79,26 @@ namespace RecruiterPathway.Repository
         }
         public async virtual Task Delete(TModel obj)
         {
-            context.Attach(obj);
-            context.Remove(obj);
+            lock (context)
+            {
+                context.Attach(obj);
+                context.Remove(obj);
+            }
             Save();
             Console.WriteLine("Called Delete(obj)");
         }
         async public virtual Task Delete(object id)
         {
             TModel model = await GetById(id);
-            context.Attach(model);
-            context.Remove(model);
+            if (model == null)
+            {
+                return;
+            }
+            lock (context)
+            {
+                context.Attach(model);
+                context.Remove(model);
+            }
             Save();
         }
         public async Task Update(TModel obj)

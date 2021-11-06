@@ -256,16 +256,16 @@ namespace RecruiterPathway.Controllers
             }
             foreach (var comment in student.Comments)
             {
-                var recruiter = await recruiterRepo.GetById(comment.RecruiterId);
+                var recruiter = comment.Recruiter;
                 Comments.Add(Tuple.Create(recruiter.Name, comment.Time, comment.ActualComment));
             }
             var viewModel = new NewStudentViewModel { Student = await repository.GetById(id), CommentView = Comments };
             return View(viewModel);
         }
 
-        [HttpPost, ActionName("Comment")]
+        [HttpPost, ActionName("AddComment")]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Comment(string recruiterId, string studentId, string comment)
+        public async Task<IActionResult> AddComment(string recruiterId, string studentId, string comment)
         {
             await repository.AddComment(new CommentViewModel {Comment = new Comment (recruiterId, studentId, comment)});
             return RedirectToAction(nameof(Index));

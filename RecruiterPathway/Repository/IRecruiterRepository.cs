@@ -22,9 +22,9 @@ namespace RecruiterPathway.Repository
 
         //Watchlist Functions - Enforces Only 1 in the list
         public abstract Task AddWatch(Recruiter recruiter, Student student);
-        public abstract Task AddWatch(string recruiterId, string studentId);
+        public abstract Task AddWatch(string recruiterId, Student studentId);
         public abstract Task RemoveWatch(Recruiter recruiter, Student student);
-        public abstract Task RemoveWatch(string recruiterId, string studentId);
+        public abstract Task RemoveWatch(string recruiterId, Student studentId);
 
     }
 }

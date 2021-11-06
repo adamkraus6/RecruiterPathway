@@ -29,7 +29,7 @@ namespace RecruiterPathway.Models
         //These datafields are recruiter specific and only show for this recruiter.
 
         //A list of student Ids that are being watched by this recruiter. In this list means they are being watched
-        public virtual ICollection<string> WatchList { get; set; }
+        public virtual ICollection<Watch> WatchList { get; set; }
 
         //std::map<std::string,std::string>
         //Map of student id's to their pipeline status.

@@ -32,27 +32,6 @@ namespace RecruiterPathway.Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //Yay for stackoverflow https://stackoverflow.com/a/53703521
-            builder.Entity<Recruiter>()
-                .Property(p => p.WatchList)
-                .HasConversion(e => string.Join('|', e), e => e.Split('|', StringSplitOptions.RemoveEmptyEntries));
-            builder.Entity<PipelineStatus>()
-                .HasOne(r => r.Recruiter)
-                .WithMany(p => p.PipelineStatuses)
-                .HasForeignKey(r => r.RecruiterId)
-                .OnDelete(DeleteBehavior.Cascade);
-            //ToTable from https://stackoverflow.com/a/60958165 in relation to crashing on adding a comment
-            builder.Entity<Comment>()
-                .ToTable("Comment")
-                .HasOne(s => s.Student)
-                .WithMany(b => b.Comments)
-                .HasForeignKey(i => i.StudentId)
-                .OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Student>()
-                .HasMany(c => c.Comments)
-                .WithOne(s => s.Student)
-                .HasForeignKey(i => i.StudentId)
-                .OnDelete(DeleteBehavior.Cascade);
             base.OnModelCreating(builder);
         }
 

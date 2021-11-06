@@ -44,6 +44,10 @@ namespace RecruiterPathway.Repository
         override async public Task Delete(object id)
         {
             var student = await GetById(id);
+            if (student == null)
+            {
+                return;
+            }
             if (student.Comments != null)
             {
                 student.Comments.Clear();
@@ -53,7 +57,11 @@ namespace RecruiterPathway.Repository
         public override async Task AddComment(CommentViewModel view)
         {
             //context.Student.Include(p => p.comments).FirstOrDefault();
-            var student = await GetById(view.Comment.StudentId);
+            var student = view.Comment.Student;
+            if (student == null)
+            {
+                return;
+            }
             if (student.Comments == null)
             {
                 student.Comments = new List<Comment>();
@@ -63,11 +71,6 @@ namespace RecruiterPathway.Repository
         }
         public override void RemoveComment(CommentViewModel view)
         {
-            var student = view.Comment.Student;
-            if (student.Comments == null)
-            {
-                return;
-            }
             context.Comment.Remove(view.Comment);
             Save();
         }
