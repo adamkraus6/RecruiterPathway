@@ -267,7 +267,7 @@ namespace RecruiterPathway.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> AddComment(string recruiterId, string studentId, string comment)
         {
-            await repository.AddComment(new CommentViewModel {Comment = new Comment (recruiterId, studentId, comment)});
+            await repository.AddComment(new CommentViewModel {Comment = new Comment (await recruiterRepo.GetById(recruiterId), await repository.GetById(studentId), comment)});
             return RedirectToAction(nameof(Index));
         }
 

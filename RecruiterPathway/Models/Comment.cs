@@ -8,14 +8,18 @@ namespace RecruiterPathway.Models
     public class Comment
     {
         public Comment() { }
-        public Comment(string RecruiterId, string StudentId, DateTime Time, string ActualComment)
+        public Comment(Recruiter Recruiter, Student Student, DateTime Time, string ActualComment)
         {
+            this.Recruiter = Recruiter;
+            this.Student = Student;
             this.Id = Guid.NewGuid().ToString();
             this.Time = Time;
             this.ActualComment = ActualComment;
         }
-        public Comment(string RecruiterId, string StudentId, string ActualComment)
+        public Comment(Recruiter Recruiter, Student Student, string ActualComment)
         {
+            this.Recruiter = Recruiter;
+            this.Student = Student;
             this.Id = Guid.NewGuid().ToString();
             this.Time = DateTime.UtcNow;
             this.ActualComment = ActualComment;

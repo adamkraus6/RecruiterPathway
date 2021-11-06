@@ -83,8 +83,9 @@ namespace RecruiterPathway.Tests
         public async void SetPipelineStatus()
         {
             var repository = MockedDatabase.GetRecruiterRepository();
+            var studentRepo = MockedDatabase.GetStudentRepository();
 
-            var result = await repository.SetPipelineStatus(Constants.AdminRecruiter.Id, "1", "inprogress");
+            var result = await repository.SetPipelineStatus(Constants.AdminRecruiter.Id, await studentRepo.GetById("1"), "inprogress");
             Assert.True(result);
 
             var recruiter = await repository.GetById(Constants.AdminRecruiter.Id);

@@ -7,10 +7,13 @@ namespace RecruiterPathway.Models
 {
     public class PipelineStatus
     {
-        public PipelineStatus(string StudentId, string Status)
+        public PipelineStatus() { }
+        public PipelineStatus(Student student, Recruiter recruiter, string status)
         {
+            this.Student = student;
+            this.Recruiter = recruiter;
             this.Id = Guid.NewGuid().ToString();
-            this.Status = Status;
+            this.Status = status;
         }
         public string Id { get; set; }
         public virtual Recruiter Recruiter { get; set; }

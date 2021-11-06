@@ -110,9 +110,9 @@ namespace RecruiterPathway.Tests
         public async void AddComment()
         {
             var repository = MockedDatabase.GetStudentRepository();
+            var recruiterRepo = MockedDatabase.GetRecruiterRepository();
 
-            var commentId = Guid.NewGuid().ToString();
-            var comment = new Comment(commentId, "1", "Test");
+            var comment = new Comment(await recruiterRepo.GetById(Constants.AdminRecruiter.Id), await repository.GetById("1"), "Test");
 
             await repository.AddComment(new ViewModels.CommentViewModel { Comment = comment });
 

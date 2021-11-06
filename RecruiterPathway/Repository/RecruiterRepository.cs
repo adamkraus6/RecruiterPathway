@@ -67,26 +67,26 @@ namespace RecruiterPathway.Repository
             return await userManager.FindByNameAsync(name);
         }
 
-        override async public Task<bool> SetPipelineStatus(string recruiterId, string studentId, string status)
+        override async public Task<bool> SetPipelineStatus(string recruiterId, Student student, string status)
         {
             var recruiter = await GetById(recruiterId);
             if (recruiter == null)
             {
                 return false;
             }
-            var pstatus = recruiter.PipelineStatuses.Where(r => r.Recruiter == recruiter).FirstOrDefault(r => r.Student.Id == studentId);
+            var pstatus = recruiter.PipelineStatuses.Where(r => r.Recruiter == recruiter).FirstOrDefault(r => r.Student == student);
             if (pstatus == null)
             {
-                context.PipelineStatus.Add(new PipelineStatus(studentId, status));
+                context.PipelineStatus.Add(new PipelineStatus(student, recruiter, status));
                 return true;
             }
             context.PipelineStatus.Remove(pstatus);
-            context.PipelineStatus.Add(new PipelineStatus(studentId, status));
+            context.PipelineStatus.Add(new PipelineStatus(student, recruiter, status));
             return true;
         }
         override async public Task<bool> SetPipelineStatus(Recruiter recruiter, Student student, string status)
         {
-            return await SetPipelineStatus(recruiter.Id, student.Id, status);
+            return await SetPipelineStatus(recruiter.Id, student, status);
         }
         override async public Task AddWatch(Recruiter recruiter, Student student)
         {
