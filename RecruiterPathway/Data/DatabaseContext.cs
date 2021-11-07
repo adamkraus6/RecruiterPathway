@@ -17,6 +17,7 @@ namespace RecruiterPathway.Data
             this.Recruiter = context.Recruiter;
             this.Student = context.Student;
             this.Comment = context.Comment;
+            this.WatchList = context.WatchList;
             this.PipelineStatus = context.PipelineStatus;
             this.options = context.options;
         }
@@ -25,14 +26,11 @@ namespace RecruiterPathway.Data
 
         public virtual DbSet<Comment> Comment { get; set; }
         public virtual DbSet<PipelineStatus> PipelineStatus { get; set; }
+        public virtual DbSet<Watch> WatchList { get; set; }
         //Workaround since dependency injection did not like the copy constructor public.
         public DatabaseContext Copy()
         {
             return new DatabaseContext(this);
-        }
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
         }
 
     }

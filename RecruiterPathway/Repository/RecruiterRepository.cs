@@ -23,12 +23,8 @@ namespace RecruiterPathway.Repository
 
         override async public Task<bool> Insert(Recruiter recruiter) 
         {
-            if (IsValid(recruiter))
-            {
-                await userManager.CreateAsync(recruiter, recruiter.PasswordHash);
-                return true;
-            }
-            return false;
+            await userManager.CreateAsync(recruiter, recruiter.PasswordHash);
+            return true;
         }
 
         override public async ValueTask<Recruiter> GetById(object id)
@@ -104,9 +100,9 @@ namespace RecruiterPathway.Repository
                 recruiter.WatchList = new List<Watch>();
             }
             var watch = new Watch { Recruiter = recruiter, Id = Guid.NewGuid().ToString(), Student = student };
-            if (!recruiter.WatchList.Contains(watch))
+            if (!context.WatchList.Contains(watch))
             {
-                recruiter.WatchList.Add(watch);
+                context.WatchList.Add(watch);
             }
         }
         override async public Task RemoveWatch(Recruiter recruiter, Student student) 
@@ -120,16 +116,7 @@ namespace RecruiterPathway.Repository
             {
                 return;
             }
-            recruiter.WatchList.Remove(recruiter.WatchList.FirstOrDefault(w => w.Student == student));
-        }
-        private bool IsValid(Recruiter student)
-        {
-            return true;
-        }
-
-        private bool exists(string id)
-        {
-            return context.Recruiter.Any(e => e.Id == id);
-        }       
+           context.WatchList.Remove(recruiter.WatchList.FirstOrDefault(w => w.Student == student));
+        }   
     }
 }

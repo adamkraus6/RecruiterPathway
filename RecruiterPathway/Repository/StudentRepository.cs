@@ -29,17 +29,10 @@ namespace RecruiterPathway.Repository
         }
         override public async Task<bool> Insert(Student student)
         {
-            if (IsValid(student))
-            {
+            await set.AddAsync(student);
+            Save();
+            return true;
 
-                await set.AddAsync(student);
-
-                //context.Student.Add(student);
-                Save();
-                Console.WriteLine("called insert(student)");
-                return true;
-            }
-            return false;
         }
         override async public Task Delete(object id)
         {
@@ -56,7 +49,6 @@ namespace RecruiterPathway.Repository
         }
         public override async Task AddComment(CommentViewModel view)
         {
-            //context.Student.Include(p => p.comments).FirstOrDefault();
             var student = view.Comment.Student;
             if (student == null)
             {
@@ -73,11 +65,6 @@ namespace RecruiterPathway.Repository
         {
             context.Comment.Remove(view.Comment);
             Save();
-        }
-        //TODO: FINISH ME
-        private bool IsValid(Student student)
-        {
-            return true;
         }
     }
 }
