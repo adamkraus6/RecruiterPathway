@@ -6,7 +6,7 @@
 <div>
     <div>
         <img src="~/profile_pictures/default.png" alt="ProfilePicture" align="left" height="200" width="200" />
-        <h2>@Html.DisplayFor(model=> model.Recruiter.Name)</h2>
+        <h2>@Html.DisplayFor(model => model.Recruiter.Name)</h2>
     </div>
     <br />
     <div>
@@ -35,3 +35,41 @@
 <div>
     <a class="btn btn-primary btn-small" asp-action="Edit" asp-route-id="@Model.Recruiter.Id">Edit</a>
 </div>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.WatchList.ElementAt(0).Student.firstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.WatchList.ElementAt(0).Student.lastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.WatchList.ElementAt(0).Student.degree)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.WatchList.ElementAt(0).Student.gradDate)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Recruiter.WatchList)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Student.firstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Student.lastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Student.degree)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Student.gradDate)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

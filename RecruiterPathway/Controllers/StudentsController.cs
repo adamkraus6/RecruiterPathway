@@ -260,7 +260,7 @@ namespace RecruiterPathway.Controllers
             var student = await repository.GetById(id);
             if(string.IsNullOrEmpty(studentViewModel.AddCommentText))
             {
-
+                // empty comment, error message TODO
             }
             var comment = new Comment(await recruiterRepo.GetSignedInRecruiter(HttpContext.User), student, studentViewModel.AddCommentText);
             var studentVM = new StudentViewModel
@@ -270,6 +270,51 @@ namespace RecruiterPathway.Controllers
             };
 
             await repository.AddComment(studentVM);
+
+            return Redirect("~/Students/Details/" + id);
+        }
+
+        // Get: Students/AddToWatchList/5
+        public async Task<IActionResult> AddToWatchList(string id)
+        {
+            var studentVM = new StudentViewModel
+            {
+                Student = await repository.GetById(id)
+            };
+
+            return View(studentVM);
+        }
+
+        // POST: Students/AddToWatchList/5
+        [HttpPost, ActionName("AddToWatchList")]
+        public async Task<IActionResult> AddToWatchList(string id, StudentViewModel studentViewModel)
+        {
+            var student = await repository.GetById(id);
+            var recruiter = await recruiterRepo.GetSignedInRecruiter(HttpContext.User);
+            await recruiterRepo.AddWatch(recruiter, student);
+
+            return Redirect("~/Recruiters/Profile");
+        }
+
+        // Get: Students/AddPipelineStatus/5
+        public async Task<IActionResult> AddPipelineStatus(string id)
+        {
+            var studentVM = new StudentViewModel
+            {
+                Student = await repository.GetById(id)
+                //Statuses
+            };
+
+            return View(studentVM);
+        }
+
+        // POST: Students/AddPipelineStatus/5
+        [HttpPost, ActionName("AddPipelineStatus")]
+        public async Task<IActionResult> AddPipelineStatus(string id, StudentViewModel studentViewModel)
+        {
+            var student = await repository.GetById(id);
+            var recruiter = await recruiterRepo.GetSignedInRecruiter(HttpContext.User);
+            await recruiterRepo.SetPipelineStatus(recruiter, student, studentViewModel.PipelineStatus == "newStatus" ? studentViewModel.NewPipelineStatus : studentViewModel.PipelineStatus);
 
             return Redirect("~/Students/Details/" + id);
         }

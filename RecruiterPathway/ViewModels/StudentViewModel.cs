@@ -24,8 +24,11 @@ namespace RecruiterPathway.ViewModels
         public SelectList SortOptions { get; set; }
         public string SortBy { get; set; }
 
-        public List<Tuple<string, DateTime, string>> CommentView { get; set; }
         public Comment Comment;
         public string AddCommentText { get; set; }
+
+        public SelectList Statuses { get; set; }
+        public string PipelineStatus { get; set; }
+        public string NewPipelineStatus { get; set; }
     }
 }
