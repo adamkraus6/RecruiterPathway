@@ -130,11 +130,11 @@ namespace RecruiterPathway.Tests
             Assert.IsAssignableFrom<IActionResult>(result.Result);
         }
         [Fact]
-        public static void PostDelete()
+        public async static void PostDelete()
         {
             var controller = MockedDatabase.GetStudentsController();
 
-            var result = controller.DeleteConfirmed("1");
+            var result = await controller.DeleteConfirmed("1");
 
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IActionResult>(result);

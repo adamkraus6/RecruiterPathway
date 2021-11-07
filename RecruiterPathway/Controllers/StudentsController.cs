@@ -8,19 +8,22 @@ using RecruiterPathway.Repository;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using RecruiterPathway.ViewModels;
 
 namespace RecruiterPathway.Controllers
 {
     //Force authorization to view ANYTHING on the student controller
-    [Authorize]
+    //[Authorize]
     public class StudentsController : Controller
     {
-        private IStudentRepository repository;
+        private readonly IStudentRepository repository;
+        private readonly IRecruiterRepository recruiterRepo;
         private int i = 1;
-        private string[] sortOptions = { "First Name", "Last Name", "Degree", "Graduation Date" };
-        public StudentsController(IStudentRepository repository)
+        private readonly string[] sortOptions = { "First Name", "Last Name", "Degree", "Graduation Date" };
+        public StudentsController(IStudentRepository repository, IRecruiterRepository recruiterRepo)
         {
             this.repository = repository;
+            this.recruiterRepo = recruiterRepo;
         }
 
         // GET: Students
@@ -48,7 +51,7 @@ namespace RecruiterPathway.Controllers
                 students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.gradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.gradDate) >= 0);
             }
 
-            switch(studentViewModel.SortBy)
+            switch (studentViewModel.SortBy)
             {
                 default:
                     break;
@@ -195,7 +198,7 @@ namespace RecruiterPathway.Controllers
 
             if (ModelState.IsValid)
             {
-                repository.Update(studentViewModel.Student);
+                await repository.Update(studentViewModel.Student);
                 repository.Save();
                 return RedirectToAction(nameof(Index));
             }
@@ -233,11 +236,41 @@ namespace RecruiterPathway.Controllers
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            repository.Delete(id);
+            await repository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> NewView(string id)
+        {
+            var student = await repository.GetById(id);
+            if (student == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            List<Tuple<string, DateTime, string>> Comments = new();
+            if (student.Comments == null)
+            {
+                return View(new NewStudentViewModel { CommentView = new List<Tuple<string, DateTime, string>>() });
+            }
+            foreach (var comment in student.Comments)
+            {
+                var recruiter = comment.Recruiter;
+                Comments.Add(Tuple.Create(recruiter.Name, comment.Time, comment.ActualComment));
+            }
+            var viewModel = new NewStudentViewModel { Student = await repository.GetById(id), CommentView = Comments };
+            return View(viewModel);
+        }
+
+        [HttpPost, ActionName("AddComment")]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddComment(string recruiterId, string studentId, string comment)
+        {
+            await repository.AddComment(new CommentViewModel {Comment = new Comment (await recruiterRepo.GetById(recruiterId), await repository.GetById(studentId), comment)});
+            return RedirectToAction(nameof(Index));
+        }
+
         protected override void Dispose(bool disposing)
         {
             repository.Dispose();

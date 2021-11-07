@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,15 @@ namespace RecruiterPathway.Models
         override public string UserName { get; set; }
         [Display(Name = "Remember Me")]
         public bool RememberMe { get; set; }
+        
+        //These datafields are recruiter specific and only show for this recruiter.
+
+        //A list of student Ids that are being watched by this recruiter. In this list means they are being watched
+        public virtual ICollection<Watch> WatchList { get; set; }
+
+        //std::map<std::string,std::string>
+        //Map of student id's to their pipeline status.
+        public virtual ICollection<PipelineStatus> PipelineStatuses { get; set; }
 
     }
 }

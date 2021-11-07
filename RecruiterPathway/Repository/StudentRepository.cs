@@ -6,10 +6,12 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 using System.Threading;
+using RecruiterPathway.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace RecruiterPathway.Repository
 {
-    public class StudentRepository : IStudentRepository, IDisposable
+    public class StudentRepository : IStudentRepository
     {
         public StudentRepository(DatabaseContext context) : base(context) { }
 
@@ -21,35 +23,48 @@ namespace RecruiterPathway.Repository
             return new SelectList(degreeQuery.Distinct());
         }
 
+        override public async ValueTask<Student> GetById(object id)
+        {
+            return await context.Student.Include(c => c.Comments).FirstOrDefaultAsync(s => s.Id == (string)id);
+        }
         override public async Task<bool> Insert(Student student)
         {
-            if (IsValid(student))
-            {
-
-                await set.AddAsync(student);
-
-                context.Student.Add(student);
-                Save();
-                return true;
-            }
-            return false;
-        }
-        override public void Save()
-        {
-            context.Student = set;
-            base.Save();
-        }
-
-        //TODO: FINISH ME
-        private bool IsValid(Student student)
-        {
+            await set.AddAsync(student);
+            Save();
             return true;
-        }
 
-        //TODO: FINISH ME
-        private bool exists(object id)
+        }
+        override async public Task Delete(object id)
         {
-            return set.Any(e => e.Id.Equals(id));
+            var student = await GetById(id);
+            if (student == null)
+            {
+                return;
+            }
+            if (student.Comments != null)
+            {
+                student.Comments.Clear();
+            }
+            await base.Delete(id);
+        }
+        public override async Task AddComment(CommentViewModel view)
+        {
+            var student = view.Comment.Student;
+            if (student == null)
+            {
+                return;
+            }
+            if (student.Comments == null)
+            {
+                student.Comments = new List<Comment>();
+            }
+            context.Comment.Add(view.Comment);
+            Save();
+        }
+        public override void RemoveComment(CommentViewModel view)
+        {
+            context.Comment.Remove(view.Comment);
+            Save();
         }
     }
 }

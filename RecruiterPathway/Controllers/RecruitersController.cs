@@ -143,7 +143,7 @@ namespace RecruiterPathway.Controllers
                     return View(recruiterVM);
                 }
 
-                Recruiter rec = new Recruiter()
+                Recruiter rec = new()
                 {
                     UserName = recruiter.UserName,
                     Id = Guid.NewGuid().ToString(),
@@ -229,7 +229,7 @@ namespace RecruiterPathway.Controllers
                 userExists.UserName = recruiter.UserName;
                 //userExists.PasswordHash = model.PasswordHash;
                 userExists.PhoneNumber = recruiter.PhoneNumber;
-                repository.Update(userExists);
+                await repository.Update(userExists);
                 repository.Save();
                 
                 return RedirectToAction(nameof(List));
@@ -282,7 +282,7 @@ namespace RecruiterPathway.Controllers
             }
             if (id == self.Id || self.Email == "administrator@recruiterpathway.com")
             {
-                repository.Delete(id);
+                await repository.Delete(id);
                 repository.SignOutRecruiter();
                 repository.Save();
             }

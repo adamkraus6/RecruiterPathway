@@ -22,8 +22,11 @@ namespace RecruiterPathway.Repository
             Func<IQueryable<TModel>, IOrderedQueryable<TModel>> orderBy = null,
             string includeProperties = "")
         {
-            IQueryable<TModel> query = set;
-
+            IQueryable<TModel> query;
+            lock (set)
+            {
+                 query = set;
+            }
             if (filter != null)
             {
                 query = query.Where(filter);
@@ -53,7 +56,7 @@ namespace RecruiterPathway.Repository
             }
             return await result;
         }
-        async public ValueTask<TModel> GetById(object id)
+        async virtual public ValueTask<TModel> GetById(object id)
         {
             ValueTask<TModel> result;
             lock (set)
@@ -74,32 +77,40 @@ namespace RecruiterPathway.Repository
             await set.AddAsync(obj);
             return true;
         }
-        public virtual void Delete(TModel obj)
-        {
-            set.Remove(obj);
-            Save();
-        }
-        async public virtual void Delete(object id)
-        {
-            TModel model = await GetById(id);
-            lock (set)
-            {
-                set.Remove(model);
-            }
-            Save();
-        }
-        public async void Update(TModel obj)
-        {
-            Delete(obj);
-            await Insert(obj);
-            Save();
-        }
-        public virtual void Save()
+        public async virtual Task Delete(TModel obj)
         {
             lock (context)
             {
-                context.SaveChanges();
+                context.Attach(obj);
+                context.Remove(obj);
             }
+            Save();
+            Console.WriteLine("Called Delete(obj)");
+        }
+        async public virtual Task Delete(object id)
+        {
+            TModel model = await GetById(id);
+            if (model == null)
+            {
+                return;
+            }
+            lock (context)
+            {
+                context.Attach(model);
+                context.Remove(model);
+            }
+            Save();
+        }
+        public async Task Update(TModel obj)
+        {
+            context.Entry(obj).State = EntityState.Modified;
+            Save();
+            Console.WriteLine("called update(obj)");
+        }
+        public virtual void Save()
+        {
+            var updated = context.SaveChanges();
+            Console.WriteLine("updated " + updated);
         }
 
         private bool disposed = false;

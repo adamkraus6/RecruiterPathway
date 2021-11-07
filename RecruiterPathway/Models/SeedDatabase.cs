@@ -101,7 +101,9 @@ namespace RecruiterPathway.Models
                                 PhoneNumber = values[3],
                                 Email = values[1].Replace(' ','.') + "@" + values[2].ToLower() + ".com",
                                 UserName = values[1].Replace(' ', '.') + "@" + values[2].ToLower() + ".com",
-                                Password = values[4] + "!Ar8"
+                                Password = values[4] + "!Ar8",
+                                WatchList = new List<Watch>(),
+                                PipelineStatuses = new List<PipelineStatus>()
                             };
                         var test = context.Recruiter.Where(r => r.Id == values[0]);
                         if (test != null)
@@ -153,7 +155,7 @@ namespace RecruiterPathway.Models
                         {
                             return;
                         }
-                        
+
                         context.Student.AddRange(
                             new Student
                             {
@@ -161,7 +163,8 @@ namespace RecruiterPathway.Models
                                 firstName = values[0],
                                 lastName = values[1],
                                 degree = values[2],
-                                gradDate = DateTime.Parse(values[3])
+                                gradDate = DateTime.Parse(values[3]),
+                                Comments = new List<Comment>()
                             }
                         );
 
@@ -173,17 +176,7 @@ namespace RecruiterPathway.Models
         }
         public static void SeedRecruiters(DatabaseContext context, UserManager<Recruiter> userManager, ref List<string> guids) {
             var assembly = Assembly.GetExecutingAssembly();
-            var adminuser = new Recruiter
-            {
-                UserName = "administrator@recruiterpathway.com",
-                Email = "administrator@recruiterpathway.com",
-                Name = "Administrator",
-                CompanyName = "Recruiter Pathway",
-                PhoneNumber = "6055555555",
-                Password = "P@$$w0rd",
-                Id = "d2166836-4ce9-4b8e-98dd-b102c00f06f8",
-                SecurityStamp = "32179209-a914-40ad-b052-bff23fe90fc4"
-            };
+            var adminuser = Constants.AdminRecruiter;
             userManager.DeleteAsync(adminuser);
             try
             {
@@ -213,7 +206,9 @@ namespace RecruiterPathway.Models
                             PhoneNumber = values[3],
                             Email = values[1].Replace(' ', '.') + "@" + values[2].ToLower() + ".com",
                             UserName = values[1].Replace(' ', '.') + "@" + values[2].ToLower() + ".com",
-                            Password = values[4] + "!Ar8"
+                            Password = values[4] + "!Ar8",
+                            WatchList = new List<Watch>(),
+                            PipelineStatuses = new List<PipelineStatus>()
                         };
                     var test = context.Recruiter.Where(r => r.Id == values[0]);
                     if (test != null)

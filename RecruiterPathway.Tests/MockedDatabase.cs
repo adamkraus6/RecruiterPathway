@@ -33,9 +33,15 @@ namespace RecruiterPathway.Tests
                         seeded = true;
                     }
                 }
+                lock (dbContext)
+                {
+                    return dbContext.Copy();
+                }
+            }
+            lock (dbContext)
+            {
                 return dbContext.Copy();
             }
-            return dbContext.Copy();
         }
         public static Mock<UserManager<Recruiter>> GetRecruiterUserManager()
         {
@@ -83,7 +89,7 @@ namespace RecruiterPathway.Tests
         }
         public static StudentsController GetStudentsController()
         {
-            return new StudentsController(GetStudentRepository());
+            return new StudentsController(GetStudentRepository(), GetRecruiterRepository());
         }
         public static RecruitersController GetRecruitersController()
         {
