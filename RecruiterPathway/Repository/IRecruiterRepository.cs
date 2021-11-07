@@ -18,13 +18,13 @@ namespace RecruiterPathway.Repository
 
         //Pipeline Status methods, setup this way since IDK how the actual final setup will work
         public abstract Task<bool> SetPipelineStatus(Recruiter recruiter, Student student, string status);
-        public abstract Task<bool> SetPipelineStatus(string recruiterId, Student studentId, string status);
+        public abstract Task<bool> SetPipelineStatus(string recruiterId, Student student, string status);
 
         //Watchlist Functions - Enforces Only 1 in the list
         public abstract Task AddWatch(Recruiter recruiter, Student student);
-        public abstract Task AddWatch(string recruiterId, Student studentId);
+        public abstract Task AddWatch(string recruiterId, Student student);
         public abstract Task RemoveWatch(Recruiter recruiter, Student student);
-        public abstract Task RemoveWatch(string recruiterId, Student studentId);
+        public abstract Task RemoveWatch(string recruiterId, Student student);
 
     }
 }

@@ -4,6 +4,7 @@ using RecruiterPathway.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace RecruiterPathway.Tests
@@ -11,17 +12,12 @@ namespace RecruiterPathway.Tests
     public class StudentTests
     {
         [Fact]
-        public void GetById_Ret_Product()
+        public async Task GetById_Ret_Product()
         {
             var repository = MockedDatabase.GetStudentRepository();
-            var idTest = repository.GetById("1");
-            while (!idTest.IsCompleted)
-            {
-                Thread.Sleep(1);
-            }
-            var result = idTest.Result;
-            Assert.NotNull(result);
-            Assert.IsAssignableFrom<Student>(result);
+            var idTest = await repository.GetById("1");
+            Assert.NotNull(idTest);
+            Assert.IsAssignableFrom<Student>(idTest);
         }
         [Fact]
         public void GetAll_Ret_Product()

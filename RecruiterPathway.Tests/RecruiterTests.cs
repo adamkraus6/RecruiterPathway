@@ -113,7 +113,10 @@ namespace RecruiterPathway.Tests
             Student student = await studentRepo.GetById("1");
             await repository.AddWatch(Constants.AdminRecruiter.Id, student);
             var recruiter = await repository.GetById(Constants.AdminRecruiter.Id);
-
+            if (recruiter == null)
+            {
+                return;
+            }
             if (recruiter.WatchList == null)
             {
                 Assert.Null(recruiter.WatchList);
