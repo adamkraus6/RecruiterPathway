@@ -2,9 +2,9 @@
 using RecruiterPathway.Data;
 using RecruiterPathway.Models;
 using System;
-using RecruiterPathway.ViewModels;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using RecruiterPathway.ViewModels;
 
 namespace RecruiterPathway.Repository
 {
@@ -12,8 +12,8 @@ namespace RecruiterPathway.Repository
     {
         protected IStudentRepository(DatabaseContext context) : base(context, context.Student){}
         public abstract SelectList GetStudentDegrees();
-        public abstract Task AddComment(CommentViewModel view);
-        public abstract void RemoveComment(CommentViewModel view);
+        public abstract Task AddComment(StudentViewModel studentViewModel);
+        public abstract void RemoveComment(StudentViewModel studentViewModel);
         //public abstract void UpdateComment(CommentViewModel view);
     }
 }

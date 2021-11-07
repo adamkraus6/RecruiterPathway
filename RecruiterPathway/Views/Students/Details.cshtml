@@ -1,4 +1,4 @@
-﻿@model RecruiterPathway.Models.StudentViewModel
+﻿@model RecruiterPathway.ViewModels.StudentViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -38,5 +38,41 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Student.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back to List</a> |
+    <a asp-action="AddComment" asp-route-id="@Model.Student.Id">Add Comment</a>
 </div>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Commented At:
+            </th>
+            <th>
+                Comment Left By:
+            </th>
+            <th>
+                Comment:
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Student.Comments)
+        {
+            <tr>
+                <td>
+                    @{ 
+                        var date = item.Time.ToShortDateString() + " at " + item.Time.ToShortTimeString();
+                    }
+                    @Html.DisplayFor(modelItem => date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Recruiter.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActualComment)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

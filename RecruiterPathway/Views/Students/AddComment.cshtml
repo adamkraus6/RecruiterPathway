@@ -1,0 +1,14 @@
+﻿@model RecruiterPathway.ViewModels.StudentViewModel
+@{
+    ViewData["Title"] = "Add Comment";
+}
+
+<h1>Add Comment</h1>
+<h3>@Html.DisplayFor(model => model.Student.firstName) @Html.DisplayFor(model => model.Student.lastName)</h3>
+<form asp-controller="Students" asp-action="AddComment">
+    <p>
+        <label>Comment:</label> <input type="text" asp-for="AddCommentText" />
+        <br />
+        <input type="submit" value="Submit Comment" />
+    </p>
+</form>

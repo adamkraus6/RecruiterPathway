@@ -13,7 +13,7 @@ using RecruiterPathway.ViewModels;
 namespace RecruiterPathway.Controllers
 {
     //Force authorization to view ANYTHING on the student controller
-    //[Authorize]
+    [Authorize]
     public class StudentsController : Controller
     {
         private readonly IStudentRepository repository;
@@ -242,33 +242,36 @@ namespace RecruiterPathway.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> NewView(string id)
+        // GET: Students/AddComment/5
+        public async Task<IActionResult> AddComment(string id)
         {
-            var student = await repository.GetById(id);
-            if (student == null)
+            var studentVM = new StudentViewModel
             {
-                return RedirectToAction(nameof(Index));
-            }
-            List<Tuple<string, DateTime, string>> Comments = new();
-            if (student.Comments == null)
-            {
-                return View(new NewStudentViewModel { CommentView = new List<Tuple<string, DateTime, string>>() });
-            }
-            foreach (var comment in student.Comments)
-            {
-                var recruiter = comment.Recruiter;
-                Comments.Add(Tuple.Create(recruiter.Name, comment.Time, comment.ActualComment));
-            }
-            var viewModel = new NewStudentViewModel { Student = await repository.GetById(id), CommentView = Comments };
-            return View(viewModel);
+                Student = await repository.GetById(id)
+            };
+
+            return View(studentVM);
         }
 
+        // POST: Students/AddComment/5
         [HttpPost, ActionName("AddComment")]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddComment(string recruiterId, string studentId, string comment)
+        public async Task<IActionResult> AddComment(string id, StudentViewModel studentViewModel)
         {
-            await repository.AddComment(new CommentViewModel {Comment = new Comment (await recruiterRepo.GetById(recruiterId), await repository.GetById(studentId), comment)});
-            return RedirectToAction(nameof(Index));
+            var student = await repository.GetById(id);
+            if(string.IsNullOrEmpty(studentViewModel.AddCommentText))
+            {
+
+            }
+            var comment = new Comment(await recruiterRepo.GetSignedInRecruiter(HttpContext.User), student, studentViewModel.AddCommentText);
+            var studentVM = new StudentViewModel
+            {
+                Student = student,
+                Comment = comment
+            };
+
+            await repository.AddComment(studentVM);
+
+            return Redirect("~/Students/Details/" + id);
         }
 
         protected override void Dispose(bool disposing)
