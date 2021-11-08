@@ -36,6 +36,7 @@
     <a class="btn btn-primary btn-small" asp-action="Edit" asp-route-id="@Model.Recruiter.Id">Edit</a>
 </div>
 <br />
+<h6>Recruiter Watchlist:</h6>
 <table class="table">
     <thead>
         <tr>
@@ -54,22 +55,30 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Recruiter.WatchList)
-        {
+    </tbody>
+</table>
+<h6>Pipeline Statuses:</h6>
+<table class="table">
+    <thead>
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Student.firstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Student.lastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Student.degree)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Student.gradDate)
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.PipelineStatuses.ElementAt(0).Student.firstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.PipelineStatuses.ElementAt(0).Student.lastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.PipelineStatuses.ElementAt(0).Student.degree)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.PipelineStatuses.ElementAt(0).Student.gradDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.PipelineStatuses.ElementAt(0).Status)
+            </th>
         </tr>
-        }
+    </thead>
+    <tbody>
+        
     </tbody>
 </table>
