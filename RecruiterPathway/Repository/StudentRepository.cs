@@ -25,7 +25,10 @@ namespace RecruiterPathway.Repository
 
         override public async ValueTask<Student> GetById(object id)
         {
-            return await context.Student.Include(c => c.Comments).ThenInclude(r => r.Recruiter).FirstOrDefaultAsync(s => s.Id == (string)id);
+            //ThenInclude from https://stackoverflow.com/a/53133582
+            return await context.Student.Include(c => c.Comments)
+                .ThenInclude(r => r.Recruiter)
+                .FirstOrDefaultAsync(s => s.Id == (string)id);
         }
         override public async Task<bool> Insert(Student student)
         {

@@ -32,8 +32,11 @@ namespace RecruiterPathway.Repository
             Recruiter recruiter;
             lock (context)
             {
+                //ThenInclude from https://stackoverflow.com/a/53133582
                 recruiter = context.Recruiter.Include(p => p.PipelineStatuses)
+                                        .ThenInclude(s => s.Student)
                                         .Include(w => w.WatchList)
+                                        .ThenInclude(s => s.Student)
                                         .FirstOrDefault(r => r.Id == (string)id);
             }
             if (recruiter.WatchList == null)
