@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using RecruiterPathway.Models;
+using RecruiterPathway.ViewModels;
 
 namespace RecruiterPathway.Controllers
 {

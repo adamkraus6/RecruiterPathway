@@ -1,4 +1,4 @@
-﻿@model RecruiterPathway.Models.StudentViewModel
+﻿@model RecruiterPathway.ViewModels.StudentViewModel
 @{
     ViewData["Title"] = "Index";
 }
@@ -70,7 +70,8 @@
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+                        <a asp-action="AddComment" asp-route-id="@item.Id">Add Comment</a>
                     </td>
                 </tr>
             }
@@ -83,8 +84,8 @@ else
         <div class="wrapper">
             @foreach (var item in Model.Students)
             {
-                <span onclick="location='Students/Edit/@Html.DisplayFor(modelItem => item.Id)'" class="grid_element fake_link">
-                    <span onclick="location='Students/Edit/@Html.DisplayFor(modelItem => item.Id)'" class="padded_element fake_link">
+                <span onclick="location='Students/Details/@Html.DisplayFor(modelItem => item.Id)'" class="grid_element fake_link">
+                    <span onclick="location='Students/Details/@Html.DisplayFor(modelItem => item.Id)'" class="padded_element fake_link">
                         <img src="~/profile_pictures/default.png" height="100" width="100" />
                         <label>
                             @Html.DisplayFor(modelItem => item.firstName) @Html.DisplayFor(modelItem => item.lastName)
@@ -98,6 +99,7 @@ else
                             Graduation Date: @Html.DisplayFor(modelItem => item.gradDate)
                         </label>
                         <br />
+                        <a href="Students/Edit/@Html.DisplayFor(modelItem => item.Id)" class="btn btn-primary btn-small">Edit</a>
                         <a href="Students/Delete/@Html.DisplayFor(modelItem => item.Id)" class="btn btn-primary btn-small">Delete</a>
                         <br />
                     </span>

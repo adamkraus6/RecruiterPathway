@@ -1,4 +1,4 @@
-﻿@model RecruiterPathway.Models.RecruiterViewModel
+﻿@model RecruiterPathway.ViewModels.RecruiterViewModel
 
 @{
     ViewData["Title"] = "Profile";
@@ -6,7 +6,7 @@
 <div>
     <div>
         <img src="~/profile_pictures/default.png" alt="ProfilePicture" align="left" height="200" width="200" />
-        <h2>@Html.DisplayFor(model=> model.Recruiter.Name)</h2>
+        <h2>@Html.DisplayFor(model => model.Recruiter.Name)</h2>
     </div>
     <br />
     <div>
@@ -35,3 +35,50 @@
 <div>
     <a class="btn btn-primary btn-small" asp-action="Edit" asp-route-id="@Model.Recruiter.Id">Edit</a>
 </div>
+<br />
+<h6>Recruiter Watchlist:</h6>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.WatchList.ElementAt(0).Student.firstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.WatchList.ElementAt(0).Student.lastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.WatchList.ElementAt(0).Student.degree)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.WatchList.ElementAt(0).Student.gradDate)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<h6>Pipeline Statuses:</h6>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.PipelineStatuses.ElementAt(0).Student.firstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.PipelineStatuses.ElementAt(0).Student.lastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.PipelineStatuses.ElementAt(0).Student.degree)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.PipelineStatuses.ElementAt(0).Student.gradDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recruiter.PipelineStatuses.ElementAt(0).Status)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    </tbody>
+</table>

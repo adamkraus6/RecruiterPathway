@@ -16,6 +16,7 @@ namespace RecruiterPathway.Models
         [Display(Name = "Degree")]
         public string degree { get; set; }
         
+        [Display(Name = "Graduation Date")]
         [DataType(DataType.Date)]
         public DateTime gradDate { get; set; }
 

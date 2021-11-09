@@ -110,7 +110,7 @@ namespace RecruiterPathway.Tests
 
             var comment = new Comment(await recruiterRepo.GetById(Constants.AdminRecruiter.Id), await repository.GetById("1"), "Test");
 
-            await repository.AddComment(new ViewModels.CommentViewModel { Comment = comment });
+            await repository.AddComment(new ViewModels.StudentViewModel { Comment = comment });
 
             Assert.True(comment.Student.Comments.Contains(comment));
         }
@@ -123,8 +123,8 @@ namespace RecruiterPathway.Tests
             var commentId = Guid.NewGuid().ToString();
             var comment = new Comment { Id = commentId, Student = await repository.GetById("1"), ActualComment = "Test", Time = new DateTime(), Recruiter = Constants.AdminRecruiter };
 
-            await repository.AddComment(new ViewModels.CommentViewModel { Comment = comment });
-            repository.RemoveComment(new ViewModels.CommentViewModel { Comment = comment });
+            await repository.AddComment(new ViewModels.StudentViewModel { Comment = comment });
+            repository.RemoveComment(new ViewModels.StudentViewModel { Comment = comment });
 
             if (comment.Student.Comments != null)
             {

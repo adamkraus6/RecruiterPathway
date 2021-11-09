@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RecruiterPathway.Models;
+using RecruiterPathway.ViewModels;
 using System;
 using Xunit;
 

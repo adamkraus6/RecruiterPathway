@@ -6,6 +6,7 @@ using RecruiterPathway.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using RecruiterPathway.Repository;
+using RecruiterPathway.ViewModels;
 
 namespace RecruiterPathway.Controllers
 {

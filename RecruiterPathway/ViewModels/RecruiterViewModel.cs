@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace RecruiterPathway.ViewModels
 {
-    public class CommentViewModel
+    public class RecruiterViewModel
     {
-        public Comment Comment { get; set; }
+        public List<Recruiter> Recruiters { get; set; }
+        public Recruiter Recruiter { get; set; }
     }
 }

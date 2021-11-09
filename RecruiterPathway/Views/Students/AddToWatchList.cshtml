@@ -1,0 +1,12 @@
+﻿@model RecruiterPathway.ViewModels.StudentViewModel
+@{
+    ViewData["Title"] = "Add To Watchlist";
+}
+
+<h1>Add Comment</h1>
+<h3>@Html.DisplayFor(model => model.Student.firstName) @Html.DisplayFor(model => model.Student.lastName)</h3>
+<form asp-controller="Students" asp-action="AddToWatchList">
+    <p>
+        <input type="submit" value="Add Student to Watchlist" />
+    </p>
+</form>

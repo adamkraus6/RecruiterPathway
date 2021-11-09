@@ -29,12 +29,22 @@ namespace RecruiterPathway.Repository
 
         override public async ValueTask<Recruiter> GetById(object id)
         {
+            Recruiter recruiter;
             lock (context)
             {
-                return context.Recruiter.Include(p => p.PipelineStatuses)
+                recruiter = context.Recruiter.Include(p => p.PipelineStatuses)
                                         .Include(w => w.WatchList)
                                         .FirstOrDefault(r => r.Id == (string)id);
             }
+            if (recruiter.WatchList == null)
+            {
+                recruiter.WatchList = new List<Watch>();
+            }
+            if (recruiter.PipelineStatuses == null)
+            {
+                recruiter.PipelineStatuses = new List<PipelineStatus>();
+            }
+            return recruiter;
         }
         override async public void SignOutRecruiter()
         {
