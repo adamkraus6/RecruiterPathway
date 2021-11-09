@@ -1,6 +1,6 @@
 using System;
 
-namespace RecruiterPathway.Models
+namespace RecruiterPathway.ViewModels
 {
     public class ErrorViewModel
     {

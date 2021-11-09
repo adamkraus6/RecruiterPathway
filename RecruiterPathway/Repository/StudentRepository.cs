@@ -6,8 +6,8 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 using System.Threading;
-using RecruiterPathway.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using RecruiterPathway.ViewModels;
 
 namespace RecruiterPathway.Repository
 {
@@ -25,7 +25,10 @@ namespace RecruiterPathway.Repository
 
         override public async ValueTask<Student> GetById(object id)
         {
-            return await context.Student.Include(c => c.Comments).FirstOrDefaultAsync(s => s.Id == (string)id);
+            //ThenInclude from https://stackoverflow.com/a/53133582
+            return await context.Student.Include(c => c.Comments)
+                .ThenInclude(r => r.Recruiter)
+                .FirstOrDefaultAsync(s => s.Id == (string)id);
         }
         override public async Task<bool> Insert(Student student)
         {
@@ -47,9 +50,9 @@ namespace RecruiterPathway.Repository
             }
             await base.Delete(id);
         }
-        public override async Task AddComment(CommentViewModel view)
+        public override async Task AddComment(StudentViewModel studentViewModel)
         {
-            var student = view.Comment.Student;
+            var student = studentViewModel.Student;
             if (student == null)
             {
                 return;
@@ -58,12 +61,12 @@ namespace RecruiterPathway.Repository
             {
                 student.Comments = new List<Comment>();
             }
-            context.Comment.Add(view.Comment);
+            context.Comment.Add(studentViewModel.Comment);
             Save();
         }
-        public override void RemoveComment(CommentViewModel view)
+        public override void RemoveComment(StudentViewModel studentViewModel)
         {
-            context.Comment.Remove(view.Comment);
+            context.Comment.Remove(studentViewModel.Comment);
             Save();
         }
     }
