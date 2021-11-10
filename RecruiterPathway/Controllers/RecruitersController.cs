@@ -82,7 +82,7 @@ namespace RecruiterPathway.Controllers
             Recruiter recruiter;
             if (id == null)
             {
-                recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
+                recruiter = await repository.GetSignedInRecruiter(HttpContext.User, true);
             }
             else 
             {
@@ -270,7 +270,7 @@ namespace RecruiterPathway.Controllers
             Recruiter self;
             if (HttpContext != null)
             {
-                self = await repository.GetSignedInRecruiter(HttpContext.User);
+                self = await repository.GetSignedInRecruiter(HttpContext.User, true);
             }
             else
             {

@@ -4,6 +4,7 @@ using RecruiterPathway.Data;
 using RecruiterPathway.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,7 +38,7 @@ namespace RecruiterPathway.Repository
                                         .ThenInclude(s => s.Student)
                                         .Include(w => w.WatchList)
                                         .ThenInclude(s => s.Student)
-                                        .FirstOrDefault(r => r.Id == (string)id);
+                                        .SingleOrDefault(r => r.Id == (string)id);
             }
             if (recruiter.WatchList == null)
             {
@@ -68,12 +69,46 @@ namespace RecruiterPathway.Repository
 
         override async public Task<Recruiter> GetSignedInRecruiter(System.Security.Claims.ClaimsPrincipal principal)
         {
-            return await userManager.GetUserAsync(principal);
+            var recruiter = await userManager.GetUserAsync(principal);
+            //var recruiter = await GetById(recruiterBasedOnSignin.Id);
+            if (recruiter.WatchList == null)
+            {
+                recruiter.WatchList = new List<Watch>();
+            }
+            if (recruiter.PipelineStatuses == null)
+            {
+                recruiter.PipelineStatuses = new List<PipelineStatus>();
+            }
+            return recruiter;
+        }
+
+        override async public Task<Recruiter> GetSignedInRecruiter(System.Security.Claims.ClaimsPrincipal principal, bool getExtras)
+        {
+            var recruiterBasedOnSignin = await userManager.GetUserAsync(principal);
+            var recruiter = await GetById(recruiterBasedOnSignin.Id);
+            if (recruiter.WatchList == null)
+            {
+                recruiter.WatchList = new List<Watch>();
+            }
+            if (recruiter.PipelineStatuses == null)
+            {
+                recruiter.PipelineStatuses = new List<PipelineStatus>();
+            }
+            return recruiter;
         }
 
         override async public Task<Recruiter> GetRecruiterByName(string name)
         {
-            return await userManager.FindByNameAsync(name);
+            var recruiter =  await userManager.FindByNameAsync(name);
+            if (recruiter.WatchList == null)
+            {
+                recruiter.WatchList = new List<Watch>();
+            }
+            if (recruiter.PipelineStatuses == null)
+            {
+                recruiter.PipelineStatuses = new List<PipelineStatus>();
+            }
+            return recruiter;
         }
 
         override async public Task<bool> SetPipelineStatus(string recruiterId, Student student, string status)
@@ -83,14 +118,17 @@ namespace RecruiterPathway.Repository
             {
                 return false;
             }
-            var pstatus = recruiter.PipelineStatuses.Where(r => r.Recruiter == recruiter).FirstOrDefault(r => r.Student == student);
-            if (pstatus == null)
+            var pstatus = recruiter.PipelineStatuses.Where(r => r.Recruiter == recruiter).Where(r => r.Student == student);
+            if (pstatus == null || !pstatus.Any())
             {
                 context.PipelineStatus.Add(new PipelineStatus(student, recruiter, status));
+                Save();
                 return true;
             }
-            context.PipelineStatus.Remove(pstatus);
+            context.PipelineStatus.Remove(pstatus.First());
+            Save();
             context.PipelineStatus.Add(new PipelineStatus(student, recruiter, status));
+            Save();
             return true;
         }
         override async public Task<bool> SetPipelineStatus(Recruiter recruiter, Student student, string status)
@@ -106,16 +144,14 @@ namespace RecruiterPathway.Repository
             var recruiter = await GetById(recruiterId);
             if (recruiter == null)
             {
+                Debug.WriteLine("hit null recruiter in AddWatch");
                 return;
-            }
-            if (recruiter.WatchList == null)
-            {
-                recruiter.WatchList = new List<Watch>();
             }
             var watch = new Watch { Recruiter = recruiter, Id = Guid.NewGuid().ToString(), Student = student };
             if (!context.WatchList.Contains(watch))
             {
                 context.WatchList.Add(watch);
+                Save();
             }
         }
         override async public Task RemoveWatch(Recruiter recruiter, Student student) 
@@ -130,6 +166,7 @@ namespace RecruiterPathway.Repository
                 return;
             }
            context.WatchList.Remove(recruiter.WatchList.FirstOrDefault(w => w.Student == student));
+           Save();
         }   
     }
 }
