@@ -14,6 +14,7 @@ namespace RecruiterPathway.Repository
         public abstract void SignOutRecruiter();
         public abstract Task<bool> SignInRecruiter(Recruiter recruiter);
         public abstract Task<Recruiter> GetSignedInRecruiter(ClaimsPrincipal principal);
+        public abstract Task<Recruiter> GetSignedInRecruiter(ClaimsPrincipal principal, bool withExtras);
         public abstract Task<Recruiter> GetRecruiterByName(string name);
 
         //Pipeline Status methods, setup this way since IDK how the actual final setup will work

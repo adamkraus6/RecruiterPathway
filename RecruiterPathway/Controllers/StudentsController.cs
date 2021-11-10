@@ -262,7 +262,7 @@ namespace RecruiterPathway.Controllers
             {
                 // empty comment, error message TODO
             }
-            var comment = new Comment(await recruiterRepo.GetSignedInRecruiter(HttpContext.User), student, studentViewModel.AddCommentText);
+            var comment = new Comment(await recruiterRepo.GetSignedInRecruiter(HttpContext.User, true), student, studentViewModel.AddCommentText);
             var studentVM = new StudentViewModel
             {
                 Student = student,
@@ -290,7 +290,7 @@ namespace RecruiterPathway.Controllers
         public async Task<IActionResult> AddToWatchList(string id, StudentViewModel studentViewModel)
         {
             var student = await repository.GetById(id);
-            var recruiter = await recruiterRepo.GetSignedInRecruiter(HttpContext.User);
+            var recruiter = await recruiterRepo.GetSignedInRecruiter(HttpContext.User, true);
             await recruiterRepo.AddWatch(recruiter, student);
 
             return Redirect("~/Recruiters/Profile");
@@ -313,7 +313,7 @@ namespace RecruiterPathway.Controllers
         public async Task<IActionResult> AddPipelineStatus(string id, StudentViewModel studentViewModel)
         {
             var student = await repository.GetById(id);
-            var recruiter = await recruiterRepo.GetSignedInRecruiter(HttpContext.User);
+            var recruiter = await recruiterRepo.GetSignedInRecruiter(HttpContext.User, true);
             await recruiterRepo.SetPipelineStatus(recruiter, student, studentViewModel.PipelineStatus == "newStatus" ? studentViewModel.NewPipelineStatus : studentViewModel.PipelineStatus);
 
             return Redirect("~/Students/Details/" + id);
