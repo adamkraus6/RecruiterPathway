@@ -157,7 +157,7 @@ namespace RecruiterPathway.Repository
                 return;
             }
             var watch = new Watch { Recruiter = recruiter, Id = Guid.NewGuid().ToString(), Student = student };
-            if (!context.WatchList.Contains(watch))
+            if (!context.WatchList.Where(w => w.Recruiter == recruiter).Where(s => s.Student == student).Any())
             {
                 context.WatchList.Add(watch);
                 Save();
