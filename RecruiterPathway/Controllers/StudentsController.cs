@@ -301,8 +301,8 @@ namespace RecruiterPathway.Controllers
         {
             var studentVM = new StudentViewModel
             {
-                Student = await repository.GetById(id)
-                //Statuses
+                Student = await repository.GetById(id),
+                Statuses = recruiterRepo.GetPipelineStatuses()
             };
 
             return View(studentVM);
@@ -314,9 +314,9 @@ namespace RecruiterPathway.Controllers
         {
             var student = await repository.GetById(id);
             var recruiter = await recruiterRepo.GetSignedInRecruiter(HttpContext.User, true);
-            await recruiterRepo.SetPipelineStatus(recruiter, student, studentViewModel.PipelineStatus == "newStatus" ? studentViewModel.NewPipelineStatus : studentViewModel.PipelineStatus);
+            await recruiterRepo.SetPipelineStatus(recruiter, student, studentViewModel.PipelineStatus.CompareTo("New Status") == 0 ? studentViewModel.NewPipelineStatus : studentViewModel.PipelineStatus);
 
-            return Redirect("~/Students/Details/" + id);
+            return Redirect("~/Recruiters/Profile");
         }
 
         protected override void Dispose(bool disposing)

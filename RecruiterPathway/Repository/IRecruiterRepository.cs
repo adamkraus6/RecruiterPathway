@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RecruiterPathway.Data;
 using RecruiterPathway.Models;
 using System;
@@ -20,6 +21,8 @@ namespace RecruiterPathway.Repository
         //Pipeline Status methods, setup this way since IDK how the actual final setup will work
         public abstract Task<bool> SetPipelineStatus(Recruiter recruiter, Student student, string status);
         public abstract Task<bool> SetPipelineStatus(string recruiterId, Student student, string status);
+
+        public abstract SelectList GetPipelineStatuses();
 
         //Watchlist Functions - Enforces Only 1 in the list
         public abstract Task AddWatch(Recruiter recruiter, Student student);

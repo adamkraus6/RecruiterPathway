@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RecruiterPathway.Data;
 using RecruiterPathway.Models;
@@ -134,6 +135,14 @@ namespace RecruiterPathway.Repository
         override async public Task<bool> SetPipelineStatus(Recruiter recruiter, Student student, string status)
         {
             return await SetPipelineStatus(recruiter.Id, student, status);
+        }
+
+        override public SelectList GetPipelineStatuses()
+        {
+            var statusQuery = from r in context.Recruiter
+                              from ps in r.PipelineStatuses
+                              select ps.Status;
+            return new SelectList(statusQuery.Distinct());
         }
         override async public Task AddWatch(Recruiter recruiter, Student student)
         {

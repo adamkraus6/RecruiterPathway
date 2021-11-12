@@ -55,6 +55,23 @@
         </tr>
     </thead>
     <tbody>
+        @foreach (var item in Model.Recruiter.WatchList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.firstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.lastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.degree)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.gradDate)
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 <h6>Pipeline Statuses:</h6>
@@ -79,6 +96,25 @@
         </tr>
     </thead>
     <tbody>
-        
+        @foreach (var item in Model.Recruiter.PipelineStatuses)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Student.firstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Student.lastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Student.degree)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Student.gradDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+        </tr>
+        }
     </tbody>
 </table>
