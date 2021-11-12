@@ -61,6 +61,13 @@ namespace RecruiterPathway
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services, UserManager<Recruiter> userManager)
         {
+            using (var context = new DatabaseContext(
+    services.GetRequiredService<
+        DbContextOptions<DatabaseContext>>()))
+            {
+                context.Database.Migrate();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
