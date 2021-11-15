@@ -37,7 +37,7 @@ namespace RecruiterPathway.Tests
                 FirstName = "Test",
                 LastName = "Test",
                 Degree = "Test Test",
-                gradDate = new DateTime()
+                GradDate = new DateTime()
             }).Result;
             Assert.IsAssignableFrom<bool>(product);
         }
@@ -94,7 +94,7 @@ namespace RecruiterPathway.Tests
                 LastName = "test",
                 Id = "3",
                 Degree = "Test",
-                gradDate = new DateTime(),
+                GradDate = new DateTime(),
                 Comments = new List<Comment>()
             };
             await repository.Update(student);

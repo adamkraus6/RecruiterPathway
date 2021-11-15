@@ -48,7 +48,7 @@ namespace RecruiterPathway.Controllers
 
             if (DateTime.MinValue != studentViewModel.GradDateStart && DateTime.MinValue != studentViewModel.GradDateEnd)
             {
-                students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.gradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.gradDate) >= 0);
+                students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.GradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.GradDate) >= 0);
             }
 
             switch (studentViewModel.SortBy)
@@ -65,7 +65,7 @@ namespace RecruiterPathway.Controllers
                     students = students.OrderBy(st => st.Degree);
                     break;
                 case "Graduation Date":
-                    students = students.OrderBy(st => st.gradDate);
+                    students = students.OrderBy(st => st.GradDate);
                     break;
             }
 
