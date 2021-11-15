@@ -4,7 +4,7 @@
 }
 
 <h1>Add Comment</h1>
-<h3>@Html.DisplayFor(model => model.Student.firstName) @Html.DisplayFor(model => model.Student.lastName)</h3>
+<h3>@Html.DisplayFor(model => model.Student.FirstName) @Html.DisplayFor(model => model.Student.LastName)</h3>
 <form asp-controller="Students" asp-action="AddPipelineStatus">
     <p>
         <select asp-for="PipelineStatus" asp-items="Model.Statuses">

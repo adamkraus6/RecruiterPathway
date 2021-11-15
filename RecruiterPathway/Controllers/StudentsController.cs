@@ -16,39 +16,39 @@ namespace RecruiterPathway.Controllers
     [Authorize]
     public class StudentsController : Controller
     {
-        private readonly IStudentRepository repository;
-        private readonly IRecruiterRepository recruiterRepo;
+        private readonly IStudentRepository _studentRepository;
+        private readonly IRecruiterRepository _recruiterRepo;
         private int i = 1;
         private readonly string[] sortOptions = { "First Name", "Last Name", "Degree", "Graduation Date" };
-        public StudentsController(IStudentRepository repository, IRecruiterRepository recruiterRepo)
+        public StudentsController(IStudentRepository studentRepository, IRecruiterRepository recruiterRepo)
         {
-            this.repository = repository;
-            this.recruiterRepo = recruiterRepo;
+            this._studentRepository = studentRepository;
+            this._recruiterRepo = recruiterRepo;
         }
 
         // GET: Students
         public async Task<IActionResult> Index(StudentViewModel studentViewModel)
         {
-            IEnumerable<Student> students = await repository.GetAll();
+            IEnumerable<Student> students = await _studentRepository.GetAll();
 
             if (!string.IsNullOrEmpty(studentViewModel.SearchFirstName))
             {
-                students = students.Where(st => st.firstName.Contains(studentViewModel.SearchFirstName));
+                students = students.Where(st => st.FirstName.Contains(studentViewModel.SearchFirstName));
             }
 
             if (!string.IsNullOrEmpty(studentViewModel.SearchLastName))
             {
-                students = students.Where(st => st.lastName.Contains(studentViewModel.SearchLastName));
+                students = students.Where(st => st.LastName.Contains(studentViewModel.SearchLastName));
             }
 
             if (!string.IsNullOrEmpty(studentViewModel.StudentDegree))
             {
-                students = students.Where(st => st.degree == studentViewModel.StudentDegree);
+                students = students.Where(st => st.Degree == studentViewModel.StudentDegree);
             }
 
             if (DateTime.MinValue != studentViewModel.GradDateStart && DateTime.MinValue != studentViewModel.GradDateEnd)
             {
-                students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.gradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.gradDate) >= 0);
+                students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.GradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.GradDate) >= 0);
             }
 
             switch (studentViewModel.SortBy)
@@ -56,22 +56,22 @@ namespace RecruiterPathway.Controllers
                 default:
                     break;
                 case "First Name":
-                    students = students.OrderBy(st => st.firstName);
+                    students = students.OrderBy(st => st.FirstName);
                     break;
                 case "Last Name":
-                    students = students.OrderBy(st => st.lastName);
+                    students = students.OrderBy(st => st.LastName);
                     break;
                 case "Degree":
-                    students = students.OrderBy(st => st.degree);
+                    students = students.OrderBy(st => st.Degree);
                     break;
                 case "Graduation Date":
-                    students = students.OrderBy(st => st.gradDate);
+                    students = students.OrderBy(st => st.GradDate);
                     break;
             }
 
             var studentVM = new StudentViewModel
             {
-                Degrees = repository.GetStudentDegrees(),
+                Degrees = _studentRepository.GetStudentDegrees(),
                 Students = students.ToList(),
                 ListView = studentViewModel.ListView,
                 SortOptions = new SelectList(sortOptions)
@@ -87,7 +87,7 @@ namespace RecruiterPathway.Controllers
             {
                 return NotFound();
             }
-            var student = await repository.GetById(id);
+            var student = await _studentRepository.GetById(id);
             if (student == null)
             {
                 return NotFound();
@@ -133,17 +133,17 @@ namespace RecruiterPathway.Controllers
         {
             if (ModelState.IsValid)
             {
-                var students = await repository.Get(st => st.firstName.CompareTo(studentViewModel.Student.firstName) == 0 && st.lastName.CompareTo(studentViewModel.Student.lastName) == 0);
+                var students = await _studentRepository.Get(st => st.FirstName.CompareTo(studentViewModel.Student.FirstName) == 0 && st.LastName.CompareTo(studentViewModel.Student.LastName) == 0);
                 if (!students.Any())
                 {
-                    var getId = await repository.GetById(i.ToString());
+                    var getId = await _studentRepository.GetById(i.ToString());
                     while (getId != null)
                     {
                         i++;
-                        getId = await repository.GetById(i.ToString());
+                        getId = await _studentRepository.GetById(i.ToString());
                     }
                     studentViewModel.Student.Id = i.ToString();
-                    await repository.Insert(studentViewModel.Student);
+                    await _studentRepository.Insert(studentViewModel.Student);
                 }
                 else
                 {
@@ -170,7 +170,7 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            var student = await repository.GetById(id);
+            var student = await _studentRepository.GetById(id);
             if (student == null)
             {
                 return NotFound();
@@ -198,8 +198,8 @@ namespace RecruiterPathway.Controllers
 
             if (ModelState.IsValid)
             {
-                await repository.Update(studentViewModel.Student);
-                repository.Save();
+                await _studentRepository.Update(studentViewModel.Student);
+                _studentRepository.Save();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -219,7 +219,7 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            var student = await repository.GetById(id);
+            var student = await _studentRepository.GetById(id);
             if (student == null)
             {
                 return NotFound();
@@ -238,7 +238,7 @@ namespace RecruiterPathway.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            await repository.Delete(id);
+            await _studentRepository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -247,7 +247,7 @@ namespace RecruiterPathway.Controllers
         {
             var studentVM = new StudentViewModel
             {
-                Student = await repository.GetById(id)
+                Student = await _studentRepository.GetById(id)
             };
 
             return View(studentVM);
@@ -257,19 +257,19 @@ namespace RecruiterPathway.Controllers
         [HttpPost, ActionName("AddComment")]
         public async Task<IActionResult> AddComment(string id, StudentViewModel studentViewModel)
         {
-            var student = await repository.GetById(id);
+            var student = await _studentRepository.GetById(id);
             if(string.IsNullOrEmpty(studentViewModel.AddCommentText))
             {
                 // empty comment, error message TODO
             }
-            var comment = new Comment(await recruiterRepo.GetSignedInRecruiter(HttpContext.User, true), student, studentViewModel.AddCommentText);
+            var comment = new Comment(await _recruiterRepo.GetSignedInRecruiter(HttpContext.User, true), student, studentViewModel.AddCommentText);
             var studentVM = new StudentViewModel
             {
                 Student = student,
                 Comment = comment
             };
 
-            await repository.AddComment(studentVM);
+            await _studentRepository.AddComment(studentVM);
 
             return Redirect("~/Students/Details/" + id);
         }
@@ -279,7 +279,7 @@ namespace RecruiterPathway.Controllers
         {
             var studentVM = new StudentViewModel
             {
-                Student = await repository.GetById(id)
+                Student = await _studentRepository.GetById(id)
             };
 
             return View(studentVM);
@@ -289,9 +289,9 @@ namespace RecruiterPathway.Controllers
         [HttpPost, ActionName("AddToWatchList")]
         public async Task<IActionResult> AddToWatchList(string id, StudentViewModel studentViewModel)
         {
-            var student = await repository.GetById(id);
-            var recruiter = await recruiterRepo.GetSignedInRecruiter(HttpContext.User, true);
-            await recruiterRepo.AddWatch(recruiter, student);
+            var student = await _studentRepository.GetById(id);
+            var recruiter = await _recruiterRepo.GetSignedInRecruiter(HttpContext.User, true);
+            await _recruiterRepo.AddWatch(recruiter, student);
 
             return Redirect("~/Recruiters/Profile");
         }
@@ -301,8 +301,8 @@ namespace RecruiterPathway.Controllers
         {
             var studentVM = new StudentViewModel
             {
-                Student = await repository.GetById(id),
-                Statuses = recruiterRepo.GetPipelineStatuses()
+                Student = await _studentRepository.GetById(id),
+                Statuses = _recruiterRepo.GetPipelineStatuses()
             };
 
             return View(studentVM);
@@ -312,16 +312,16 @@ namespace RecruiterPathway.Controllers
         [HttpPost, ActionName("AddPipelineStatus")]
         public async Task<IActionResult> AddPipelineStatus(string id, StudentViewModel studentViewModel)
         {
-            var student = await repository.GetById(id);
-            var recruiter = await recruiterRepo.GetSignedInRecruiter(HttpContext.User, true);
-            await recruiterRepo.SetPipelineStatus(recruiter, student, studentViewModel.PipelineStatus.CompareTo("New Status") == 0 ? studentViewModel.NewPipelineStatus : studentViewModel.PipelineStatus);
+            var student = await _studentRepository.GetById(id);
+            var recruiter = await _recruiterRepo.GetSignedInRecruiter(HttpContext.User, true);
+            await _recruiterRepo.SetPipelineStatus(recruiter, student, studentViewModel.PipelineStatus.CompareTo("New Status") == 0 ? studentViewModel.NewPipelineStatus : studentViewModel.PipelineStatus);
 
             return Redirect("~/Recruiters/Profile");
         }
 
         protected override void Dispose(bool disposing)
         {
-            repository.Dispose();
+            _studentRepository.Dispose();
             base.Dispose(disposing);
         }
     }

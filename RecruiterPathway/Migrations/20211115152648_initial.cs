@@ -33,7 +33,6 @@ namespace RecruiterPathway.Migrations
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     RememberMe = table.Column<bool>(type: "bit", nullable: false),
-                    WatchList = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
@@ -56,10 +55,10 @@ namespace RecruiterPathway.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    firstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    lastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    degree = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    gradDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Degree = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GradDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -173,12 +172,39 @@ namespace RecruiterPathway.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comment",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StudentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    RecruiterId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Time = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ActualComment = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comment_AspNetUsers_RecruiterId",
+                        column: x => x.RecruiterId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Comment_Student_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Student",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PipelineStatus",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     RecruiterId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    StudentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StudentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -189,28 +215,38 @@ namespace RecruiterPathway.Migrations
                         column: x => x.RecruiterId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PipelineStatus_Student_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Student",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "WatchList",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     StudentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    RecruiterId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Time = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ActualComment = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    RecruiterId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.PrimaryKey("PK_WatchList", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_Student_StudentId",
+                        name: "FK_WatchList_AspNetUsers_RecruiterId",
+                        column: x => x.RecruiterId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_WatchList_Student_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Student",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -253,6 +289,11 @@ namespace RecruiterPathway.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comment_RecruiterId",
+                table: "Comment",
+                column: "RecruiterId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comment_StudentId",
                 table: "Comment",
                 column: "StudentId");
@@ -261,6 +302,21 @@ namespace RecruiterPathway.Migrations
                 name: "IX_PipelineStatus_RecruiterId",
                 table: "PipelineStatus",
                 column: "RecruiterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PipelineStatus_StudentId",
+                table: "PipelineStatus",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WatchList_RecruiterId",
+                table: "WatchList",
+                column: "RecruiterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WatchList_StudentId",
+                table: "WatchList",
+                column: "StudentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -287,13 +343,16 @@ namespace RecruiterPathway.Migrations
                 name: "PipelineStatus");
 
             migrationBuilder.DropTable(
+                name: "WatchList");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Student");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Student");
         }
     }
 }

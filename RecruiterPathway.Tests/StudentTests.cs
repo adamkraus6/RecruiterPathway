@@ -34,10 +34,10 @@ namespace RecruiterPathway.Tests
             var product = repository.Insert(new Student
             {
                 Id = "9001",
-                firstName = "Test",
-                lastName = "Test",
-                degree = "Test Test",
-                gradDate = new DateTime()
+                FirstName = "Test",
+                LastName = "Test",
+                Degree = "Test Test",
+                GradDate = new DateTime()
             }).Result;
             Assert.IsAssignableFrom<bool>(product);
         }
@@ -90,11 +90,11 @@ namespace RecruiterPathway.Tests
             var repository = MockedDatabase.GetStudentRepository();
             var student = new Student
             {
-                firstName = "test",
-                lastName = "test",
+                FirstName = "test",
+                LastName = "test",
                 Id = "3",
-                degree = "Test",
-                gradDate = new DateTime(),
+                Degree = "Test",
+                GradDate = new DateTime(),
                 Comments = new List<Comment>()
             };
             await repository.Update(student);

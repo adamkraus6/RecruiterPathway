@@ -37,16 +37,16 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Students[0].firstName)
+                    @Html.DisplayNameFor(model => model.Students[0].FirstName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Students[0].lastName)
+                    @Html.DisplayNameFor(model => model.Students[0].LastName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Students[0].degree)
+                    @Html.DisplayNameFor(model => model.Students[0].Degree)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Students[0].gradDate)
+                    @Html.DisplayNameFor(model => model.Students[0].GradDate)
                 </th>
                 <th></th>
             </tr>
@@ -56,16 +56,16 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.firstName)
+                        @Html.DisplayFor(modelItem => item.FirstName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.lastName)
+                        @Html.DisplayFor(modelItem => item.LastName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.degree)
+                        @Html.DisplayFor(modelItem => item.Degree)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.gradDate)
+                        @Html.DisplayFor(modelItem => item.GradDate)
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -88,15 +88,15 @@ else
                     <span onclick="location='Students/Details/@Html.DisplayFor(modelItem => item.Id)'" class="padded_element fake_link">
                         <img src="~/profile_pictures/default.png" height="100" width="100" />
                         <label>
-                            @Html.DisplayFor(modelItem => item.firstName) @Html.DisplayFor(modelItem => item.lastName)
+                            @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
                         </label>
                         <br />
                         <label>
-                            @Html.DisplayFor(modelItem => item.degree)
+                            @Html.DisplayFor(modelItem => item.Degree)
                         </label>
                         <br />
                         <label>
-                            Graduation Date: @Html.DisplayFor(modelItem => item.gradDate)
+                            Graduation Date: @Html.DisplayFor(modelItem => item.GradDate)
                         </label>
                         <br />
                         <a href="Students/Edit/@Html.DisplayFor(modelItem => item.Id)" class="btn btn-primary btn-small">Edit</a>

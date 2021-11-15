@@ -48,10 +48,10 @@ namespace RecruiterPathway.Models
                                 new Student
                                 {
                                     Id = i.ToString(),
-                                    firstName = values[0],
-                                    lastName = values[1],
-                                    degree = values[2],
-                                    gradDate = DateTime.Parse(values[3])
+                                    FirstName = values[0],
+                                    LastName = values[1],
+                                    Degree = values[2],
+                                    GradDate = DateTime.Parse(values[3])
                                 }
                             );
 
@@ -160,10 +160,10 @@ namespace RecruiterPathway.Models
                             new Student
                             {
                                 Id = i.ToString(),
-                                firstName = values[0],
-                                lastName = values[1],
-                                degree = values[2],
-                                gradDate = DateTime.Parse(values[3]),
+                                FirstName = values[0],
+                                LastName = values[1],
+                                Degree = values[2],
+                                GradDate = DateTime.Parse(values[3]),
                                 Comments = new List<Comment>()
                             }
                         );
