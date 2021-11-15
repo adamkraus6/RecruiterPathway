@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecruiterPathway", "RecruiterPathway.csproj", "{D4F9DFAB-2E65-4F03-9C23-7826EE2E0F87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecruiterPathway", "RecruiterPathway\RecruiterPathway.csproj", "{D4F9DFAB-2E65-4F03-9C23-7826EE2E0F87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecruiterPathway.Tests", "..\RecruiterPathway.Tests\RecruiterPathway.Tests.csproj", "{AE8CE67E-7F59-4F11-A8C7-221E1E77ADCB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecruiterPathway.Tests", "RecruiterPathway.Tests\RecruiterPathway.Tests.csproj", "{AE8CE67E-7F59-4F11-A8C7-221E1E77ADCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
