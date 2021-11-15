@@ -18,7 +18,7 @@ namespace RecruiterPathway.Models
         
         [Display(Name = "Graduation Date")]
         [DataType(DataType.Date)]
-        public DateTime GradDate { get; set; }
+        public DateTime gradDate { get; set; }
 
         //std::list<Triple<string, DateTime, string>>
         //List of Recruiter Ids to timestamped comments. These are global to all recruiters.
@@ -26,7 +26,7 @@ namespace RecruiterPathway.Models
 
         public bool Equals(Student other)
         {
-            return Id.Equals(other.Id) && FirstName.Equals(other.FirstName) && LastName.Equals(other.LastName) && Degree.Equals(other.Degree) && GradDate == other.GradDate;
+            return Id.Equals(other.Id) && FirstName.Equals(other.FirstName) && LastName.Equals(other.LastName) && Degree.Equals(other.Degree) && gradDate == other.gradDate;
         }
     }
 }

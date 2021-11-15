@@ -121,7 +121,7 @@ namespace RecruiterPathway.Tests
                     FirstName = "Test",
                     LastName = "Test",
                     Degree = "Test",
-                    GradDate = new DateTime()
+                    gradDate = new DateTime()
                 }
             };
 

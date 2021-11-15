@@ -51,7 +51,7 @@ namespace RecruiterPathway.Models
                                     FirstName = values[0],
                                     LastName = values[1],
                                     Degree = values[2],
-                                    GradDate = DateTime.Parse(values[3])
+                                    gradDate = DateTime.Parse(values[3])
                                 }
                             );
 
@@ -163,7 +163,7 @@ namespace RecruiterPathway.Models
                                 FirstName = values[0],
                                 LastName = values[1],
                                 Degree = values[2],
-                                GradDate = DateTime.Parse(values[3]),
+                                gradDate = DateTime.Parse(values[3]),
                                 Comments = new List<Comment>()
                             }
                         );
