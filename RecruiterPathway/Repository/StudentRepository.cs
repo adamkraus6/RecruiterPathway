@@ -17,7 +17,7 @@ namespace RecruiterPathway.Repository
 
         override public SelectList GetStudentDegrees()
         {
-            var degreeQuery = from s in context.Student
+            var degreeQuery = from s in _context.Student
                               orderby s.Degree
                               select s.Degree;
             return new SelectList(degreeQuery.Distinct());
@@ -26,13 +26,13 @@ namespace RecruiterPathway.Repository
         override public async ValueTask<Student> GetById(object id)
         {
             //ThenInclude from https://stackoverflow.com/a/53133582
-            return await context.Student.Include(c => c.Comments)
+            return await _context.Student.Include(c => c.Comments)
                 .ThenInclude(r => r.Recruiter)
                 .FirstOrDefaultAsync(s => s.Id == (string)id);
         }
         override public async Task<bool> Insert(Student student)
         {
-            await set.AddAsync(student);
+            await _set.AddAsync(student);
             Save();
             return true;
 
@@ -61,12 +61,12 @@ namespace RecruiterPathway.Repository
             {
                 student.Comments = new List<Comment>();
             }
-            context.Comment.Add(studentViewModel.Comment);
+            _context.Comment.Add(studentViewModel.Comment);
             Save();
         }
         public override void RemoveComment(StudentViewModel studentViewModel)
         {
-            context.Comment.Remove(studentViewModel.Comment);
+            _context.Comment.Remove(studentViewModel.Comment);
             Save();
         }
     }
