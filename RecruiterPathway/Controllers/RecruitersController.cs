@@ -12,17 +12,17 @@ namespace RecruiterPathway.Controllers
 {
     public class RecruitersController : Controller
     {
-        private readonly IRecruiterRepository repository;
+        private readonly IRecruiterRepository _repository;
 
         public RecruitersController(IRecruiterRepository repository)
         {
-            this.repository = repository;
+            this._repository = repository;
         }
 
         [Authorize]
         public async Task<IActionResult> List()
         {
-            var recruiters = await repository.GetAll();
+            var recruiters = await _repository.GetAll();
 
             var recruiterVM = new RecruiterViewModel
             {
@@ -33,7 +33,7 @@ namespace RecruiterPathway.Controllers
         }
         public IActionResult Logout()
         {
-            repository.SignOutRecruiter();
+            _repository.SignOutRecruiter();
             return Redirect("~/Home/Index");
         }
         // GET: Recruiters/Login
@@ -49,7 +49,7 @@ namespace RecruiterPathway.Controllers
         public async Task<IActionResult> Login([Bind("UserName,Password,RememberMe")] Recruiter model, string returnurl)
         {
             //Find the matching user from the DB
-            var result = await repository.SignInRecruiter(model);
+            var result = await _repository.SignInRecruiter(model);
             if (result == null)
             {
                 return StatusCode(500);
@@ -82,11 +82,11 @@ namespace RecruiterPathway.Controllers
             Recruiter recruiter;
             if (id == null)
             {
-                recruiter = await repository.GetSignedInRecruiter(HttpContext.User, true);
+                recruiter = await _repository.GetSignedInRecruiter(HttpContext.User, true);
             }
             else 
             {
-                recruiter = await repository.GetById(id);
+                recruiter = await _repository.GetById(id);
             }
             if (recruiter == null)
             {
@@ -133,7 +133,7 @@ namespace RecruiterPathway.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userExists = await repository.GetRecruiterByName(recruiter.Name);
+                var userExists = await _repository.GetRecruiterByName(recruiter.Name);
                 if (userExists != null)
                 {
                     var recruiterVM = new RecruiterViewModel
@@ -156,8 +156,8 @@ namespace RecruiterPathway.Controllers
                     Password = recruiter.PasswordHash,
                     PasswordHash = recruiter.PasswordHash
                 };
-                await repository.Insert(rec);
-                repository.Save();
+                await _repository.Insert(rec);
+                _repository.Save();
                 return RedirectToAction(nameof(Profile));
             }
             else 
@@ -182,11 +182,11 @@ namespace RecruiterPathway.Controllers
             Recruiter recruiter;
             if (id == null)
             {
-                recruiter = await repository.GetSignedInRecruiter(HttpContext.User);
+                recruiter = await _repository.GetSignedInRecruiter(HttpContext.User);
             }
             else 
             {
-                recruiter = await repository.GetById(id);
+                recruiter = await _repository.GetById(id);
             }
             if (recruiter == null)
             {
@@ -209,7 +209,7 @@ namespace RecruiterPathway.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(string id, [Bind("Name,CompanyName,UserName,PhoneNumber")] Recruiter recruiter)
         {
-            var userExists = await repository.GetById(id);
+            var userExists = await _repository.GetById(id);
             if (userExists == null)
             {
                 var recruiterVM = new RecruiterViewModel
@@ -230,8 +230,8 @@ namespace RecruiterPathway.Controllers
                 userExists.UserName = recruiter.UserName;
                 //userExists.PasswordHash = model.PasswordHash;
                 userExists.PhoneNumber = recruiter.PhoneNumber;
-                await repository.Update(userExists);
-                repository.Save();
+                await _repository.Update(userExists);
+                _repository.Save();
                 
                 return RedirectToAction(nameof(List));
             }
@@ -247,7 +247,7 @@ namespace RecruiterPathway.Controllers
                 return NotFound();
             }
 
-            var recruiter = await repository.GetById(id);
+            var recruiter = await _repository.GetById(id);
             if (recruiter == null)
             {
                 return NotFound();
@@ -270,11 +270,11 @@ namespace RecruiterPathway.Controllers
             Recruiter self;
             if (HttpContext != null)
             {
-                self = await repository.GetSignedInRecruiter(HttpContext.User, true);
+                self = await _repository.GetSignedInRecruiter(HttpContext.User, true);
             }
             else
             {
-                self = await repository.GetById(id);
+                self = await _repository.GetById(id);
             }
             if (self == null)
             {
@@ -283,9 +283,9 @@ namespace RecruiterPathway.Controllers
             }
             if (id == self.Id || self.Email == "administrator@recruiterpathway.com")
             {
-                await repository.Delete(id);
-                repository.SignOutRecruiter();
-                repository.Save();
+                await _repository.Delete(id);
+                _repository.SignOutRecruiter();
+                _repository.Save();
             }
             else {
                 return Unauthorized();
