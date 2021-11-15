@@ -33,22 +33,22 @@ namespace RecruiterPathway.Controllers
 
             if (!string.IsNullOrEmpty(studentViewModel.SearchFirstName))
             {
-                students = students.Where(st => st.firstName.Contains(studentViewModel.SearchFirstName));
+                students = students.Where(st => st.FirstName.Contains(studentViewModel.SearchFirstName));
             }
 
             if (!string.IsNullOrEmpty(studentViewModel.SearchLastName))
             {
-                students = students.Where(st => st.lastName.Contains(studentViewModel.SearchLastName));
+                students = students.Where(st => st.LastName.Contains(studentViewModel.SearchLastName));
             }
 
             if (!string.IsNullOrEmpty(studentViewModel.StudentDegree))
             {
-                students = students.Where(st => st.degree == studentViewModel.StudentDegree);
+                students = students.Where(st => st.Degree == studentViewModel.StudentDegree);
             }
 
             if (DateTime.MinValue != studentViewModel.GradDateStart && DateTime.MinValue != studentViewModel.GradDateEnd)
             {
-                students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.gradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.gradDate) >= 0);
+                students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.GradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.GradDate) >= 0);
             }
 
             switch (studentViewModel.SortBy)
@@ -56,16 +56,16 @@ namespace RecruiterPathway.Controllers
                 default:
                     break;
                 case "First Name":
-                    students = students.OrderBy(st => st.firstName);
+                    students = students.OrderBy(st => st.FirstName);
                     break;
                 case "Last Name":
-                    students = students.OrderBy(st => st.lastName);
+                    students = students.OrderBy(st => st.LastName);
                     break;
                 case "Degree":
-                    students = students.OrderBy(st => st.degree);
+                    students = students.OrderBy(st => st.Degree);
                     break;
                 case "Graduation Date":
-                    students = students.OrderBy(st => st.gradDate);
+                    students = students.OrderBy(st => st.GradDate);
                     break;
             }
 
@@ -133,7 +133,7 @@ namespace RecruiterPathway.Controllers
         {
             if (ModelState.IsValid)
             {
-                var students = await repository.Get(st => st.firstName.CompareTo(studentViewModel.Student.firstName) == 0 && st.lastName.CompareTo(studentViewModel.Student.lastName) == 0);
+                var students = await repository.Get(st => st.FirstName.CompareTo(studentViewModel.Student.FirstName) == 0 && st.LastName.CompareTo(studentViewModel.Student.LastName) == 0);
                 if (!students.Any())
                 {
                     var getId = await repository.GetById(i.ToString());

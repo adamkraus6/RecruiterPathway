@@ -10,7 +10,7 @@ using RecruiterPathway.Data;
 namespace RecruiterPathway.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20211103223633_initial")]
+    [Migration("20211115152648_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -161,7 +161,7 @@ namespace RecruiterPathway.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RecruiterId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("StudentId")
                         .HasColumnType("nvarchar(450)");
@@ -170,6 +170,8 @@ namespace RecruiterPathway.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RecruiterId");
 
                     b.HasIndex("StudentId");
 
@@ -188,11 +190,13 @@ namespace RecruiterPathway.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RecruiterId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("PipelineStatus");
                 });
@@ -262,9 +266,6 @@ namespace RecruiterPathway.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("WatchList")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -283,21 +284,41 @@ namespace RecruiterPathway.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("degree")
+                    b.Property<string>("Degree")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("firstName")
+                    b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("gradDate")
+                    b.Property<DateTime>("GradDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("lastName")
+                    b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Student");
+                });
+
+            modelBuilder.Entity("RecruiterPathway.Models.Watch", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RecruiterId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("StudentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecruiterId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("WatchList");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -353,10 +374,15 @@ namespace RecruiterPathway.Migrations
 
             modelBuilder.Entity("RecruiterPathway.Models.Comment", b =>
                 {
+                    b.HasOne("RecruiterPathway.Models.Recruiter", "Recruiter")
+                        .WithMany()
+                        .HasForeignKey("RecruiterId");
+
                     b.HasOne("RecruiterPathway.Models.Student", "Student")
                         .WithMany("Comments")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("StudentId");
+
+                    b.Navigation("Recruiter");
 
                     b.Navigation("Student");
                 });
@@ -364,16 +390,38 @@ namespace RecruiterPathway.Migrations
             modelBuilder.Entity("RecruiterPathway.Models.PipelineStatus", b =>
                 {
                     b.HasOne("RecruiterPathway.Models.Recruiter", "Recruiter")
-                        .WithMany("PipelineStatus")
-                        .HasForeignKey("RecruiterId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("PipelineStatuses")
+                        .HasForeignKey("RecruiterId");
+
+                    b.HasOne("RecruiterPathway.Models.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
 
                     b.Navigation("Recruiter");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("RecruiterPathway.Models.Watch", b =>
+                {
+                    b.HasOne("RecruiterPathway.Models.Recruiter", "Recruiter")
+                        .WithMany("WatchList")
+                        .HasForeignKey("RecruiterId");
+
+                    b.HasOne("RecruiterPathway.Models.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
+
+                    b.Navigation("Recruiter");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("RecruiterPathway.Models.Recruiter", b =>
                 {
-                    b.Navigation("PipelineStatus");
+                    b.Navigation("PipelineStatuses");
+
+                    b.Navigation("WatchList");
                 });
 
             modelBuilder.Entity("RecruiterPathway.Models.Student", b =>

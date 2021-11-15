@@ -98,8 +98,8 @@ namespace RecruiterPathway.Tests
                 Student = new Student
                 {
                     Id = "9002",
-                    firstName = "Test",
-                    lastName = "Test"
+                    FirstName = "Test",
+                    LastName = "Test"
                 }
             };
 
@@ -118,10 +118,10 @@ namespace RecruiterPathway.Tests
                 Student = new Student
                 {
                     Id = "1",
-                    firstName = "Test",
-                    lastName = "Test",
-                    degree = "Test",
-                    gradDate = new DateTime()
+                    FirstName = "Test",
+                    LastName = "Test",
+                    Degree = "Test",
+                    GradDate = new DateTime()
                 }
             };
 

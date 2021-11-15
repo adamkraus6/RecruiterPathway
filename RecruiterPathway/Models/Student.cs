@@ -9,16 +9,16 @@ namespace RecruiterPathway.Models
     {
         public string Id { get; set; }
         [Display(Name = "First Name")]
-        public string firstName { get; set; }
+        public string FirstName { get; set; }
         [Display(Name = "Last Name")]
-        public string lastName { get; set; }
+        public string LastName { get; set; }
 
         [Display(Name = "Degree")]
-        public string degree { get; set; }
+        public string Degree { get; set; }
         
         [Display(Name = "Graduation Date")]
         [DataType(DataType.Date)]
-        public DateTime gradDate { get; set; }
+        public DateTime GradDate { get; set; }
 
         //std::list<Triple<string, DateTime, string>>
         //List of Recruiter Ids to timestamped comments. These are global to all recruiters.
@@ -26,7 +26,7 @@ namespace RecruiterPathway.Models
 
         public bool Equals(Student other)
         {
-            return Id.Equals(other.Id) && firstName.Equals(other.firstName) && lastName.Equals(other.lastName) && degree.Equals(other.degree) && gradDate == other.gradDate;
+            return Id.Equals(other.Id) && FirstName.Equals(other.FirstName) && LastName.Equals(other.LastName) && Degree.Equals(other.Degree) && GradDate == other.GradDate;
         }
     }
 }

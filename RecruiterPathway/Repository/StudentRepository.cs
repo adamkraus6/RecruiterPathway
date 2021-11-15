@@ -18,8 +18,8 @@ namespace RecruiterPathway.Repository
         override public SelectList GetStudentDegrees()
         {
             var degreeQuery = from s in context.Student
-                              orderby s.degree
-                              select s.degree;
+                              orderby s.Degree
+                              select s.Degree;
             return new SelectList(degreeQuery.Distinct());
         }
 

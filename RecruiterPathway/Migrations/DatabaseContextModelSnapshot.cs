@@ -282,16 +282,16 @@ namespace RecruiterPathway.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("degree")
+                    b.Property<string>("Degree")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("firstName")
+                    b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("gradDate")
+                    b.Property<DateTime>("GradDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("lastName")
+                    b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
