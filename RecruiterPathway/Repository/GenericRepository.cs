@@ -11,21 +11,21 @@ namespace RecruiterPathway.Repository
     public class GenericRepository<TModel>: IDisposable where TModel : class
     {
         //protected so subclasses can use
-        protected DatabaseContext context;
-        protected DbSet<TModel> set;
+        protected DatabaseContext _context;
+        protected DbSet<TModel> _set;
         public GenericRepository(DatabaseContext context, DbSet<TModel> set)
         {
-            this.context = context;
-            this.set = set;
+            this._context = context;
+            this._set = set;
         }
         async public Task<IEnumerable<TModel>> Get(Expression<Func<TModel, bool>> filter = null,
             Func<IQueryable<TModel>, IOrderedQueryable<TModel>> orderBy = null,
             string includeProperties = "")
         {
             IQueryable<TModel> query;
-            lock (set)
+            lock (_set)
             {
-                 query = set;
+                 query = _set;
             }
             if (filter != null)
             {
@@ -50,39 +50,39 @@ namespace RecruiterPathway.Repository
         async public Task<List<TModel>> GetAll()
         {
             Task<List<TModel>> result;
-            lock (set)
+            lock (_set)
             {
-                result =  set.ToListAsync();
+                result =  _set.ToListAsync();
             }
             return await result;
         }
         async virtual public ValueTask<TModel> GetById(object id)
         {
             ValueTask<TModel> result;
-            lock (set)
+            lock (_set)
             {
                 if (id is Guid guid)
                 {
-                    result = set.FindAsync(guid);
+                    result = _set.FindAsync(guid);
                 }
                 else
                 {
-                    result = set.FindAsync(id);
+                    result = _set.FindAsync(id);
                 }
             }
             return await result;
         }
         async public virtual Task<bool> Insert(TModel obj)
         {
-            await set.AddAsync(obj);
+            await _set.AddAsync(obj);
             return true;
         }
         public async virtual Task Delete(TModel obj)
         {
-            lock (context)
+            lock (_context)
             {
-                context.Attach(obj);
-                context.Remove(obj);
+                _context.Attach(obj);
+                _context.Remove(obj);
             }
             Save();
             Console.WriteLine("Called Delete(obj)");
@@ -94,22 +94,22 @@ namespace RecruiterPathway.Repository
             {
                 return;
             }
-            lock (context)
+            lock (_context)
             {
-                context.Attach(model);
-                context.Remove(model);
+                _context.Attach(model);
+                _context.Remove(model);
             }
             Save();
         }
         public async Task Update(TModel obj)
         {
-            context.Entry(obj).State = EntityState.Modified;
+            _context.Entry(obj).State = EntityState.Modified;
             Save();
             Console.WriteLine("called update(obj)");
         }
         public virtual void Save()
         {
-            var updated = context.SaveChanges();
+            var updated = _context.SaveChanges();
             Console.WriteLine("updated " + updated);
         }
 
@@ -120,7 +120,7 @@ namespace RecruiterPathway.Repository
             {
                 if (disposing)
                 {
-                    context.Dispose();
+                    _context.Dispose();
                 }
             }
             disposed = true;
