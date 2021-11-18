@@ -30,7 +30,7 @@ namespace RecruiterPathway.Tests
         {
             var repository = MockedDatabase.GetRecruiterRepository();
             //This indirectly tests the Model variant as we get the Model from the id before calling it
-            var deleteGuid = MockedDatabase.GetRandomGuid();
+            var deleteGuid = Constants.NullRecruiter.Id;
             await repository.Delete(deleteGuid);
 
             //Attempt to now get the object we just deleted, we want this to be null for this to be working
@@ -46,8 +46,8 @@ namespace RecruiterPathway.Tests
         public async void Delete_Id_Param_MultipleDelete()
         {
             var repository = MockedDatabase.GetRecruiterRepository();
-            var deleteGuid1 = MockedDatabase.GetRandomGuid();
-            var deleteGuid2 = MockedDatabase.GetRandomGuid();
+            var deleteGuid1 = Constants.AdminRecruiter.Id;
+            var deleteGuid2 = Constants.NullRecruiter.Id;
             var waiting = repository.Delete(deleteGuid1);
             while (!waiting.IsCompleted)
             {
@@ -70,7 +70,7 @@ namespace RecruiterPathway.Tests
         {
             var repository = MockedDatabase.GetRecruiterRepository();
 
-            var randomRecruiter = repository.GetById(MockedDatabase.GetRandomGuid());
+            var randomRecruiter = repository.GetById(Constants.NullRecruiter.Id);
             while (!randomRecruiter.IsCompleted)
             {
                 Thread.Sleep(1);

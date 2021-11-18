@@ -186,6 +186,7 @@ namespace RecruiterPathway.Models
             {
                 //We expect this to fail, try to add the user anyways.
             }
+            userManager.CreateAsync(Constants.NullRecruiter, "Test123!");
             var resourceName = "RecruiterPathway.Models.SeedData.Recruiters.csv";
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))

@@ -10,6 +10,7 @@ using RecruiterPathway.Controllers;
 using RecruiterPathway.Data;
 using RecruiterPathway.Models;
 using RecruiterPathway.Repository;
+using RecruiterPathway.Tests.Fixture;
 
 namespace RecruiterPathway.Tests
 {
@@ -20,30 +21,11 @@ namespace RecruiterPathway.Tests
         private static bool seeded = false;
         public static DatabaseContext GetDatabaseContext()
         {
-            if (dbContext == null)
-            {
-                dbContext = new DatabaseContext(new DbContextOptionsBuilder<DatabaseContext>().UseInMemoryDatabase(databaseName: "AuthenticationDbContext").Options);
-                //Since tests run multi threaded, we need to lock the cached dbContext while we seed it.
-                Thread.Sleep(1);
-                lock (dbContext)
-                {
-                    if (!seeded)
-                    {
-                        SeedDatabase.SeedStudents(dbContext);
-                        seeded = true;
-                    }
-                }
-                lock (dbContext)
-                {
-                    return dbContext.Copy();
-                }
-            }
-            lock (dbContext)
-            {
-                return dbContext.Copy();
-            }
+            var fixture = new SharedDatabaseFixture();
+            return fixture.CreateContext();
         }
-        public static Mock<UserManager<Recruiter>> GetRecruiterUserManager()
+
+        public static Mock<UserManager<Recruiter>> GetRecruiterUserManager(DatabaseContext context)
         {
             var userManagerMock = new Mock<UserManager<Recruiter>>(
                 Mock.Of<IUserStore<Recruiter>>(),
@@ -59,7 +41,7 @@ namespace RecruiterPathway.Tests
             userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>())).Returns(Task.FromResult(new Recruiter()));
             if (guids == null)
             {
-                var db = GetDatabaseContext();
+                var db = context;
                 guids = new List<string>();
                 //A. Helps with more async potential fixes. B. Makes me happier
                 lock (db) lock (dbContext) lock(guids)
@@ -74,7 +56,7 @@ namespace RecruiterPathway.Tests
         public static Mock<SignInManager<Recruiter>> GetRecruiterSignInManager()
         {
             return new Mock<SignInManager<Recruiter>>(
-            GetRecruiterUserManager().Object, 
+            GetRecruiterUserManager(GetDatabaseContext()).Object, 
             Mock.Of<IHttpContextAccessor>(), 
             Mock.Of<IUserClaimsPrincipalFactory<Recruiter>>(),  
             null,  
@@ -85,7 +67,7 @@ namespace RecruiterPathway.Tests
         }
         public static RecruiterRepository GetRecruiterRepository()
         {
-            return new RecruiterRepository(GetDatabaseContext(), GetRecruiterUserManager().Object, GetRecruiterSignInManager().Object);
+            return new RecruiterRepository(GetDatabaseContext(), GetRecruiterUserManager(GetDatabaseContext()).Object, GetRecruiterSignInManager().Object);
         }
         public static StudentRepository GetStudentRepository()
         {
