@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RecruiterPathway.Data;
 using RecruiterPathway.Models;
 using System.Threading;
 using Xunit;
@@ -12,7 +13,7 @@ namespace RecruiterPathway.Tests
         {
             var controller = MockedDatabase.GetRecruitersController();
 
-            var result = controller.Profile(MockedDatabase.GetRandomGuid());
+            var result = controller.Profile(Constants.AdminRecruiter.Id);
 
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);
@@ -32,7 +33,7 @@ namespace RecruiterPathway.Tests
         {
             var controller = MockedDatabase.GetRecruitersController();
 
-            var result = controller.Edit(MockedDatabase.GetRandomGuid());
+            var result = controller.Edit(Constants.AdminRecruiter.Id);
 
             Assert.NotNull(result.Result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);
@@ -42,7 +43,7 @@ namespace RecruiterPathway.Tests
         {
             var controller = MockedDatabase.GetRecruitersController();
 
-            var result = controller.Delete(MockedDatabase.GetRandomGuid());
+            var result = controller.Delete(Constants.AdminRecruiter.Id);
 
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);
@@ -118,7 +119,7 @@ namespace RecruiterPathway.Tests
         {
             var controller = MockedDatabase.GetRecruitersController();
 
-            var result = controller.Edit(MockedDatabase.GetRandomGuid(), new Recruiter
+            var result = controller.Edit(Constants.AdminRecruiter.Id, new Recruiter
             {
                 UserName = "test@test.com",
                 CompanyName = "Test",
@@ -134,7 +135,7 @@ namespace RecruiterPathway.Tests
         {
             var controller = MockedDatabase.GetRecruitersController();
 
-            var result = controller.DeleteConfirmed(MockedDatabase.GetRandomGuid());
+            var result = controller.DeleteConfirmed(Constants.AdminRecruiter.Id);
 
             while (!result.IsCompleted)
             {

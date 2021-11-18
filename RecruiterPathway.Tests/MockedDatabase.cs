@@ -61,8 +61,12 @@ namespace RecruiterPathway.Tests
             {
                 var db = GetDatabaseContext();
                 guids = new List<string>();
-                SeedDatabase.SeedRecruiters(db, userManagerMock.Object, ref guids);
-                dbContext = db;
+                //A. Helps with more async potential fixes. B. Makes me happier
+                lock (db) lock (dbContext) lock(guids)
+                    {
+                        SeedDatabase.SeedRecruiters(db, userManagerMock.Object, ref guids);
+                        dbContext = db;
+                    }
             }
             return userManagerMock;
         }
@@ -85,6 +89,11 @@ namespace RecruiterPathway.Tests
         }
         public static StudentRepository GetStudentRepository()
         {
+            //Test to see if we've seeded the recruiter repo, resolves some linking issues
+            if (guids == null || guids.Count == 0)
+            {
+                GetRecruiterRepository();
+            }
             return new StudentRepository(GetDatabaseContext());
         }
         public static StudentsController GetStudentsController()
