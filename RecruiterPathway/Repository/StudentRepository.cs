@@ -1,13 +1,12 @@
-﻿using RecruiterPathway.Data;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using RecruiterPathway.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Threading.Tasks;
-using System.Threading;
-using Microsoft.EntityFrameworkCore;
 using RecruiterPathway.ViewModels;
+using RecruiterPathway.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace RecruiterPathway.Repository
 {
@@ -68,6 +67,53 @@ namespace RecruiterPathway.Repository
         {
             _context.Comment.Remove(studentViewModel.Comment);
             Save();
+        }
+
+        override public async Task<IEnumerable<Student>> GetAll(StudentViewModel studentViewModel)
+        {
+            IEnumerable<Student> students = await GetAll();
+
+            if (!string.IsNullOrEmpty(studentViewModel.SearchFirstName))
+            {
+                students = students.Where(st => st.FirstName.Contains(studentViewModel.SearchFirstName));
+            }
+
+            if (!string.IsNullOrEmpty(studentViewModel.SearchLastName))
+            {
+                students = students.Where(st => st.LastName.Contains(studentViewModel.SearchLastName));
+            }
+
+            if (!string.IsNullOrEmpty(studentViewModel.StudentDegree))
+            {
+                students = students.Where(st => st.Degree == studentViewModel.StudentDegree);
+            }
+
+            if (DateTime.MinValue != studentViewModel.GradDateStart && DateTime.MinValue != studentViewModel.GradDateEnd)
+            {
+                students = students.Where(st => studentViewModel.GradDateStart.CompareTo(st.GradDate) < 0 && studentViewModel.GradDateEnd.CompareTo(st.GradDate) >= 0);
+            }
+
+            switch(studentViewModel.SortBy)
+            {
+                default:
+                    break;
+                case StudentViewModel.SortOptions.NONE:
+                    break;
+                case StudentViewModel.SortOptions.FIRST:
+                    students = students.OrderBy(s => s.FirstName);
+                    break;
+                case StudentViewModel.SortOptions.LAST:
+                    students = students.OrderBy(s => s.LastName);
+                    break;
+                case StudentViewModel.SortOptions.DEG:
+                    students = students.OrderBy(s => s.Degree);
+                    break;
+                case StudentViewModel.SortOptions.GRAD:
+                    students = students.OrderBy(s => s.GradDate);
+                    break;
+            }
+
+            return students;
         }
     }
 }
