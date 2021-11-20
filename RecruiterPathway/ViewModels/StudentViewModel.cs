@@ -2,8 +2,7 @@
 using RecruiterPathway.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace RecruiterPathway.ViewModels
 {
@@ -20,9 +19,7 @@ namespace RecruiterPathway.ViewModels
         public DateTime GradDateEnd { get; set; }
 
         public bool ListView { get; set; }
-
-        public SelectList SortOptions { get; set; }
-        public string SortBy { get; set; }
+        public SortOptions SortBy { get; set; }
 
         public Comment Comment;
         public string AddCommentText { get; set; }
@@ -30,5 +27,19 @@ namespace RecruiterPathway.ViewModels
         public SelectList Statuses { get; set; }
         public string PipelineStatus { get; set; }
         public string NewPipelineStatus { get; set; }
+
+        public enum SortOptions
+        {
+            [Display(Name = "None")]
+            NONE,
+            [Display(Name = "First Name")]
+            FIRST,
+            [Display(Name = "Last Name")]
+            LAST,
+            [Display(Name = "Degree")]
+            DEG,
+            [Display(Name = "Graduation Date")]
+            GRAD
+        }
     }
 }

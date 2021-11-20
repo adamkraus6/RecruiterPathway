@@ -137,13 +137,6 @@ namespace RecruiterPathway.Repository
             return await SetPipelineStatus(recruiter.Id, student, status);
         }
 
-        override public SelectList GetPipelineStatuses()
-        {
-            var statusQuery = from r in _context.Recruiter
-                              from ps in r.PipelineStatuses
-                              select ps.Status;
-            return new SelectList(statusQuery.Distinct());
-        }
         override async public Task AddWatch(Recruiter recruiter, Student student)
         {
             await AddWatch(recruiter.Id, student);
