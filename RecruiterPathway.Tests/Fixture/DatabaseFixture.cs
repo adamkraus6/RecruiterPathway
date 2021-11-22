@@ -56,6 +56,7 @@ namespace RecruiterPathway.Tests.Fixture
                         List<string> guids = new List<string>();
                         Models.SeedDatabase.SeedRecruiters(context, MockedDatabase.GetRecruiterUserManager(context).Object, ref guids);
                         context.SaveChanges();
+                        Models.SeedDatabase.SeedLinkedFields(context);
                     }
                     _databaseInitialized = true;
                 }

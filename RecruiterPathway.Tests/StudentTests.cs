@@ -42,9 +42,10 @@ namespace RecruiterPathway.Tests
             Assert.IsAssignableFrom<bool>(product);
         }
         [Fact]
-        public async void Delete_Id_Param()
+        public async Task Delete_Id_Param()
         {
             var repository = MockedDatabase.GetStudentRepository();
+            var student = await repository.GetById("1");
             //This indirectly tests the Model variant as we get the Model from the id before calling it
             await repository.Delete("1");
             //Attempt to now get the object we just deleted, we want this to be null for this to be working
@@ -54,14 +55,17 @@ namespace RecruiterPathway.Tests
                 Thread.Sleep(1);
             }
             Assert.Null(result.Result);
+            await repository.Insert(student);
         }
         [Fact]
         //This tests for regression of multiple deletes crashing the app.
-        public async void Delete_Id_Param_MultipleDelete()
+        public async Task Delete_Id_Param_MultipleDelete()
         {
             var repository = MockedDatabase.GetStudentRepository();
             var deleteGuid1 = "1";
             var deleteGuid2 = "2";
+            var student1 = await repository.GetById("1");
+            var student2 = await repository.GetById("2");
             await repository.Delete(deleteGuid1);
             await repository.Delete(deleteGuid2);
             var result1 = repository.GetById(deleteGuid1);
@@ -73,6 +77,8 @@ namespace RecruiterPathway.Tests
             }
             Assert.Null(result1.Result);
             Assert.Null(result2.Result);
+            await repository.Insert(student1);
+            await repository.Insert(student2);
         }
         [Fact]
         public void Get_Degrees_Ret_SelectList()

@@ -44,11 +44,20 @@ namespace RecruiterPathway.Repository
             {
                 return;
             }
-            if (student.Comments != null)
+            lock (_context)
             {
-                student.Comments.Clear();
+                //Delete all the linked objects
+                var comments = _context.Comment.Where(c => c.Student.Id == student.Id);
+                _context.Comment.RemoveRange(comments);
+                var statuses = _context.PipelineStatus.Where(c => c.Student.Id == student.Id);
+                _context.PipelineStatus.RemoveRange(statuses);
+                var watches = _context.WatchList.Where(c => c.Student.Id == student.Id);
+                _context.WatchList.RemoveRange(watches);
+                _context.SaveChanges();
+                //Delete Student MANUALLY to prevent issues with GetById
+                _context.Student.Remove(student);
+                _context.SaveChanges();
             }
-            await base.Delete(id);
         }
         public override async Task AddComment(StudentViewModel studentViewModel)
         {

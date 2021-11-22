@@ -169,10 +169,46 @@ namespace RecruiterPathway.Models
                         );
 
                         context.SaveChanges();
+
                         i++;
                     }
                 }
             }
+        }
+        public static void SeedLinkedFields(DatabaseContext context)
+        {
+            var recruiter = context.Recruiter.Where(r => r.Id == Constants.AdminRecruiter.Id).FirstOrDefault();
+            foreach (var student in context.Student.ToList())
+            {
+                context.Comment.Add(
+                    new Comment
+                    {
+                        Student = student,
+                        ActualComment = "Test Comment",
+                        Id = Guid.NewGuid().ToString(),
+                        Recruiter = recruiter,
+                        Time = DateTime.Now
+                    }
+                );
+                context.PipelineStatus.Add(
+                    new PipelineStatus
+                    {
+                        Student = student,
+                        Id = Guid.NewGuid().ToString(),
+                        Recruiter = recruiter,
+                        Status = "Phone Interview"
+                    }
+                    );
+                context.WatchList.Add(
+                    new Watch
+                    {
+                        Student = student,
+                        Id = Guid.NewGuid().ToString(),
+                        Recruiter = recruiter
+                    }
+                    );
+            }
+            context.SaveChanges();
         }
         public static void SeedRecruiters(DatabaseContext context, UserManager<Recruiter> userManager, ref List<string> guids) {
             var assembly = Assembly.GetExecutingAssembly();

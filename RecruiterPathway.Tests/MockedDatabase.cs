@@ -44,7 +44,7 @@ namespace RecruiterPathway.Tests
                 var db = context;
                 guids = new List<string>();
                 //A. Helps with more async potential fixes. B. Makes me happier
-                lock (db) lock (dbContext) lock(guids)
+                lock (db) lock(guids)
                     {
                         SeedDatabase.SeedRecruiters(db, userManagerMock.Object, ref guids);
                         dbContext = db;

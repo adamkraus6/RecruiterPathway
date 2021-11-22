@@ -29,6 +29,25 @@ namespace RecruiterPathway.Repository
             return true;
         }
 
+        override async public Task Delete(object id)
+        {
+            var recruiter = await GetById(id);
+            //Delete all the linked objects
+            lock (_context)
+            {
+                var comments = _context.Comment.Where(c => c.Recruiter.Id == recruiter.Id);
+                _context.Comment.RemoveRange(comments);
+                var statuses = _context.PipelineStatus.Where(c => c.Recruiter.Id == recruiter.Id);
+                _context.PipelineStatus.RemoveRange(statuses);
+                var watches = _context.WatchList.Where(c => c.Recruiter.Id == recruiter.Id);
+                _context.WatchList.RemoveRange(watches);
+                _context.SaveChanges();
+                //Delete Student MANUALLY to prevent issues with GetById
+                _context.Recruiter.Remove(recruiter);
+                _context.SaveChanges();
+            }
+        }
+
         override public async ValueTask<Recruiter> GetById(object id)
         {
             Recruiter recruiter;
