@@ -17,8 +17,6 @@ namespace RecruiterPathway.Tests
     class MockedDatabase
     {
         private static List<string> guids = null;
-        private static DatabaseContext dbContext = null;
-        private static bool seeded = false;
         public static DatabaseContext GetDatabaseContext()
         {
             var fixture = new SharedDatabaseFixture();
@@ -39,17 +37,6 @@ namespace RecruiterPathway.Tests
                 null
                 );
             userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>())).Returns(Task.FromResult(new Recruiter()));
-            if (guids == null)
-            {
-                var db = context;
-                guids = new List<string>();
-                //A. Helps with more async potential fixes. B. Makes me happier
-                lock (db) lock(guids)
-                    {
-                        SeedDatabase.SeedRecruiters(db, userManagerMock.Object, ref guids);
-                        dbContext = db;
-                    }
-            }
             return userManagerMock;
         }
         //Needed https://stackoverflow.com/a/64832602 to help fix this
@@ -86,17 +73,6 @@ namespace RecruiterPathway.Tests
         {
             return new RecruitersController(GetRecruiterRepository());
         }
-        public static List<string> GetRecruiterGuids()
-        {
-            return guids;
-        }
 
-        //Quickly get a valid guid that's in the database
-        public static string GetRandomGuid()
-        {
-            var guids = MockedDatabase.GetRecruiterGuids();
-            var rand = new Random();
-            return guids[rand.Next(0, guids.Count)];
-        }
     }
 }

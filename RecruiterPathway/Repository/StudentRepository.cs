@@ -26,14 +26,22 @@ namespace RecruiterPathway.Repository
         override public async ValueTask<Student> GetById(object id)
         {
             //ThenInclude from https://stackoverflow.com/a/53133582
-            return await _context.Student.Include(c => c.Comments)
-                .ThenInclude(r => r.Recruiter)
-                .FirstOrDefaultAsync(s => s.Id == (string)id);
+            Student student;
+            lock (_context)
+            {
+                student =  _context.Student.Include(c => c.Comments)
+                    .ThenInclude(r => r.Recruiter)
+                    .FirstOrDefault(s => s.Id == (string)id);
+            }
+            return student;
         }
         override public async Task<bool> Insert(Student student)
         {
-            await _set.AddAsync(student);
-            Save();
+            lock (_context) lock (_set)
+                {
+                    _set.Add(student);
+                }
+                    Save();
             return true;
 
         }
@@ -70,13 +78,30 @@ namespace RecruiterPathway.Repository
             {
                 student.Comments = new List<Comment>();
             }
-            _context.Comment.Add(studentViewModel.Comment);
-            Save();
+            lock (_context)
+            {
+                //Perform a duplication check cause even if it's a 1 in a million chance, we could have a concurrency issue
+                var comment = _context.Comment.Where(c => c.Id == studentViewModel.Comment.Id).FirstOrDefault();
+                if (comment != null) 
+                {
+                    studentViewModel.Comment.Id = Guid.NewGuid().ToString();
+                }
+                _context.Comment.Add(studentViewModel.Comment);
+                _context.SaveChanges();
+            }
         }
         public override void RemoveComment(StudentViewModel studentViewModel)
         {
-            _context.Comment.Remove(studentViewModel.Comment);
-            Save();
+            lock (_context)
+            {
+                var comment = _context.Comment.Where(c => c.Id == studentViewModel.Comment.Id).FirstOrDefault();
+                if (comment == null)
+                {
+                    return;
+                }
+                _context.Comment.Remove(studentViewModel.Comment);
+                _context.SaveChanges();
+            }
         }
     }
 }
