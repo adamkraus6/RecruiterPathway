@@ -31,7 +31,7 @@ namespace RecruiterPathway
 
             
             //Authentication DB, has to be separate
-            services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AuthenticationDbContext")));
+            services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("RecruiterPathwayDbContext")));
 
             services.AddScoped<IStudentRepository,StudentRepository>();
 
