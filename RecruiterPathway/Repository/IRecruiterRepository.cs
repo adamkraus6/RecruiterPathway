@@ -22,8 +22,6 @@ namespace RecruiterPathway.Repository
         public abstract Task<bool> SetPipelineStatus(Recruiter recruiter, Student student, string status);
         public abstract Task<bool> SetPipelineStatus(string recruiterId, Student student, string status);
 
-        public abstract SelectList GetPipelineStatuses();
-
         //Watchlist Functions - Enforces Only 1 in the list
         public abstract Task AddWatch(Recruiter recruiter, Student student);
         public abstract Task AddWatch(string recruiterId, Student student);

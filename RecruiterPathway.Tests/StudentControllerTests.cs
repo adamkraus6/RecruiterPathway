@@ -125,7 +125,7 @@ namespace RecruiterPathway.Tests
                 }
             };
 
-            var result = controller.Edit("1", viewModel);
+            var result = controller.Edit(viewModel);
 
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IActionResult>(result.Result);

@@ -14,6 +14,7 @@ namespace RecruiterPathway.Repository
         public abstract SelectList GetStudentDegrees();
         public abstract Task AddComment(StudentViewModel studentViewModel);
         public abstract void RemoveComment(StudentViewModel studentViewModel);
-        //public abstract void UpdateComment(CommentViewModel view);
+
+        public abstract Task<IEnumerable<Student>> GetAll(StudentViewModel studentViewModel);
     }
 }
