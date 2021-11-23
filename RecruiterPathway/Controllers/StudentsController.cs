@@ -18,7 +18,6 @@ namespace RecruiterPathway.Controllers
     {
         private readonly IStudentRepository _studentRepository;
         private readonly IRecruiterRepository _recruiterRepo;
-        private int i = 1;
         public StudentsController(IStudentRepository studentRepository, IRecruiterRepository recruiterRepo)
         {
             this._studentRepository = studentRepository;
@@ -96,13 +95,7 @@ namespace RecruiterPathway.Controllers
                 var students = await _studentRepository.Get(st => st.FirstName.CompareTo(studentViewModel.Student.FirstName) == 0 && st.LastName.CompareTo(studentViewModel.Student.LastName) == 0);
                 if (!students.Any())
                 {
-                    var getId = await _studentRepository.GetById(i.ToString());
-                    while (getId != null)
-                    {
-                        i++;
-                        getId = await _studentRepository.GetById(i.ToString());
-                    }
-                    studentViewModel.Student.Id = i.ToString();
+                    studentViewModel.Student.Id = Guid.NewGuid().ToString();
                     await _studentRepository.Insert(studentViewModel.Student);
                 }
                 else
