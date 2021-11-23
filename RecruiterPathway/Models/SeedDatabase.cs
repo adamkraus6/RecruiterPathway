@@ -34,7 +34,6 @@ namespace RecruiterPathway.Models
                     using (StreamReader reader = new StreamReader(stream))
                     {
                         reader.ReadLine();
-                        var i = 1;
                         while ((line = reader.ReadLine()) != null)
                         {
                             // Writes to the Output Window.
@@ -47,7 +46,7 @@ namespace RecruiterPathway.Models
                             context.Student.AddRange(
                                 new Student
                                 {
-                                    Id = i.ToString(),
+                                    Id = values[4],
                                     FirstName = values[0],
                                     LastName = values[1],
                                     Degree = values[2],
@@ -56,22 +55,11 @@ namespace RecruiterPathway.Models
                             );
 
                             context.SaveChanges();
-                            i++;
                         }
                     }
                 }
                 //Seed the administrative user into the database
-                var adminuser = new Recruiter
-                {
-                    UserName = "administrator@recruiterpathway.com",
-                    Email = "administrator@recruiterpathway.com",
-                    Name = "Administrator",
-                    CompanyName = "Recruiter Pathway",
-                    PhoneNumber = "6055555555",
-                    Password = "P@$$w0rd",
-                    Id = "d2166836-4ce9-4b8e-98dd-b102c00f06f8",
-                    SecurityStamp = "32179209-a914-40ad-b052-bff23fe90fc4"
-                };
+                var adminuser = Constants.AdminRecruiter;
                 userManager.DeleteAsync(adminuser);
                 try
                 {
@@ -140,7 +128,6 @@ namespace RecruiterPathway.Models
                 using (StreamReader reader = new StreamReader(stream))
                 {
                     reader.ReadLine();
-                    var i = 1;
                     while ((line = reader.ReadLine()) != null)
                     {
                         // Writes to the Output Window.
@@ -150,16 +137,10 @@ namespace RecruiterPathway.Models
                         // to the Student model.
                         string[] values = line.Split(',');
 
-                        IEnumerable<Student> all = context.Student.Where(s => s.Id == i.ToString());
-                        if (all.Any())
-                        {
-                            return;
-                        }
-
                         context.Student.AddRange(
                             new Student
                             {
-                                Id = i.ToString(),
+                                Id = values[4],
                                 FirstName = values[0],
                                 LastName = values[1],
                                 Degree = values[2],
@@ -169,10 +150,45 @@ namespace RecruiterPathway.Models
                         );
 
                         context.SaveChanges();
-                        i++;
+
                     }
                 }
             }
+        }
+        public static void SeedLinkedFields(DatabaseContext context)
+        {
+            var recruiter = context.Recruiter.Where(r => r.Id == Constants.AdminRecruiter.Id).FirstOrDefault();
+            foreach (var student in context.Student.ToList())
+            {
+                context.Comment.Add(
+                    new Comment
+                    {
+                        Student = student,
+                        ActualComment = "Test Comment",
+                        Id = Guid.NewGuid().ToString(),
+                        Recruiter = recruiter,
+                        Time = DateTime.Now
+                    }
+                );
+                context.PipelineStatus.Add(
+                    new PipelineStatus
+                    {
+                        Student = student,
+                        Id = Guid.NewGuid().ToString(),
+                        Recruiter = recruiter,
+                        Status = "Phone Interview"
+                    }
+                    );
+                context.WatchList.Add(
+                    new Watch
+                    {
+                        Student = student,
+                        Id = Guid.NewGuid().ToString(),
+                        Recruiter = recruiter
+                    }
+                    );
+            }
+            context.SaveChanges();
         }
         public static void SeedRecruiters(DatabaseContext context, UserManager<Recruiter> userManager, ref List<string> guids) {
             var assembly = Assembly.GetExecutingAssembly();
@@ -186,6 +202,7 @@ namespace RecruiterPathway.Models
             {
                 //We expect this to fail, try to add the user anyways.
             }
+            userManager.CreateAsync(Constants.NullRecruiter, "Test123!");
             var resourceName = "RecruiterPathway.Models.SeedData.Recruiters.csv";
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))

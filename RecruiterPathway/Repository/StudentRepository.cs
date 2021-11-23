@@ -25,14 +25,22 @@ namespace RecruiterPathway.Repository
         override public async ValueTask<Student> GetById(object id)
         {
             //ThenInclude from https://stackoverflow.com/a/53133582
-            return await _context.Student.Include(c => c.Comments)
-                .ThenInclude(r => r.Recruiter)
-                .FirstOrDefaultAsync(s => s.Id == (string)id);
+            Student student;
+            lock (_context)
+            {
+                student =  _context.Student.Include(c => c.Comments)
+                    .ThenInclude(r => r.Recruiter)
+                    .FirstOrDefault(s => s.Id == (string)id);
+            }
+            return student;
         }
         override public async Task<bool> Insert(Student student)
         {
-            await _set.AddAsync(student);
-            Save();
+            lock (_context) lock (_set)
+                {
+                    _set.Add(student);
+                }
+                    Save();
             return true;
 
         }
@@ -43,11 +51,20 @@ namespace RecruiterPathway.Repository
             {
                 return;
             }
-            if (student.Comments != null)
+            lock (_context)
             {
-                student.Comments.Clear();
+                //Delete all the linked objects
+                var comments = _context.Comment.Where(c => c.Student.Id == student.Id);
+                _context.Comment.RemoveRange(comments);
+                var statuses = _context.PipelineStatus.Where(c => c.Student.Id == student.Id);
+                _context.PipelineStatus.RemoveRange(statuses);
+                var watches = _context.WatchList.Where(c => c.Student.Id == student.Id);
+                _context.WatchList.RemoveRange(watches);
+                _context.SaveChanges();
+                //Delete Student MANUALLY to prevent issues with GetById
+                _context.Student.Remove(student);
+                _context.SaveChanges();
             }
-            await base.Delete(id);
         }
         public override async Task AddComment(StudentViewModel studentViewModel)
         {
@@ -60,13 +77,30 @@ namespace RecruiterPathway.Repository
             {
                 student.Comments = new List<Comment>();
             }
-            _context.Comment.Add(studentViewModel.Comment);
-            Save();
+            lock (_context)
+            {
+                //Perform a duplication check cause even if it's a 1 in a million chance, we could have a concurrency issue
+                var comment = _context.Comment.Where(c => c.Id == studentViewModel.Comment.Id).FirstOrDefault();
+                if (comment != null) 
+                {
+                    studentViewModel.Comment.Id = Guid.NewGuid().ToString();
+                }
+                _context.Comment.Add(studentViewModel.Comment);
+                _context.SaveChanges();
+            }
         }
         public override void RemoveComment(StudentViewModel studentViewModel)
         {
-            _context.Comment.Remove(studentViewModel.Comment);
-            Save();
+            lock (_context)
+            {
+                var comment = _context.Comment.Where(c => c.Id == studentViewModel.Comment.Id).FirstOrDefault();
+                if (comment == null)
+                {
+                    return;
+                }
+                _context.Comment.Remove(studentViewModel.Comment);
+                _context.SaveChanges();
+            }
         }
 
         override public async Task<IEnumerable<Student>> GetAll(StudentViewModel studentViewModel)

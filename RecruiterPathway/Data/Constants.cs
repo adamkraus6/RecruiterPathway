@@ -22,5 +22,19 @@ namespace RecruiterPathway.Data
             WatchList = new List<Watch>(),
             PipelineStatuses = new List<PipelineStatus>()
         };
+        public static Recruiter NullRecruiter =
+        new()
+        {
+            UserName = "",
+            Email = "",
+            Name = "",
+            CompanyName = "",
+            PhoneNumber = "",
+            Password = "",
+            Id = Guid.NewGuid().ToString(), //We don't care what the null recruiter's ID is, just that it's a valid id.
+            SecurityStamp = Guid.NewGuid().ToString(), //Same as before, this just needs to be constant during runtime.
+            WatchList = new List<Watch>(),
+            PipelineStatuses = new List<PipelineStatus>()
+        };
     }
 }
