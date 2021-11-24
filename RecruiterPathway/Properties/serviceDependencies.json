@@ -2,11 +2,7 @@
   "dependencies": {
     "mssql1": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:RecruiterContext"
-    },
-    "mssql2": {
-      "type": "mssql",
-      "connectionId": "ConnectionStrings:TeamProjectContext"
+      "connectionId": "ConnectionStrings:RecruiterPathwayDbContext"
     }
   }
 }
