@@ -126,6 +126,10 @@ namespace RecruiterPathway.Repository
         override async public Task<Recruiter> GetRecruiterByName(string name)
         {
             var recruiter =  await _userManager.FindByNameAsync(name);
+            if(recruiter == null)
+            {
+                return null;
+            }
             if (recruiter.WatchList == null)
             {
                 recruiter.WatchList = new List<Watch>();

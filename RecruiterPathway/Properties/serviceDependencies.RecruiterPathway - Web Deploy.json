@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/csc340-fa21/databases/RecruiterPathway",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:RecruiterPathwayDbContext",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}
