@@ -2,7 +2,7 @@
 
 RecruiterPathway
 
-<img src="RecruiterPathway/wwwroot/logos/logo-black.png" width="256">
+<img src="RecruiterPathway/wwwroot/logos/logo-ivory.png" width="256">
 
 # Product Vision
 
